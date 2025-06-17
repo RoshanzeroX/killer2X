@@ -20,17 +20,17 @@ body {
     color: var(--color-text-light);
     display: flex;
     justify-content: center;
-    align-items: center; /* Centered vertically for shorter content */
+    align-items: center;
     min-height: 100vh;
     margin: 0;
     box-sizing: border-box;
-    padding: 20px 0; /* Padding for top/bottom on smaller screens */
+    padding: 20px 0;
     position: relative;
     overflow-x: hidden;
     background-color: #000000;
 }
 
-/* Background Effect */
+/* Background Effect (Optimized for performance) */
 body::before {
     content: '';
     position: fixed;
@@ -42,34 +42,40 @@ body::before {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    filter: brightness(100%) contrast(150%) blur(2px);
-    opacity: 0.9;
+    /* Reduced filter complexity for better performance */
+    filter: brightness(80%) contrast(120%) blur(1px); /* Slightly reduced contrast and blur */
+    opacity: 0.8; /* Slightly reduced opacity */
     background-blend-mode: overlay;
     z-index: -2;
-    animation: backgroundPulseRed 15s infinite alternate;
+    /* Animation potentially heavy, consider a simpler one or remove for mobile */
+    animation: backgroundPulseRed 20s infinite alternate linear; /* Slower and linear animation */
+    will-change: filter, opacity; /* Hint to browser for optimization */
 }
 
 @keyframes backgroundPulseRed {
-    0% { filter: brightness(100%) contrast(150%) blur(2px) saturate(100%); }
-    50% { filter: brightness(120%) contrast(180%) blur(1px) saturate(120%); }
-    100% { filter: brightness(100%) contrast(150%) blur(2px) saturate(100%); }
+    0% { filter: brightness(80%) contrast(120%) blur(1px) saturate(100%); }
+    50% { filter: brightness(100%) contrast(150%) blur(0.5px) saturate(110%); } /* Slightly less aggressive change */
+    100% { filter: brightness(80%) contrast(120%) blur(1px) saturate(100%); }
 }
 
 .container {
     background-color: var(--color-glass-bg);
+    /* backdrop-filter is a major performance hog, especially on mobile.
+       We will disable it for smaller screens in media queries. */
     backdrop-filter: blur(18px) saturate(200%);
     -webkit-backdrop-filter: blur(18px) saturate(200%);
     border: 1px solid var(--color-glass-border);
     border-radius: 15px;
     box-shadow: var(--shadow-strong), 0 0 40px rgba(255, 0, 0, 0.4);
-    padding: 30px; /* Default padding for desktop/larger screens */
-    width: 95%; /* Use percentage for width to make it responsive */
+    padding: 30px;
+    width: 95%;
     max-width: 900px;
     position: relative;
     z-index: 1;
     overflow: hidden;
     animation: fadeInScale 1s ease-out forwards;
     border-top: 5px solid var(--color-primary);
+    will-change: transform, opacity; /* Hint to browser for optimization */
 }
 
 @keyframes fadeInScale {
@@ -80,22 +86,26 @@ body::before {
 h1, h2, h3 {
     text-align: center;
     color: var(--color-primary);
-    text-shadow: var(--shadow-strong);
+    text-shadow: var(--shadow-strong); /* text-shadow can be heavy */
     margin-bottom: 20px;
     font-weight: 700;
     letter-spacing: 1.5px;
 }
 
 h1 {
-    font-size: 2.8em; /* Default large font for desktop */
+    font-size: 2.8em;
     margin-bottom: 30px;
-    animation: textGlow 1.5s infinite alternate;
+    animation: textGlow 1.5s infinite alternate; /* Can be heavy, optimize in media query */
+    will-change: text-shadow; /* Hint for optimization */
 }
 
+/* Optimized textGlow: Using opacity for glow is much lighter than text-shadow for animation */
 @keyframes textGlow {
-    from { text-shadow: var(--shadow-strong); }
-    to { text-shadow: 0 0 30px var(--color-primary), 0 0 50px rgba(255, 0, 0, 0.5); }
+    from { text-shadow: var(--shadow-strong); opacity: 1; }
+    50% { text-shadow: 0 0 30px var(--color-primary), 0 0 50px rgba(255, 0, 0, 0.5); opacity: 0.8; }
+    to { text-shadow: var(--shadow-strong); opacity: 1; }
 }
+
 
 h2 {
     font-size: 2em;
@@ -104,14 +114,14 @@ h2 {
     margin-top: 0;
     margin-bottom: 20px;
     color: var(--color-secondary);
-    text-shadow: var(--shadow-accent);
+    text-shadow: var(--shadow-accent); /* Can be heavy */
 }
 
 h3 {
     font-size: 1.4em;
     margin-bottom: 15px;
     color: var(--color-secondary);
-    text-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
+    text-shadow: 0 0 10px rgba(255, 140, 0, 0.6); /* Can be heavy */
 }
 
 .current-datetime {
@@ -126,7 +136,7 @@ h3 {
 
 .main-content {
     display: grid;
-    grid-template-columns: 1fr; /* Default to single column for small screens */
+    grid-template-columns: 1fr;
     gap: 30px;
     align-items: start;
 }
@@ -146,8 +156,8 @@ h3 {
 
 .input-section input[type="number"],
 .input-section input[type="text"] {
-    width: calc(100% - 40px); /* Account for padding */
-    max-width: 350px; /* Constrain max width even on larger screens */
+    width: calc(100% - 40px);
+    max-width: 350px;
     padding: 15px;
     border: 2px solid var(--color-glass-border);
     background-color: rgba(0, 0, 0, 0.6);
@@ -159,6 +169,7 @@ h3 {
     outline: none;
     transition: all 0.4s ease;
     box-shadow: inset 0 0 10px rgba(255, 59, 59, 0.3);
+    will-change: transform, box-shadow; /* Hint for optimization */
 }
 
 .input-section input[type="number"]::placeholder,
@@ -176,8 +187,9 @@ h3 {
 
 .results-section {
     background-color: var(--color-glass-bg);
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    /* Disable backdrop-filter by default here, re-enable for larger screens */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     border: 1px solid var(--color-glass-border);
     border-radius: 15px;
     box-shadow: var(--shadow-light);
@@ -187,7 +199,7 @@ h3 {
 
 .results-grid {
     display: grid;
-    grid-template-columns: 1fr; /* Default to single column for small screens */
+    grid-template-columns: 1fr;
     gap: 20px;
 }
 
@@ -198,10 +210,11 @@ h3 {
     padding: 20px;
     margin-bottom: 0;
     text-align: center;
-    box-shadow: 0 4px 15px rgba(255, 59, 59, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 59, 59, 0.3); /* Can be heavy */
     transition: transform 0.4s ease, box-shadow 0.4s ease;
     position: relative;
     overflow: hidden;
+    will-change: transform, box-shadow; /* Hint for optimization */
 }
 
 .result-box::before {
@@ -215,18 +228,18 @@ h3 {
     transform: rotate(45deg);
     transition: opacity 0.3s ease;
     opacity: 0;
+    will-change: opacity, transform; /* Hint for optimization */
 }
 
 .result-box:hover::before {
     opacity: 1;
-    animation: shine 1.5s infinite linear;
+    animation: shine 1.5s infinite linear; /* Can be heavy */
 }
 
 @keyframes shine {
     from { transform: rotate(45deg) translate(-100%, -100%); }
     to { transform: rotate(45deg) translate(100%, 100%); }
 }
-
 
 .result-box:hover {
     transform: translateY(-8px) scale(1.01);
@@ -244,17 +257,20 @@ h3 {
 .results-section p span {
     font-weight: bold;
     color: var(--color-secondary);
-    text-shadow: 0 0 8px rgba(255, 140, 0, 0.8);
+    text-shadow: 0 0 8px rgba(255, 140, 0, 0.8); /* Can be heavy */
     font-size: 1.1em;
     display: inline-block;
-    animation: valuePulse 2s infinite alternate;
+    animation: valuePulse 2s infinite alternate; /* Can be heavy */
+    will-change: transform, text-shadow; /* Hint for optimization */
 }
 
+/* Optimized valuePulse: Use transform for light animation */
 @keyframes valuePulse {
-    0% { transform: scale(1); text-shadow: 0 0 8px rgba(255, 140, 0, 0.8); }
-    50% { transform: scale(1.03); text-shadow: 0 0 12px var(--color-secondary); }
-    100% { transform: scale(1); text-shadow: 0 0 8px rgba(255, 140, 0, 0.8); }
+    0% { transform: scale(1); /* text-shadow can be removed or simplified */ }
+    50% { transform: scale(1.03); /* text-shadow can be removed or simplified */ }
+    100% { transform: scale(1); /* text-shadow can be removed or simplified */ }
 }
+
 
 .highlighted {
     background-color: var(--color-highlight-bg);
@@ -262,10 +278,10 @@ h3 {
     box-shadow: 0 0 25px var(--color-primary), inset 0 0 15px var(--color-primary);
 }
 
-/* Flatpickr Custom Theme for Dark Red Sci-Fi */
+/* Flatpickr Custom Theme for Dark Red Sci-Fi (Optimized) */
 .flatpickr-calendar {
     background: var(--color-bg-dark) !important;
-    backdrop-filter: blur(20px) saturate(250%) !important;
+    backdrop-filter: blur(20px) saturate(250%) !important; /* This also uses backdrop-filter */
     -webkit-backdrop-filter: blur(20px) saturate(250%) !important;
     border: 2px solid var(--color-primary) !important;
     border-radius: 18px !important;
@@ -273,145 +289,98 @@ h3 {
     color: var(--color-text-light) !important;
     font-family: 'Orbitron', Arial, sans-serif !important;
     padding: 25px !important;
-    font-size: 0.9em; /* Smaller font for calendar on mobile */
+    font-size: 0.9em;
+    will-change: transform, opacity; /* Hint for optimization */
 }
 
-/* Media Queries for Responsive Design */
+/* Media Queries for Responsive Design (with Performance Adjustments) */
 
 /* Extra Small Devices (Smartphones portrait, < 576px) */
 @media (max-width: 575.98px) {
     body {
-        padding: 10px; /* Less padding on very small screens */
-        align-items: flex-start; /* Align to top as content will be longer */
+        padding: 10px;
+        align-items: flex-start;
     }
     .container {
-        padding: 20px; /* Smaller padding inside container */
-        width: 100%; /* Take full width on small screens */
+        padding: 20px;
+        width: 100%;
+        /* Disable backdrop-filter on small screens for performance */
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
     }
     h1 {
-        font-size: 1.8em; /* Smaller font for main title */
+        font-size: 1.8em;
         letter-spacing: 1px;
+        animation: none; /* Disable animation on h1 for performance */
+        text-shadow: none; /* Remove text-shadow for performance */
     }
     h2 {
-        font-size: 1.5em; /* Smaller font for section titles */
+        font-size: 1.5em;
         margin-bottom: 15px;
+        text-shadow: none; /* Remove text-shadow for performance */
     }
     h3 {
-        font-size: 1.1em; /* Smaller font for result box titles */
+        font-size: 1.1em;
         margin-bottom: 10px;
+        text-shadow: none; /* Remove text-shadow for performance */
     }
     .current-datetime {
-        font-size: 1em; /* Smaller font for date/time */
+        font-size: 1em;
         margin-bottom: 20px;
+        text-shadow: none; /* Remove text-shadow for performance */
     }
     .input-section {
-        gap: 15px; /* Smaller gap between inputs */
+        gap: 15px;
         padding: 10px;
     }
     .input-section input[type="number"],
     .input-section input[type="text"] {
-        padding: 12px; /* Smaller padding for inputs */
-        font-size: 1em; /* Adjust input font size */
+        padding: 12px;
+        font-size: 1em;
+        box-shadow: inset 0 0 5px rgba(255, 59, 59, 0.3); /* Simpler box-shadow */
     }
     .results-section {
-        padding: 15px; /* Smaller padding for results section */
+        padding: 15px;
+        /* Disable backdrop-filter here too if results section is separate */
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
     }
     .results-grid {
-        gap: 15px; /* Smaller gap between result boxes */
+        gap: 15px;
     }
     .result-box {
-        padding: 15px; /* Smaller padding inside result boxes */
+        padding: 15px;
+        box-shadow: 0 2px 10px rgba(255, 59, 59, 0.2); /* Simpler box-shadow */
+    }
+    .result-box::before {
+        display: none; /* Disable hover shine animation for mobile */
+    }
+    .result-box:hover {
+        transform: none; /* Disable hover transform */
+        box-shadow: 0 2px 10px rgba(255, 59, 59, 0.2); /* Keep simple shadow */
+        border-color: rgba(255, 59, 59, 0.25); /* Keep simple border */
     }
     .results-section p {
-        font-size: 0.9em; /* Smaller font for result text */
+        font-size: 0.9em;
         margin-bottom: 8px;
     }
     .results-section p span {
-        font-size: 1em; /* Smaller font for result values */
+        font-size: 1em;
+        text-shadow: none; /* Remove text-shadow for performance */
+        animation: none; /* Disable valuePulse animation */
     }
-}
+    .highlighted {
+        box-shadow: 0 0 15px rgba(255, 59, 59, 0.5); /* Simpler highlight shadow */
+    }
 
-/* Small Devices (Smartphones landscape, 576px and up) */
-@media (min-width: 576px) and (max-width: 767.98px) {
-    .container {
-        padding: 25px;
-        max-width: 600px; /* Constrain max-width for landscape phones */
-    }
-    h1 {
-        font-size: 2.2em;
-    }
-    h2 {
-        font-size: 1.7em;
-    }
-    h3 {
-        font-size: 1.2em;
-    }
-    .current-datetime {
-        font-size: 1.1em;
-    }
-    .input-section {
-        gap: 16px;
-    }
-    .input-section input[type="number"],
-    .input-section input[type="text"] {
-        padding: 14px;
-        font-size: 1.05em;
-    }
-    .results-grid {
-        grid-template-columns: 1fr 1fr; /* Keep 2 columns for results */
-    }
-}
-
-/* Medium Devices (Tablets, 768px and up) */
-@media (min-width: 768px) and (max-width: 991.98px) {
-    .main-content {
-        grid-template-columns: 1.2fr 2fr; /* Side-by-side layout for tablets */
-        gap: 25px;
-    }
-    .container {
-        max-width: 780px; /* Increased max-width for tablets */
-    }
-    h1 {
-        font-size: 2.5em;
-    }
-    h2 {
-        font-size: 1.8em;
-    }
-    .input-section input[type="number"],
-    .input-section input[type="text"] {
-        max-width: 100%; /* Allow inputs to expand more on tablets */
-    }
-    .flatpickr-calendar {
-        font-size: 1em; /* Restore default font size for calendar on tablets */
-    }
-}
-
-/* Large Devices (Desktops, 992px and up) */
-@media (min-width: 992px) {
-    .main-content {
-        grid-template-columns: 1.2fr 2fr; /* Standard desktop layout */
-        gap: 30px;
-    }
-    .container {
-        max-width: 900px;
-    }
-    h1 {
-        font-size: 2.8em;
-    }
-    h2 {
-        font-size: 2em;
-    }
-    .flatpickr-calendar {
-        font-size: 1.1em; /* Slightly larger font for calendar on desktops */
-    }
-}
-
-/* Flatpickr Specific Responsive Adjustments */
-@media (max-width: 575.98px) {
+    /* Flatpickr Specific Adjustments for tiny screens */
     .flatpickr-calendar {
         padding: 15px !important;
         border-radius: 10px !important;
-        font-size: 0.85em !important; /* Make calendar even smaller on very small screens */
+        font-size: 0.85em !important;
+        backdrop-filter: none !important; /* Disable backdrop-filter for Flatpickr calendar as well */
+        -webkit-backdrop-filter: none !important;
+        box-shadow: 0 5px 20px rgba(255, 59, 59, 0.5) !important; /* Simpler shadow */
     }
     .flatpickr-months {
         padding-bottom: 10px !important;
@@ -426,10 +395,108 @@ h3 {
         font-size: 1.5em !important;
     }
     .flatpickr-day {
-        width: 30px !important; /* Smaller day boxes */
+        width: 30px !important;
         height: 30px !important;
         line-height: 30px !important;
         font-size: 0.9em !important;
+    }
+    .flatpickr-day.selected,
+    .flatpickr-day.today {
+        box-shadow: 0 0 5px var(--color-primary) !important; /* Simpler shadow */
+    }
+}
+
+/* Small Devices (Smartphones landscape, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .container {
+        padding: 25px;
+        max-width: 600px;
+        /* backdrop-filter can be re-enabled here if performance allows,
+           but better to keep it off for most phones */
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+    h1 {
+        font-size: 2.2em;
+        animation: none; /* Disable animation for better performance */
+        text-shadow: none;
+    }
+    h2, h3, .current-datetime {
+        text-shadow: none; /* Remove text-shadow for performance */
+    }
+    .results-section p span {
+        animation: none; /* Disable valuePulse animation */
+    }
+    .flatpickr-calendar {
+        backdrop-filter: none !important; /* Disable backdrop-filter for calendar */
+        -webkit-backdrop-filter: none !important;
+    }
+    .results-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Medium Devices (Tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .main-content {
+        grid-template-columns: 1.2fr 2fr;
+        gap: 25px;
+    }
+    .container {
+        max-width: 780px;
+        /* Re-enable backdrop-filter for tablets if performance is acceptable */
+        backdrop-filter: blur(15px) saturate(180%);
+        -webkit-backdrop-filter: blur(15px) saturate(180%);
+    }
+    h1 {
+        font-size: 2.5em;
+        /* Re-enable animation and shadow if performance allows on tablets */
+        animation: textGlow 1.5s infinite alternate;
+        text-shadow: var(--shadow-strong);
+    }
+    h2, h3, .current-datetime {
+        text-shadow: var(--shadow-strong);
+    }
+    .input-section input[type="number"],
+    .input-section input[type="text"] {
+        max-width: 100%;
+    }
+    .results-section p span {
+        animation: valuePulse 2s infinite alternate;
+    }
+    .flatpickr-calendar {
+        font-size: 1em;
+        backdrop-filter: blur(15px) saturate(180%) !important; /* Re-enable for calendar */
+        -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+    }
+}
+
+/* Large Devices (Desktops, 992px and up) */
+@media (min-width: 992px) {
+    .main-content {
+        grid-template-columns: 1.2fr 2fr;
+        gap: 30px;
+    }
+    .container {
+        max-width: 900px;
+        backdrop-filter: blur(18px) saturate(200%); /* Full effect for desktop */
+        -webkit-backdrop-filter: blur(18px) saturate(200%);
+    }
+    h1 {
+        font-size: 2.8em;
+        animation: textGlow 1.5s infinite alternate;
+        text-shadow: var(--shadow-strong);
+    }
+    h2, h3, .current-datetime {
+        text-shadow: var(--shadow-strong);
+    }
+    .results-section p span {
+        animation: valuePulse 2s infinite alternate;
+    }
+    .flatpickr-calendar {
+        font-size: 1.1em;
+        backdrop-filter: blur(20px) saturate(250%) !important; /* Full effect for calendar */
+        -webkit-backdrop-filter: blur(20px) saturate(250%) !important;
     }
 }
 
