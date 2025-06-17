@@ -20,7 +20,7 @@ body {
     color: var(--color-text-light);
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center; /* Changed to center to make content more vertically centered */
     min-height: 100vh;
     margin: 0;
     box-sizing: border-box;
@@ -42,7 +42,6 @@ body::before {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    /* --- ปรับ filter ให้สว่างและเห็นชัดเจนขึ้น --- */
     filter: brightness(100%) contrast(150%) blur(2px); /* Increased brightness significantly */
     opacity: 0.9; /* Ensure it's not too transparent */
     background-blend-mode: overlay; /* Helps to blend with body's black background */
@@ -63,9 +62,9 @@ body::before {
     border: 1px solid var(--color-glass-border);
     border-radius: 15px;
     box-shadow: var(--shadow-strong), 0 0 40px rgba(255, 0, 0, 0.4);
-    padding: 35px;
+    padding: 30px; /* Reduced padding slightly */
     width: 100%;
-    max-width: 750px;
+    max-width: 900px; /* Increased max-width for side-by-side layout */
     position: relative;
     z-index: 1;
     overflow: hidden;
@@ -89,6 +88,7 @@ h1, h2, h3 {
 
 h1 {
     font-size: 2.8em;
+    margin-bottom: 30px; /* Increased margin for h1 */
     animation: textGlow 1.5s infinite alternate;
 }
 
@@ -97,19 +97,19 @@ h1 {
     to { text-shadow: 0 0 30px var(--color-primary), 0 0 50px rgba(255, 0, 0, 0.5); }
 }
 
-
 h2 {
     font-size: 2em;
     border-bottom: 2px dashed var(--color-glass-border);
     padding-bottom: 12px;
-    margin-top: 35px;
+    margin-top: 0; /* Removed top margin, controlled by main-content gap */
+    margin-bottom: 20px; /* Adjusted bottom margin */
     color: var(--color-secondary);
     text-shadow: var(--shadow-accent);
 }
 
 h3 {
     font-size: 1.4em;
-    margin-bottom: 18px;
+    margin-bottom: 15px; /* Slightly reduced margin */
     color: var(--color-secondary);
     text-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
 }
@@ -118,32 +118,51 @@ h3 {
     text-align: center;
     font-size: 1.2em;
     font-weight: bold;
-    margin-bottom: 35px;
+    margin-bottom: 30px; /* Reduced margin */
     color: var(--color-accent);
     text-shadow: 0 0 8px var(--color-accent);
     animation: fadeIn 2s ease-out;
 }
 
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr; /* Default to single column */
+    gap: 30px; /* Gap between sections */
+    align-items: start; /* Align items to the start of the grid area */
+}
+
+@media (min-width: 768px) { /* Adjust breakpoint as needed */
+    .main-content {
+        grid-template-columns: 1.2fr 2fr; /* Input section slightly narrower, results section wider */
+    }
+}
+
+
 .input-section {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    margin-bottom: 35px;
+    gap: 18px; /* Slightly reduced gap */
+    margin-bottom: 0; /* Removed bottom margin, controlled by main-content gap */
     align-items: center;
+    padding: 15px; /* Added internal padding to input section */
+    border: 1px solid var(--color-glass-border);
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 0 10px rgba(255, 59, 59, 0.2);
 }
 
 .input-section input[type="number"],
 .input-section input[type="text"] {
-    width: calc(100% - 60px);
-    max-width: 400px;
-    padding: 18px;
+    width: calc(100% - 40px); /* Adjust width to fit padding */
+    max-width: 350px; /* Slightly reduced max-width for inputs */
+    padding: 15px; /* Slightly reduced padding */
     border: 2px solid var(--color-glass-border);
     background-color: rgba(0, 0, 0, 0.6);
     color: var(--color-text-light);
     border-radius: 8px;
     box-sizing: border-box;
     text-align: center;
-    font-size: 1.2em;
+    font-size: 1.1em; /* Slightly smaller font */
     outline: none;
     transition: all 0.4s ease;
     box-shadow: inset 0 0 10px rgba(255, 59, 59, 0.3);
@@ -169,18 +188,17 @@ h3 {
     border: 1px solid var(--color-glass-border);
     border-radius: 15px;
     box-shadow: var(--shadow-light);
-    padding: 30px;
-    margin-top: 35px;
-    /* Removed animation and opacity: 0; for immediate display */
+    padding: 25px; /* Slightly reduced padding */
+    margin-top: 0; /* Removed top margin, controlled by main-content gap */
 }
 
 .results-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 25px;
+    gap: 20px; /* Slightly reduced gap */
 }
 
-@media (min-width: 600px) {
+@media (min-width: 550px) { /* Adjust breakpoint for result boxes */
     .results-grid {
         grid-template-columns: 1fr 1fr;
     }
@@ -193,7 +211,7 @@ h3 {
     background-color: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 59, 59, 0.25);
     border-radius: 10px;
-    padding: 25px;
+    padding: 20px; /* Slightly reduced padding */
     margin-bottom: 0;
     text-align: center;
     box-shadow: 0 4px 15px rgba(255, 59, 59, 0.3);
@@ -233,17 +251,17 @@ h3 {
 }
 
 .results-section p {
-    margin-bottom: 12px;
-    line-height: 1.8;
+    margin-bottom: 10px; /* Slightly reduced margin */
+    line-height: 1.7;
     color: var(--color-text-light);
-    font-size: 1.1em;
+    font-size: 1em; /* Slightly smaller font */
 }
 
 .results-section p span {
     font-weight: bold;
     color: var(--color-secondary);
     text-shadow: 0 0 8px rgba(255, 140, 0, 0.8);
-    font-size: 1.2em;
+    font-size: 1.1em; /* Slightly smaller font */
     display: inline-block;
     animation: valuePulse 2s infinite alternate;
 }
