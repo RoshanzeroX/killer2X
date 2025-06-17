@@ -16,21 +16,21 @@
 }
 
 body {
-    font-family: 'Orbitron', sans-serif; /* A futuristic font, make sure to import it in index.html */
+    font-family: 'Orbitron', sans-serif;
     color: var(--color-text-light);
     display: flex;
     justify-content: center;
-    align-items: center; /* Changed to center to make content more vertically centered */
+    align-items: center; /* Centered vertically for shorter content */
     min-height: 100vh;
     margin: 0;
     box-sizing: border-box;
-    padding: 20px 0;
+    padding: 20px 0; /* Padding for top/bottom on smaller screens */
     position: relative;
     overflow-x: hidden;
-    background-color: #000000; /* Force black background to ensure nothing is hiding it */
+    background-color: #000000;
 }
 
-/* Background Effect (Adjusted for more visibility) */
+/* Background Effect */
 body::before {
     content: '';
     position: fixed;
@@ -42,16 +42,16 @@ body::before {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    filter: brightness(100%) contrast(150%) blur(2px); /* Increased brightness significantly */
-    opacity: 0.9; /* Ensure it's not too transparent */
-    background-blend-mode: overlay; /* Helps to blend with body's black background */
+    filter: brightness(100%) contrast(150%) blur(2px);
+    opacity: 0.9;
+    background-blend-mode: overlay;
     z-index: -2;
     animation: backgroundPulseRed 15s infinite alternate;
 }
 
 @keyframes backgroundPulseRed {
     0% { filter: brightness(100%) contrast(150%) blur(2px) saturate(100%); }
-    50% { filter: brightness(120%) contrast(180%) blur(1px) saturate(120%); } /* Even brighter in middle of animation */
+    50% { filter: brightness(120%) contrast(180%) blur(1px) saturate(120%); }
     100% { filter: brightness(100%) contrast(150%) blur(2px) saturate(100%); }
 }
 
@@ -62,9 +62,9 @@ body::before {
     border: 1px solid var(--color-glass-border);
     border-radius: 15px;
     box-shadow: var(--shadow-strong), 0 0 40px rgba(255, 0, 0, 0.4);
-    padding: 30px; /* Reduced padding slightly */
-    width: 100%;
-    max-width: 900px; /* Increased max-width for side-by-side layout */
+    padding: 30px; /* Default padding for desktop/larger screens */
+    width: 95%; /* Use percentage for width to make it responsive */
+    max-width: 900px;
     position: relative;
     z-index: 1;
     overflow: hidden;
@@ -87,8 +87,8 @@ h1, h2, h3 {
 }
 
 h1 {
-    font-size: 2.8em;
-    margin-bottom: 30px; /* Increased margin for h1 */
+    font-size: 2.8em; /* Default large font for desktop */
+    margin-bottom: 30px;
     animation: textGlow 1.5s infinite alternate;
 }
 
@@ -101,15 +101,15 @@ h2 {
     font-size: 2em;
     border-bottom: 2px dashed var(--color-glass-border);
     padding-bottom: 12px;
-    margin-top: 0; /* Removed top margin, controlled by main-content gap */
-    margin-bottom: 20px; /* Adjusted bottom margin */
+    margin-top: 0;
+    margin-bottom: 20px;
     color: var(--color-secondary);
     text-shadow: var(--shadow-accent);
 }
 
 h3 {
     font-size: 1.4em;
-    margin-bottom: 15px; /* Slightly reduced margin */
+    margin-bottom: 15px;
     color: var(--color-secondary);
     text-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
 }
@@ -118,7 +118,7 @@ h3 {
     text-align: center;
     font-size: 1.2em;
     font-weight: bold;
-    margin-bottom: 30px; /* Reduced margin */
+    margin-bottom: 30px;
     color: var(--color-accent);
     text-shadow: 0 0 8px var(--color-accent);
     animation: fadeIn 2s ease-out;
@@ -126,25 +126,18 @@ h3 {
 
 .main-content {
     display: grid;
-    grid-template-columns: 1fr; /* Default to single column */
-    gap: 30px; /* Gap between sections */
-    align-items: start; /* Align items to the start of the grid area */
+    grid-template-columns: 1fr; /* Default to single column for small screens */
+    gap: 30px;
+    align-items: start;
 }
-
-@media (min-width: 768px) { /* Adjust breakpoint as needed */
-    .main-content {
-        grid-template-columns: 1.2fr 2fr; /* Input section slightly narrower, results section wider */
-    }
-}
-
 
 .input-section {
     display: flex;
     flex-direction: column;
-    gap: 18px; /* Slightly reduced gap */
-    margin-bottom: 0; /* Removed bottom margin, controlled by main-content gap */
+    gap: 18px;
+    margin-bottom: 0;
     align-items: center;
-    padding: 15px; /* Added internal padding to input section */
+    padding: 15px;
     border: 1px solid var(--color-glass-border);
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 0.4);
@@ -153,16 +146,16 @@ h3 {
 
 .input-section input[type="number"],
 .input-section input[type="text"] {
-    width: calc(100% - 40px); /* Adjust width to fit padding */
-    max-width: 350px; /* Slightly reduced max-width for inputs */
-    padding: 15px; /* Slightly reduced padding */
+    width: calc(100% - 40px); /* Account for padding */
+    max-width: 350px; /* Constrain max width even on larger screens */
+    padding: 15px;
     border: 2px solid var(--color-glass-border);
     background-color: rgba(0, 0, 0, 0.6);
     color: var(--color-text-light);
     border-radius: 8px;
     box-sizing: border-box;
     text-align: center;
-    font-size: 1.1em; /* Slightly smaller font */
+    font-size: 1.1em;
     outline: none;
     transition: all 0.4s ease;
     box-shadow: inset 0 0 10px rgba(255, 59, 59, 0.3);
@@ -188,30 +181,21 @@ h3 {
     border: 1px solid var(--color-glass-border);
     border-radius: 15px;
     box-shadow: var(--shadow-light);
-    padding: 25px; /* Slightly reduced padding */
-    margin-top: 0; /* Removed top margin, controlled by main-content gap */
+    padding: 25px;
+    margin-top: 0;
 }
 
 .results-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px; /* Slightly reduced gap */
-}
-
-@media (min-width: 550px) { /* Adjust breakpoint for result boxes */
-    .results-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    .results-grid .result-summary-box {
-        grid-column: 1 / -1;
-    }
+    grid-template-columns: 1fr; /* Default to single column for small screens */
+    gap: 20px;
 }
 
 .result-box {
     background-color: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 59, 59, 0.25);
     border-radius: 10px;
-    padding: 20px; /* Slightly reduced padding */
+    padding: 20px;
     margin-bottom: 0;
     text-align: center;
     box-shadow: 0 4px 15px rgba(255, 59, 59, 0.3);
@@ -251,17 +235,17 @@ h3 {
 }
 
 .results-section p {
-    margin-bottom: 10px; /* Slightly reduced margin */
+    margin-bottom: 10px;
     line-height: 1.7;
     color: var(--color-text-light);
-    font-size: 1em; /* Slightly smaller font */
+    font-size: 1em;
 }
 
 .results-section p span {
     font-weight: bold;
     color: var(--color-secondary);
     text-shadow: 0 0 8px rgba(255, 140, 0, 0.8);
-    font-size: 1.1em; /* Slightly smaller font */
+    font-size: 1.1em;
     display: inline-block;
     animation: valuePulse 2s infinite alternate;
 }
@@ -289,523 +273,166 @@ h3 {
     color: var(--color-text-light) !important;
     font-family: 'Orbitron', Arial, sans-serif !important;
     padding: 25px !important;
+    font-size: 0.9em; /* Smaller font for calendar on mobile */
 }
 
-.flatpickr-months {
-    padding-bottom: 20px !important;
-    border-bottom: 1px solid var(--color-glass-border) !important;
-    margin-bottom: 20px !important;
-}
+/* Media Queries for Responsive Design */
 
-.flatpickr-current-month .flatpickr-month,
-.flatpickr-current-month .flatpickr-year {
-    color: var(--color-primary) !important;
-    font-weight: 800 !important;
-    text-shadow: var(--shadow-strong);
-    font-size: 1.3em !important;
-}
-
-.flatpickr-current-month .flatpickr-month span.cur-month {
-    font-weight: bold !important;
-    color: var(--color-secondary) !important;
-}
-
-.flatpickr-prev-month,
-.flatpickr-next-month {
-    color: var(--color-accent) !important;
-    opacity: 0.9 !important;
-    font-size: 1.8em !important;
-}
-.flatpickr-prev-month:hover,
-.flatpickr-next-month:hover {
-    color: var(--color-primary) !important;
-    opacity: 1 !important;
-}
-
-.flatpickr-weekday {
-    color: var(--color-text-dim) !important;
-    font-weight: bold !important;
-    text-transform: uppercase;
-    font-size: 1em;
-    letter-spacing: 0.5px;
-}
-
-.flatpickr-day {
-    color: var(--color-text-light) !important;
-    border-radius: 10px !important;
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease !important;
-}
-
-.flatpickr-day.next-month,
-.flatpickr-day.prev-month {
-    opacity: 0.3 !important;
-}
-
-.flatpickr-day.selected,
-.flatpickr-day.startRange,
-.flatpickr-day.endRange,
-.flatpickr-day.selected.inRange,
-.flatpickr-day.today {
-    background-color: var(--color-primary) !important;
-    border-color: var(--color-primary) !important;
-    color: var(--color-bg-dark) !important;
-    font-weight: bold !important;
-    border-radius: 10px !important;
-    box-shadow: 0 0 15px var(--color-primary);
-}
-
-.flatpickr-day.selected:hover,
-.flatpickr-day.startRange:hover,
-.flatpickr-day.endRange:hover,
-.flatpickr-day.selected.inRange:hover {
-    background-color: var(--color-secondary) !important;
-    border-color: var(--color-secondary) !important;
-    box-shadow: 0 0 20px var(--color-secondary);
-}
-
-.flatpickr-day.inRange {
-    background-color: rgba(178, 34, 34, 0.15) !important;
-    border-color: rgba(178, 34, 34, 0.4) !important;
-    box-shadow: inset 0 0 8px rgba(178, 34, 34, 0.2);
-}
-
-.flatpickr-day:hover,
-.flatpickr-day:focus {
-    background-color: rgba(255, 59, 59, 0.2) !important;
-    color: var(--color-primary) !important;
-    border-radius: 10px !important;
-    box-shadow: 0 0 10px rgba(255, 59, 59, 0.6);
-}
-
-.rangeSelected .flatpickr-day.inRange:not(.startRange):not(.endRange) {
-    box-shadow: none !important;
-}
-
-.flatpickr-day.selected.flatpickr-day.today {
-    background-color: var(--color-accent) !important;
-    border-color: var(--color-accent) !important;
-    box-shadow: 0 0 15px var(--color-accent);
-    color: var(--color-bg-dark) !important;
-}
-
-.flatpickr-rContainer {
-    border-top: none !important;
-}
-
-/* Scrollbar customization for a sci-fi look */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--color-bg-dark);
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--color-primary);
-    border-radius: 10px;
-    border: 1px solid var(--color-secondary);
-    box-shadow: 0 0 5px var(--color-primary);
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--color-accent);
-    box-shadow: 0 0 8px var(--color-accent);
-}:root {
-    /* Dark Red/Black Sci-Fi Colors */
-    --color-primary: #FF3B3B; /* Bright Red */
-    --color-secondary: #FF8C00; /* Dark Orange/Amber */
-    --color-accent: #B22222; /* Firebrick Red */
-    --color-bg-dark: #0A0A0A; /* Deep Black */
-    --color-glass-bg: rgba(20, 0, 0, 0.6); /* Dark translucent red */
-    --color-glass-border: rgba(255, 59, 59, 0.5); /* Red border */
-    --color-text-light: #F0F0F0; /* Off-white for readability */
-    --color-text-dim: rgba(240, 240, 240, 0.7); /* Dimmed white text */
-    --color-highlight-bg: rgba(178, 34, 34, 0.4); /* Firebrick highlight, slightly less transparent */
-    --color-highlight-border: rgba(178, 34, 34, 0.9); /* Stronger highlight border */
-    --shadow-light: 0 0 15px rgba(255, 59, 59, 0.6); /* Stronger shadow */
-    --shadow-strong: 0 0 25px rgba(255, 59, 59, 0.8);
-    --shadow-accent: 0 0 10px var(--color-accent);
-}
-
-body {
-    font-family: 'Orbitron', sans-serif; /* A futuristic font, make sure to import it in index.html */
-    color: var(--color-text-light);
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Changed to center to make content more vertically centered */
-    min-height: 100vh;
-    margin: 0;
-    box-sizing: border-box;
-    padding: 20px 0;
-    position: relative;
-    overflow-x: hidden;
-    background-color: #000000; /* Force black background to ensure nothing is hiding it */
-}
-
-/* Background Effect (Adjusted for more visibility) */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('bg.webp'); /* <<-- ตรวจสอบไฟล์นี้ให้ดีที่สุด!! */
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    filter: brightness(100%) contrast(150%) blur(2px); /* Increased brightness significantly */
-    opacity: 0.9; /* Ensure it's not too transparent */
-    background-blend-mode: overlay; /* Helps to blend with body's black background */
-    z-index: -2;
-    animation: backgroundPulseRed 15s infinite alternate;
-}
-
-@keyframes backgroundPulseRed {
-    0% { filter: brightness(100%) contrast(150%) blur(2px) saturate(100%); }
-    50% { filter: brightness(120%) contrast(180%) blur(1px) saturate(120%); } /* Even brighter in middle of animation */
-    100% { filter: brightness(100%) contrast(150%) blur(2px) saturate(100%); }
-}
-
-.container {
-    background-color: var(--color-glass-bg);
-    backdrop-filter: blur(18px) saturate(200%);
-    -webkit-backdrop-filter: blur(18px) saturate(200%);
-    border: 1px solid var(--color-glass-border);
-    border-radius: 15px;
-    box-shadow: var(--shadow-strong), 0 0 40px rgba(255, 0, 0, 0.4);
-    padding: 30px; /* Reduced padding slightly */
-    width: 100%;
-    max-width: 900px; /* Increased max-width for side-by-side layout */
-    position: relative;
-    z-index: 1;
-    overflow: hidden;
-    animation: fadeInScale 1s ease-out forwards;
-    border-top: 5px solid var(--color-primary);
-}
-
-@keyframes fadeInScale {
-    from { opacity: 0; transform: translateY(30px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-h1, h2, h3 {
-    text-align: center;
-    color: var(--color-primary);
-    text-shadow: var(--shadow-strong);
-    margin-bottom: 20px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-}
-
-h1 {
-    font-size: 2.8em;
-    margin-bottom: 30px; /* Increased margin for h1 */
-    animation: textGlow 1.5s infinite alternate;
-}
-
-@keyframes textGlow {
-    from { text-shadow: var(--shadow-strong); }
-    to { text-shadow: 0 0 30px var(--color-primary), 0 0 50px rgba(255, 0, 0, 0.5); }
-}
-
-h2 {
-    font-size: 2em;
-    border-bottom: 2px dashed var(--color-glass-border);
-    padding-bottom: 12px;
-    margin-top: 0; /* Removed top margin, controlled by main-content gap */
-    margin-bottom: 20px; /* Adjusted bottom margin */
-    color: var(--color-secondary);
-    text-shadow: var(--shadow-accent);
-}
-
-h3 {
-    font-size: 1.4em;
-    margin-bottom: 15px; /* Slightly reduced margin */
-    color: var(--color-secondary);
-    text-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
-}
-
-.current-datetime {
-    text-align: center;
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-bottom: 30px; /* Reduced margin */
-    color: var(--color-accent);
-    text-shadow: 0 0 8px var(--color-accent);
-    animation: fadeIn 2s ease-out;
-}
-
-.main-content {
-    display: grid;
-    grid-template-columns: 1fr; /* Default to single column */
-    gap: 30px; /* Gap between sections */
-    align-items: start; /* Align items to the start of the grid area */
-}
-
-@media (min-width: 768px) { /* Adjust breakpoint as needed */
-    .main-content {
-        grid-template-columns: 1.2fr 2fr; /* Input section slightly narrower, results section wider */
+/* Extra Small Devices (Smartphones portrait, < 576px) */
+@media (max-width: 575.98px) {
+    body {
+        padding: 10px; /* Less padding on very small screens */
+        align-items: flex-start; /* Align to top as content will be longer */
     }
-}
-
-
-.input-section {
-    display: flex;
-    flex-direction: column;
-    gap: 18px; /* Slightly reduced gap */
-    margin-bottom: 0; /* Removed bottom margin, controlled by main-content gap */
-    align-items: center;
-    padding: 15px; /* Added internal padding to input section */
-    border: 1px solid var(--color-glass-border);
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.4);
-    box-shadow: inset 0 0 10px rgba(255, 59, 59, 0.2);
-}
-
-.input-section input[type="number"],
-.input-section input[type="text"] {
-    width: calc(100% - 40px); /* Adjust width to fit padding */
-    max-width: 350px; /* Slightly reduced max-width for inputs */
-    padding: 15px; /* Slightly reduced padding */
-    border: 2px solid var(--color-glass-border);
-    background-color: rgba(0, 0, 0, 0.6);
-    color: var(--color-text-light);
-    border-radius: 8px;
-    box-sizing: border-box;
-    text-align: center;
-    font-size: 1.1em; /* Slightly smaller font */
-    outline: none;
-    transition: all 0.4s ease;
-    box-shadow: inset 0 0 10px rgba(255, 59, 59, 0.3);
-}
-
-.input-section input[type="number"]::placeholder,
-.input-section input[type="text"]::placeholder {
-    color: var(--color-text-dim);
-}
-
-.input-section input[type="number"]:focus,
-.input-section input[type="text"]:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 20px var(--color-primary), inset 0 0 15px var(--color-primary);
-    background-color: rgba(0, 0, 0, 0.8);
-    transform: scale(1.02);
-}
-
-.results-section {
-    background-color: var(--color-glass-bg);
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px) saturate(180%);
-    border: 1px solid var(--color-glass-border);
-    border-radius: 15px;
-    box-shadow: var(--shadow-light);
-    padding: 25px; /* Slightly reduced padding */
-    margin-top: 0; /* Removed top margin, controlled by main-content gap */
-}
-
-.results-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px; /* Slightly reduced gap */
-}
-
-@media (min-width: 550px) { /* Adjust breakpoint for result boxes */
+    .container {
+        padding: 20px; /* Smaller padding inside container */
+        width: 100%; /* Take full width on small screens */
+    }
+    h1 {
+        font-size: 1.8em; /* Smaller font for main title */
+        letter-spacing: 1px;
+    }
+    h2 {
+        font-size: 1.5em; /* Smaller font for section titles */
+        margin-bottom: 15px;
+    }
+    h3 {
+        font-size: 1.1em; /* Smaller font for result box titles */
+        margin-bottom: 10px;
+    }
+    .current-datetime {
+        font-size: 1em; /* Smaller font for date/time */
+        margin-bottom: 20px;
+    }
+    .input-section {
+        gap: 15px; /* Smaller gap between inputs */
+        padding: 10px;
+    }
+    .input-section input[type="number"],
+    .input-section input[type="text"] {
+        padding: 12px; /* Smaller padding for inputs */
+        font-size: 1em; /* Adjust input font size */
+    }
+    .results-section {
+        padding: 15px; /* Smaller padding for results section */
+    }
     .results-grid {
-        grid-template-columns: 1fr 1fr;
+        gap: 15px; /* Smaller gap between result boxes */
     }
-    .results-grid .result-summary-box {
-        grid-column: 1 / -1;
+    .result-box {
+        padding: 15px; /* Smaller padding inside result boxes */
+    }
+    .results-section p {
+        font-size: 0.9em; /* Smaller font for result text */
+        margin-bottom: 8px;
+    }
+    .results-section p span {
+        font-size: 1em; /* Smaller font for result values */
     }
 }
 
-.result-box {
-    background-color: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 59, 59, 0.25);
-    border-radius: 10px;
-    padding: 20px; /* Slightly reduced padding */
-    margin-bottom: 0;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(255, 59, 59, 0.3);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    position: relative;
-    overflow: hidden;
+/* Small Devices (Smartphones landscape, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .container {
+        padding: 25px;
+        max-width: 600px; /* Constrain max-width for landscape phones */
+    }
+    h1 {
+        font-size: 2.2em;
+    }
+    h2 {
+        font-size: 1.7em;
+    }
+    h3 {
+        font-size: 1.2em;
+    }
+    .current-datetime {
+        font-size: 1.1em;
+    }
+    .input-section {
+        gap: 16px;
+    }
+    .input-section input[type="number"],
+    .input-section input[type="text"] {
+        padding: 14px;
+        font-size: 1.05em;
+    }
+    .results-grid {
+        grid-template-columns: 1fr 1fr; /* Keep 2 columns for results */
+    }
 }
 
-.result-box::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
-    transform: rotate(45deg);
-    transition: opacity 0.3s ease;
-    opacity: 0;
+/* Medium Devices (Tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .main-content {
+        grid-template-columns: 1.2fr 2fr; /* Side-by-side layout for tablets */
+        gap: 25px;
+    }
+    .container {
+        max-width: 780px; /* Increased max-width for tablets */
+    }
+    h1 {
+        font-size: 2.5em;
+    }
+    h2 {
+        font-size: 1.8em;
+    }
+    .input-section input[type="number"],
+    .input-section input[type="text"] {
+        max-width: 100%; /* Allow inputs to expand more on tablets */
+    }
+    .flatpickr-calendar {
+        font-size: 1em; /* Restore default font size for calendar on tablets */
+    }
 }
 
-.result-box:hover::before {
-    opacity: 1;
-    animation: shine 1.5s infinite linear;
+/* Large Devices (Desktops, 992px and up) */
+@media (min-width: 992px) {
+    .main-content {
+        grid-template-columns: 1.2fr 2fr; /* Standard desktop layout */
+        gap: 30px;
+    }
+    .container {
+        max-width: 900px;
+    }
+    h1 {
+        font-size: 2.8em;
+    }
+    h2 {
+        font-size: 2em;
+    }
+    .flatpickr-calendar {
+        font-size: 1.1em; /* Slightly larger font for calendar on desktops */
+    }
 }
 
-@keyframes shine {
-    from { transform: rotate(45deg) translate(-100%, -100%); }
-    to { transform: rotate(45deg) translate(100%, 100%); }
+/* Flatpickr Specific Responsive Adjustments */
+@media (max-width: 575.98px) {
+    .flatpickr-calendar {
+        padding: 15px !important;
+        border-radius: 10px !important;
+        font-size: 0.85em !important; /* Make calendar even smaller on very small screens */
+    }
+    .flatpickr-months {
+        padding-bottom: 10px !important;
+        margin-bottom: 10px !important;
+    }
+    .flatpickr-current-month .flatpickr-month,
+    .flatpickr-current-month .flatpickr-year {
+        font-size: 1.1em !important;
+    }
+    .flatpickr-prev-month,
+    .flatpickr-next-month {
+        font-size: 1.5em !important;
+    }
+    .flatpickr-day {
+        width: 30px !important; /* Smaller day boxes */
+        height: 30px !important;
+        line-height: 30px !important;
+        font-size: 0.9em !important;
+    }
 }
 
-
-.result-box:hover {
-    transform: translateY(-8px) scale(1.01);
-    box-shadow: 0 8px 30px var(--color-primary), inset 0 0 15px rgba(255, 59, 59, 0.5);
-    border-color: var(--color-primary);
-}
-
-.results-section p {
-    margin-bottom: 10px; /* Slightly reduced margin */
-    line-height: 1.7;
-    color: var(--color-text-light);
-    font-size: 1em; /* Slightly smaller font */
-}
-
-.results-section p span {
-    font-weight: bold;
-    color: var(--color-secondary);
-    text-shadow: 0 0 8px rgba(255, 140, 0, 0.8);
-    font-size: 1.1em; /* Slightly smaller font */
-    display: inline-block;
-    animation: valuePulse 2s infinite alternate;
-}
-
-@keyframes valuePulse {
-    0% { transform: scale(1); text-shadow: 0 0 8px rgba(255, 140, 0, 0.8); }
-    50% { transform: scale(1.03); text-shadow: 0 0 12px var(--color-secondary); }
-    100% { transform: scale(1); text-shadow: 0 0 8px rgba(255, 140, 0, 0.8); }
-}
-
-.highlighted {
-    background-color: var(--color-highlight-bg);
-    border-color: var(--color-highlight-border);
-    box-shadow: 0 0 25px var(--color-primary), inset 0 0 15px var(--color-primary);
-}
-
-/* Flatpickr Custom Theme for Dark Red Sci-Fi */
-.flatpickr-calendar {
-    background: var(--color-bg-dark) !important;
-    backdrop-filter: blur(20px) saturate(250%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(250%) !important;
-    border: 2px solid var(--color-primary) !important;
-    border-radius: 18px !important;
-    box-shadow: 0 10px 40px rgba(255, 59, 59, 0.8) !important;
-    color: var(--color-text-light) !important;
-    font-family: 'Orbitron', Arial, sans-serif !important;
-    padding: 25px !important;
-}
-
-.flatpickr-months {
-    padding-bottom: 20px !important;
-    border-bottom: 1px solid var(--color-glass-border) !important;
-    margin-bottom: 20px !important;
-}
-
-.flatpickr-current-month .flatpickr-month,
-.flatpickr-current-month .flatpickr-year {
-    color: var(--color-primary) !important;
-    font-weight: 800 !important;
-    text-shadow: var(--shadow-strong);
-    font-size: 1.3em !important;
-}
-
-.flatpickr-current-month .flatpickr-month span.cur-month {
-    font-weight: bold !important;
-    color: var(--color-secondary) !important;
-}
-
-.flatpickr-prev-month,
-.flatpickr-next-month {
-    color: var(--color-accent) !important;
-    opacity: 0.9 !important;
-    font-size: 1.8em !important;
-}
-.flatpickr-prev-month:hover,
-.flatpickr-next-month:hover {
-    color: var(--color-primary) !important;
-    opacity: 1 !important;
-}
-
-.flatpickr-weekday {
-    color: var(--color-text-dim) !important;
-    font-weight: bold !important;
-    text-transform: uppercase;
-    font-size: 1em;
-    letter-spacing: 0.5px;
-}
-
-.flatpickr-day {
-    color: var(--color-text-light) !important;
-    border-radius: 10px !important;
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease !important;
-}
-
-.flatpickr-day.next-month,
-.flatpickr-day.prev-month {
-    opacity: 0.3 !important;
-}
-
-.flatpickr-day.selected,
-.flatpickr-day.startRange,
-.flatpickr-day.endRange,
-.flatpickr-day.selected.inRange,
-.flatpickr-day.today {
-    background-color: var(--color-primary) !important;
-    border-color: var(--color-primary) !important;
-    color: var(--color-bg-dark) !important;
-    font-weight: bold !important;
-    border-radius: 10px !important;
-    box-shadow: 0 0 15px var(--color-primary);
-}
-
-.flatpickr-day.selected:hover,
-.flatpickr-day.startRange:hover,
-.flatpickr-day.endRange:hover,
-.flatpickr-day.selected.inRange:hover {
-    background-color: var(--color-secondary) !important;
-    border-color: var(--color-secondary) !important;
-    box-shadow: 0 0 20px var(--color-secondary);
-}
-
-.flatpickr-day.inRange {
-    background-color: rgba(178, 34, 34, 0.15) !important;
-    border-color: rgba(178, 34, 34, 0.4) !important;
-    box-shadow: inset 0 0 8px rgba(178, 34, 34, 0.2);
-}
-
-.flatpickr-day:hover,
-.flatpickr-day:focus {
-    background-color: rgba(255, 59, 59, 0.2) !important;
-    color: var(--color-primary) !important;
-    border-radius: 10px !important;
-    box-shadow: 0 0 10px rgba(255, 59, 59, 0.6);
-}
-
-.rangeSelected .flatpickr-day.inRange:not(.startRange):not(.endRange) {
-    box-shadow: none !important;
-}
-
-.flatpickr-day.selected.flatpickr-day.today {
-    background-color: var(--color-accent) !important;
-    border-color: var(--color-accent) !important;
-    box-shadow: 0 0 15px var(--color-accent);
-    color: var(--color-bg-dark) !important;
-}
-
-.flatpickr-rContainer {
-    border-top: none !important;
-}
 
 /* Scrollbar customization for a sci-fi look */
 ::-webkit-scrollbar {
