@@ -1,41 +1,190 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>โปรแกรมคำนวณค่าเฉลี่ย Order Picker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำนวณค่าเฉลี่ย Order Picker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+            font-size: 1em;
+        }
+
+        input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1.1em;
+            box-sizing: border-box;
+            -moz-appearance: textfield; /* Firefox specific */
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e9f7ef;
+            border-radius: 8px;
+            border: 1px solid #d4edda;
+            font-size: 1.2em;
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .result span {
+            color: #007bff;
+        }
+
+        .links-container {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .links-container a {
+            display: block;
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .links-container a:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            input[type="number"], button, .links-container a {
+                font-size: 1em;
+                padding: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="background"></div>
+    <div class="container">
+        <h1>คำนวณค่าเฉลี่ย Order Picker</h1>
 
-    <div class="content-wrapper fade-slide-in">
-        <main>
-            <h1 class="title-no-wrap">📦 โปรแกรมคำนวณค่าเฉลี่ย Order Picker</h1>
-            <form id="averageForm" class="centered-form">
-                <div class="input-wrapper">
-                    <input type="number" id="sku" placeholder="✅ SKU ที่ทำได้แล้ว" required />
-                </div>
-                <div class="input-wrapper">
-                    <input type="number" id="mu" placeholder="✅ MU ที่ทำได้แล้ว" required />
-                </div>
-                <div class="input-wrapper">
-                    <input type="number" id="days" placeholder="📅 จำนวนวันทำงาน" required />
-                </div>
-                <button type="submit">🔍 คำนวณค่าเฉลี่ย</button>
-            </form>
-        </main>
+        <div class="input-group">
+            <label for="sku">จำนวน SKU:</label>
+            <input type="number" id="sku" placeholder="ป้อนจำนวน SKU" value="0">
+        </div>
 
-        <footer>    
-            <p> เว็บไซต์นี้ถูกพัฒนาขึ้นเพื่อช่วยคำนวณค่าเฉลี่ยออเดอร์</p>    
-            <p> โดยเน้นให้ผู้ใช้งานสามารถกรอกข้อมูลและรับผลลัพธ์ได้รวดเร็ว</p>
-            <p> โค้ดเขียนด้วย HTML, CSS และ JavaScript เพื่อให้โหลดไว</p>
-            <p> พัฒนาโดย Jack Makro © 2025 | ทีมงาน: Team Dev RoshanzeroX</p>
-            <p><span class="footer-icon">📞</span> ติดต่อ: P'Jack OCS Lock 12</p>
-        </footer>
+        <div class="input-group">
+            <label for="mu">จำนวน MU:</label>
+            <input type="number" id="mu" placeholder="ป้อนจำนวน MU" value="0">
+        </div>
+
+        <div class="input-group">
+            <label for="days">จำนวนวันทำงาน:</label>
+            <input type="number" id="days" placeholder="ป้อนจำนวนวันทำงาน" value="1">
+        </div>
+
+        <button onclick="calculateAverage()">คำนวณค่าเฉลี่ย</button>
+
+        <div class="result" id="result">
+            ค่าเฉลี่ย: <span>0.00</span>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <div class="links-container">
+        <a href="https://example.com/page1" target="_blank">ลิงก์ไปยังหน้า 1</a>
+        <a href="https://example.com/page2" target="_blank">ลิงก์ไปยังหน้า 2</a>
+        <a href="https://example.com/page3" target="_blank">ลิงก์ไปยังหน้า 3</a>
+    </div>
+
+    <script>
+        function calculateAverage() {
+            const sku = parseFloat(document.getElementById('sku').value);
+            const mu = parseFloat(document.getElementById('mu').value);
+            const days = parseFloat(document.getElementById('days').value);
+
+            if (isNaN(sku) || isNaN(mu) || isNaN(days) || days <= 0) {
+                document.getElementById('result').innerHTML = 'ค่าเฉลี่ย: <span>กรุณาป้อนข้อมูลที่ถูกต้อง</span>';
+                return;
+            }
+
+            // สูตร: ((sku / 12) + (mu / 34)) / (2 * days)
+            const average = ((sku / 12) + (mu / 34)) / (2 * days);
+            document.getElementById('result').innerHTML = `ค่าเฉลี่ย: <span>${average.toFixed(2)}</span>`;
+        }
+    </script>
 </body>
 </html>
