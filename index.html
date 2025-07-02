@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D.P.S. - Daily Performance System</title> 
-    <link rel="stylesheet" href="style.css"> 
+    <title>D.P.S. - Daily Performance System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
@@ -36,6 +37,10 @@
         <a href="https://example.com/page3" target="_blank">🔗 ลิงก์ไปยังหน้า 3</a>
     </div>
 
+    <button id="fullscreenToggle" class="fullscreen-toggle" aria-label="Toggle Fullscreen">
+        <i class="fas fa-expand-arrows-alt"></i>
+    </button>
+
     <script>
         function calculateAverage() {
             const sku = parseFloat(document.getElementById('sku').value || 0);
@@ -43,7 +48,7 @@
             const days = parseFloat(document.getElementById('days').value || 0);
 
             if (isNaN(sku) || isNaN(mu) || isNaN(days) || days <= 0) {
-                document.getElementById('result').innerHTML = 'คุณจัดได้ <span>0.00</span> บิลต่อวัน'; 
+                document.getElementById('result').innerHTML = 'คุณจัดได้ <span>0.00</span> บิลต่อวัน';
                 return;
             }
 
@@ -52,6 +57,50 @@
         }
 
         document.addEventListener('DOMContentLoaded', calculateAverage);
+
+        // --- JavaScript สำหรับ Fullscreen Toggle ---
+        const fullscreenToggle = document.getElementById('fullscreenToggle');
+
+        fullscreenToggle.addEventListener('click', () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen();
+            }
+
+            // สำหรับล็อก orientation (อาจไม่ทำงานบนทุกเบราว์เซอร์/อุปกรณ์)
+            if (screen.orientation && screen.orientation.lock) {
+                if (screen.orientation.type.startsWith('landscape')) {
+                    // ถ้าอยู่ในแนวนอนอยู่แล้ว ให้ปลดล็อกเมื่อออก fullscreen
+                    screen.orientation.unlock();
+                } else {
+                    // ล็อกเป็นแนวนอนเมื่อเข้า fullscreen
+                    screen.orientation.lock('landscape');
+                }
+            } else if (screen.lockOrientation) { // สำหรับเบราว์เซอร์รุ่นเก่า
+                if (screen.orientation.type.startsWith('landscape')) {
+                    screen.unlockOrientation();
+                } else {
+                    screen.lockOrientation('landscape');
+                }
+            }
+        });
+
+        // ซ่อนปุ่มถ้าเป็น Desktop หรือไม่รองรับ Fullscreen API
+        if (!document.documentElement.requestFullscreen || !screen.orientation) {
+            fullscreenToggle.style.display = 'none';
+        }
+        // อัปเดตไอคอนตามสถานะ Fullscreen
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                fullscreenToggle.querySelector('i').classList.remove('fa-expand-arrows-alt');
+                fullscreenToggle.querySelector('i').classList.add('fa-compress-arrows-alt');
+            } else {
+                fullscreenToggle.querySelector('i').classList.remove('fa-compress-arrows-alt');
+                fullscreenToggle.querySelector('i').classList.add('fa-expand-arrows-alt');
+            }
+        });
+
     </script>
 </body>
 </html>
