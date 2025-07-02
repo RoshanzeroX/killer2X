@@ -1,5 +1,21 @@
+/* นำเข้าฟอนต์จาก Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+
+:root {
+    /* กำหนดตัวแปรสีเพื่อให้แก้ไขได้ง่าย */
+    --primary-red: #ff4d4d; /* แดงหลัก */
+    --dark-bg: #1a1a1a; /* พื้นหลังดำเข้ม */
+    --darker-bg: #111; /* พื้นหลังดำเข้มกว่า */
+    --text-light: #e0e0e0; /* ข้อความอ่อน */
+    --text-fade: #a0a0a0; /* ข้อความจาง */
+    --border-dark: #333; /* ขอบเข้ม */
+    --glow-shadow: 0 0 15px rgba(255, 77, 77, 0.7); /* เงาเรืองแสงหลัก */
+    --input-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6); /* เงาด้านใน input */
+}
+
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -8,12 +24,11 @@ body {
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
-    color: #f0f0f0; /* สีข้อความหลักเป็นสีเทาอ่อนเพื่อให้ตัดกับพื้นหลังเข้ม */
+    color: var(--text-light); /* ใช้ตัวแปรสี */
     position: relative;
     overflow-x: hidden;
 }
 
-/* สร้างองค์ประกอบเสมือนสำหรับพื้นหลัง */
 body::before {
     content: '';
     position: fixed;
@@ -21,24 +36,22 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('bg.webp'); /* ไฟล์ภาพพื้นหลังของคุณ */
+    background-image: url('bg.webp');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    
-    /* เพิ่ม Filter เพื่อเบลอและทำให้มืดลงบนพื้นหลังเท่านั้น */
-    filter: blur(3px) brightness(0.7);
-    -webkit-filter: blur(3px) brightness(0.7);
-    
-    z-index: -1; /* ให้อยู่ด้านหลังเนื้อหาทั้งหมด */
+    filter: blur(4px) brightness(0.6); /* เบลอและมืดขึ้นอีกนิด เพื่อให้โฮโลแกรมเด่น */
+    -webkit-filter: blur(4px) brightness(0.6);
+    z-index: -1;
 }
 
-/* ทำให้กล่องเนื้อหาหลัก (container) มีพื้นหลังทึบเล็กน้อยเพื่อให้ข้อความอ่านง่ายขึ้น */
 .container {
-    background-color: rgba(30, 30, 30, 0.95); /* พื้นหลังดำเข้มโปร่งแสงเล็กน้อย */
+    background-color: rgba(10, 10, 10, 0.85); /* พื้นหลังดำเกือบโปร่งใส */
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); /* เพิ่มเงาให้ดูมีมิติ */
+    border: 1px solid rgba(255, 77, 77, 0.4); /* ขอบสีแดงโปร่งแสง */
+    box-shadow: 0 0 30px rgba(255, 77, 77, 0.4), /* เงาเรืองแสงรอบกล่อง */
+                0 15px 50px rgba(0, 0, 0, 0.7); /* เงาตกกระทบปกติ */
     width: 100%;
     max-width: 400px;
     text-align: center;
@@ -46,14 +59,52 @@ body::before {
     margin-top: 20px;
     position: relative;
     z-index: 1;
-    border: 1px solid #444; /* ขอบเล็กน้อยเพื่อให้ดูคมชัด */
+    overflow: hidden; /* ป้องกันเงาล้นออกนอกกรอบ */
 }
 
+/* เพิ่มเส้นเรืองแสงรอบ Container (Optional, แต่จะดูโฮโลแกรมขึ้น) */
+.container::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--primary-red), transparent, var(--primary-red));
+    background-size: 200% 200%;
+    z-index: -1;
+    filter: blur(10px);
+    opacity: 0.7;
+    animation: rotateGlow 10s linear infinite; /* แอนิเมชันให้แสงหมุน */
+    border-radius: 12px; /* ต้องตรงกับ container */
+}
+
+@keyframes rotateGlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+
 h1 {
-    color: #ff4d4d; /* สีแดงสดสำหรับหัวข้อ */
+    color: var(--primary-red); /* ใช้ตัวแปรสี */
     margin-bottom: 25px;
-    font-size: 1.8em;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* เพิ่มเงาข้อความ */
+    font-size: 2.2em;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.8); /* เงาเรืองแสงข้อความ */
+    line-height: 1.2;
+}
+
+h1 span {
+    display: block;
+    font-size: 0.4em; /* ทำให้เล็กกว่า D.P.S. อย่างชัดเจน */
+    color: var(--text-fade); /* สีข้อความจางลง */
+    font-weight: 400;
+    margin-top: 5px;
+    letter-spacing: normal;
+    text-shadow: none;
+    opacity: 0.8;
 }
 
 .input-group {
@@ -61,7 +112,6 @@ h1 {
     text-align: left;
 }
 
-/* ซ่อน label */
 label {
     display: none;
 }
@@ -69,17 +119,21 @@ label {
 input[type="number"] {
     width: calc(100% - 20px);
     padding: 12px 10px;
-    border: 1px solid #666; /* ขอบสีเทาเข้ม */
+    border: 1px solid var(--primary-red); /* ขอบสีแดง */
     border-radius: 8px;
     font-size: 1.1em;
     box-sizing: border-box;
-    background-color: #222; /* พื้นหลังช่องกรอกข้อมูลสีดำเข้ม */
-    color: #e0e0e0; /* สีตัวอักษรในช่องกรอกข้อมูล */
+    background-color: var(--darker-bg); /* พื้นหลัง input ดำเข้มกว่า */
+    color: var(--text-light);
     -moz-appearance: textfield;
+    text-align: center;
+    box-shadow: var(--input-shadow); /* เงาด้านใน input */
 }
 
-input[type="number"]::placeholder { /* ปรับสี placeholder */
-    color: #999;
+input[type="number"]::placeholder {
+    color: var(--text-fade); /* placeholder จางลง */
+    text-align: center;
+    font-size: 0.95em;
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -88,44 +142,29 @@ input[type="number"]::-webkit-inner-spin-button {
     margin: 0;
 }
 
-button {
-    background-color: #ff4d4d; /* ปุ่มสีแดงสด */
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease; /* เพิ่ม transition สำหรับ transform */
-    width: 100%;
-    margin-top: 10px;
-    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.4); /* เงาสีแดง */
-}
-
-button:hover {
-    background-color: #e60000; /* สีแดงเข้มขึ้นเมื่อ hover */
-    transform: translateY(-2px); /* ยกปุ่มขึ้นเล็กน้อยเมื่อ hover */
-}
-
-button:active {
-    transform: translateY(0); /* ปุ่มกลับสู่ตำแหน่งเดิมเมื่อกด */
-    box-shadow: 0 2px 5px rgba(255, 77, 77, 0.4);
+input[type="number"]:focus {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 12px rgba(255, 77, 77, 1), var(--input-shadow); /* เงาเรืองแสงชัดขึ้นเมื่อ focus */
+    outline: none;
 }
 
 .result {
     margin-top: 25px;
     padding: 15px;
-    background-color: #333; /* พื้นหลังผลลัพธ์สีเทาเข้ม */
+    background-color: var(--darker-bg); /* พื้นหลังผลลัพธ์ดำเข้มกว่า */
     border-radius: 8px;
-    border: 1px solid #555;
+    border: 1px solid var(--primary-red); /* ขอบสีแดง */
     font-size: 1.2em;
-    color: #e0e0e0; /* สีข้อความผลลัพธ์ */
+    color: var(--text-light);
     font-weight: bold;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3); /* เงาด้านใน */
+    box-shadow: var(--input-shadow); /* เงาด้านในผลลัพธ์ */
 }
 
 .result span {
-    color: #ff9999; /* สีแดงอ่อนสำหรับตัวเลขผลลัพธ์ */
+    color: var(--primary-red); /* ตัวเลขผลลัพธ์ใช้สีแดงหลัก */
+    font-size: 1.6em;
+    font-weight: 800;
+    text-shadow: 0 0 8px rgba(255, 77, 77, 0.7); /* เงาเรืองแสงตัวเลข */
 }
 
 .links-container {
@@ -142,26 +181,30 @@ button:active {
 
 .links-container a {
     display: block;
-    background-color: #555; /* พื้นหลังลิงก์สีเทาเข้ม */
-    color: white;
+    background-color: rgba(var(--darker-bg), 0.8); /* พื้นหลังลิงก์ดำโปร่งแสง */
+    color: var(--text-light);
     padding: 12px 20px;
     border-radius: 8px;
     text-decoration: none;
     font-size: 1.1em;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+    border: 1px solid rgba(255, 77, 77, 0.3); /* ขอบสีแดงโปร่งแสง */
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.2); /* เงาเรืองแสงจางๆ */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม box-shadow ใน transition */
     text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* เงาลิงก์ */
 }
 
 .links-container a:hover {
-    background-color: #ff4d4d; /* สีแดงสดเมื่อ hover */
+    background-color: rgba(var(--primary-red), 0.8); /* พื้นหลังลิงก์เปลี่ยนเป็นแดงเมื่อ hover */
+    color: white; /* เปลี่ยนสีข้อความเป็นขาวเมื่อ hover */
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 77, 77, 0.4);
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.8); /* เรืองแสงชัดขึ้นเมื่อ hover */
+    border-color: var(--primary-red);
 }
 
 .links-container a:active {
     transform: translateY(0);
-    box-shadow: 0 1px 5px rgba(255, 77, 77, 0.4);
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
 }
 
 @media (max-width: 600px) {
@@ -171,10 +214,15 @@ button:active {
     }
 
     h1 {
-        font-size: 1.6em;
+        font-size: 1.8em;
+        letter-spacing: 0.8px;
+    }
+    h1 span {
+        font-size: 0.45em;
+        margin-top: 3px;
     }
 
-    input[type="number"], button, .links-container a {
+    input[type="number"], .links-container a { 
         font-size: 1em;
         padding: 10px;
     }
