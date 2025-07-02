@@ -1,61 +1,40 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เครื่องคำนวณ MU/SKU OCS Picker</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>โปรแกรมคำนวณค่าเฉลี่ย Order Picker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>เครื่องคำนวณ MU/SKU เฉลี่ย OCS Picker</h1>
+    <div class="background"></div>
 
-        <div class="current-datetime">
-            <span id="currentDateDisplay"></span>
-        </div>
-
-        <div class="main-content"> <div class="input-section">
-                <input type="number" id="skuDone" placeholder="SKU ที่ทำได้ตอนนี้" min="0">
-                <input type="number" id="muDone" placeholder="MU ที่ทำได้ตอนนี้" min="0">
-                <input type="text" id="specialOffDays" placeholder="คลิกเลือกวันหยุดพิเศษ" readonly>
-            </div>
-
-            <div class="results-section">
-                <h2>ผลการคำนวณ</h2>
-
-                <div class="results-grid">
-                    <div class="result-box result-summary-box">
-                        <h3>ข้อมูลวันทำงาน</h3>
-                        <p>วันทำงานทั้งหมดในเดือนนี้: <span id="totalWorkDaysInMonth">0</span> วัน</p>
-                        <p>วันทำงานที่เหลือในเดือนนี้: <span id="remainingWorkDays">0</span> วัน</p>
-                    </div>
-
-                    <div class="result-box">
-                        <h3>เป้าหมาย MU/SKU ทั้งเดือน</h3>
-                        <p>เป้าหมาย SKU: <span id="targetSkuMonthly">0</span></p>
-                        <p>เป้าหมาย MU: <span id="targetMuMonthly">0</span></p>
-                    </div>
-
-                    <div class="result-box">
-                        <h3>MU/SKU ที่ต้องทำเพิ่ม</h3>
-                        <p>SKU ที่ต้องทำเพิ่ม: <span id="skuNeeded">0</span></p>
-                        <p>MU ที่ต้องทำเพิ่ม: <span id="muNeeded">0</span></p>
-                    </div>
-
-                    <div class="result-box highlighted">
-                        <h3>เฉลี่ยที่ต้องทำต่อวัน (สำหรับวันทำงานที่เหลือ)</h3>
-                        <p>SKU เฉลี่ยต่อวันที่เหลือ: <span id="avgSkuRemainingDaily">0.00</span></p>
-                        <p>MU เฉลี่ยต่อวันที่เหลือ: <span id="avgMuRemainingDaily">0.00</span></p>
-                    </div>
+    <div class="content-wrapper fade-slide-in">
+        <main>
+            <h1 class="title-no-wrap">📦 โปรแกรมคำนวณค่าเฉลี่ย Order Picker</h1>
+            <form id="averageForm" class="centered-form">
+                <div class="input-wrapper">
+                    <input type="number" id="sku" placeholder="✅ SKU ที่ทำได้แล้ว" required />
                 </div>
-            </div>
-        </div> </div>
+                <div class="input-wrapper">
+                    <input type="number" id="mu" placeholder="✅ MU ที่ทำได้แล้ว" required />
+                </div>
+                <div class="input-wrapper">
+                    <input type="number" id="days" placeholder="📅 จำนวนวันทำงาน" required />
+                </div>
+                <button type="submit">🔍 คำนวณค่าเฉลี่ย</button>
+            </form>
+        </main>
+
+        <footer>    
+            <p> เว็บไซต์นี้ถูกพัฒนาขึ้นเพื่อช่วยคำนวณค่าเฉลี่ยออเดอร์</p>    
+            <p> โดยเน้นให้ผู้ใช้งานสามารถกรอกข้อมูลและรับผลลัพธ์ได้รวดเร็ว</p>
+            <p> โค้ดเขียนด้วย HTML, CSS และ JavaScript เพื่อให้โหลดไว</p>
+            <p> พัฒนาโดย Jack Makro © 2025 | ทีมงาน: Team Dev RoshanzeroX</p>
+            <p><span class="footer-icon">📞</span> ติดต่อ: P'Jack OCS Lock 12</p>
+        </footer>
+    </div>
 
     <script src="script.js"></script>
 </body>
