@@ -4,164 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>คำนวณค่าเฉลี่ย Order Picker</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start; /* เปลี่ยนเป็น flex-start เพื่อให้เนื้อหาอยู่ด้านบน */
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f4f7f6;
-            color: #333;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-sizing: border-box;
-            margin-top: 20px; /* เพิ่มระยะห่างด้านบนเล็กน้อย */
-        }
-
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 25px;
-            font-size: 1.8em;
-        }
-
-        .input-group {
-            margin-bottom: 15px; /* ลดระยะห่างระหว่างกลุ่ม input */
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #555;
-            font-size: 1em;
-        }
-
-        input[type="number"] {
-            width: calc(100% - 20px);
-            padding: 12px 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 1.1em;
-            box-sizing: border-box;
-            -moz-appearance: textfield; /* Firefox specific */
-        }
-
-        input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        button {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #218838;
-        }
-
-        .result {
-            margin-top: 25px;
-            padding: 15px;
-            background-color: #e9f7ef;
-            border-radius: 8px;
-            border: 1px solid #d4edda;
-            font-size: 1.2em;
-            color: #155724;
-            font-weight: bold;
-        }
-
-        .result span {
-            color: #007bff;
-        }
-
-        .links-container {
-            margin-top: 30px;
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px; /* เพิ่มระยะห่างด้านล่างเล็กน้อย */
-        }
-
-        .links-container a {
-            display: block;
-            background-color: #007bff;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 1.1em;
-            transition: background-color 0.3s ease;
-            text-align: center;
-        }
-
-        .links-container a:hover {
-            background-color: #0056b3;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 25px;
-                margin-top: 10px;
-            }
-
-            h1 {
-                font-size: 1.6em;
-            }
-
-            input[type="number"], button, .links-container a {
-                font-size: 1em;
-                padding: 10px;
-            }
-
-            body {
-                padding: 15px; /* ลด padding โดยรวม */
-            }
-        }
-    </style>
-</head>
+    <link rel="stylesheet" href="style.css"> </head>
 <body>
     <div class="container">
         <h1>คำนวณค่าเฉลี่ย Order Picker</h1>
 
         <div class="input-group">
             <label for="sku">SKU:</label>
-            <input type="number" id="sku" placeholder="ป้อนจำนวน SKU">
+            <input type="number" id="sku" placeholder="📦 ป้อนจำนวน SKU">
         </div>
 
         <div class="input-group">
             <label for="mu">MU:</label>
-            <input type="number" id="mu" placeholder="ป้อนจำนวน MU">
+            <input type="number" id="mu" placeholder="🔢 ป้อนจำนวน MU">
         </div>
 
         <div class="input-group">
             <label for="days">จำนวนวันทำงาน:</label>
-            <input type="number" id="days" placeholder="ป้อนจำนวนวันทำงาน">
+            <input type="number" id="days" placeholder="🗓️ ป้อนจำนวนวันทำงาน">
         </div>
 
         <button onclick="calculateAverage()">คำนวณค่าเฉลี่ย</button>
@@ -172,20 +32,19 @@
     </div>
 
     <div class="links-container">
-        <a href="https://example.com/page1" target="_blank">ลิงก์ไปยังหน้า 1</a>
-        <a href="https://example.com/page2" target="_blank">ลิงก์ไปยังหน้า 2</a>
-        <a href="https://example.com/page3" target="_blank">ลิงก์ไปยังหน้า 3</a>
+        <a href="https://example.com/page1" target="_blank">🔗 ลิงก์ไปยังหน้า 1</a>
+        <a href="https://example.com/page2" target="_blank">🔗 ลิงก์ไปยังหน้า 2</a>
+        <a href="https://example.com/page3" target="_blank">🔗 ลิงก์ไปยังหน้า 3</a>
     </div>
 
     <script>
         function calculateAverage() {
-            const sku = parseFloat(document.getElementById('sku').value || 0); /* ใช้ 0 ถ้าไม่มีค่า */
-            const mu = parseFloat(document.getElementById('mu').value || 0);   /* ใช้ 0 ถ้าไม่มีค่า */
-            const days = parseFloat(document.getElementById('days').value || 0); /* ใช้ 0 ถ้าไม่มีค่า */
-
+            const sku = parseFloat(document.getElementById('sku').value || 0);
+            const mu = parseFloat(document.getElementById('mu').value || 0);
+            const days = parseFloat(document.getElementById('days').value || 0);
 
             if (isNaN(sku) || isNaN(mu) || isNaN(days) || days <= 0) {
-                document.getElementById('result').innerHTML = 'ค่าเฉลี่ย: <span>กรุณาป้อนข้อมูลที่ถูกต้อง (จำนวนวันทำงานต้องมากกว่า 0)</span>';
+                document.getElementById('result').innerHTML = 'ค่าเฉลี่ย: <span>⚠️ กรุณาป้อนข้อมูลที่ถูกต้อง (จำนวนวันทำงานต้องมากกว่า 0)</span>';
                 return;
             }
 
