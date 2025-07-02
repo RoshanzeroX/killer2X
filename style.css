@@ -1,18 +1,17 @@
 /* นำเข้าฟอนต์จาก Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
 
+/* กำหนดตัวแปรสีเพื่อให้แก้ไขได้ง่าย */
 :root {
-    /* กำหนดตัวแปรสีเพื่อให้แก้ไขได้ง่าย */
-    --primary-red: #ff4d4d; /* แดงหลัก */
-    --dark-bg: #1a1a1a; /* พื้นหลังดำเข้ม */
-    --darker-bg: #111; /* พื้นหลังดำเข้มกว่า */
-    --text-light: #e0e0e0; /* ข้อความอ่อน */
-    --text-fade: #a0a0a0; /* ข้อความจาง */
-    --border-dark: #333; /* ขอบเข้ม */
-    --glow-shadow: 0 0 15px rgba(255, 77, 77, 0.7); /* เงาเรืองแสงหลัก */
-    --input-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6); /* เงาด้านใน input */
+    --primary-red: #ff4d4d;
+    --dark-bg: #1a1a1a;
+    --darker-bg: #111;
+    --text-light: #e0e0e0;
+    --text-fade: #a0a0a0;
+    --border-dark: #333;
+    --glow-shadow: 0 0 15px rgba(255, 77, 77, 0.7);
+    --input-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
 }
-
 
 body {
     font-family: 'Montserrat', sans-serif;
@@ -29,6 +28,7 @@ body {
     overflow-x: hidden;
 }
 
+/* พื้นหลังหลักของเว็บ */
 body::before {
     content: '';
     position: fixed;
@@ -36,34 +36,37 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('bg.webp');
+    background-image: url('bg.webp'); /* ตรวจสอบพาธของรูปภาพ */
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    filter: blur(4px) brightness(0.6);
+    filter: blur(4px) brightness(0.6); /* เบลอและมืดลงเพื่อเน้น UI */
     -webkit-filter: blur(4px) brightness(0.6);
     z-index: -1;
 }
 
-.container {
-    background-color: rgba(10, 10, 10, 0.85);
-    padding: 30px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 77, 77, 0.4);
-    box-shadow: 0 0 30px rgba(255, 77, 77, 0.4),
-                0 15px 50px rgba(0, 0, 0, 0.7);
+/* Container หลักของเนื้อหา (ยกเว้น Fullscreen Result) */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     max-width: 400px;
-    text-align: center;
-    box-sizing: border-box;
     margin-top: 20px;
+    background-color: rgba(10, 10, 10, 0.85); /* พื้นหลังดำเกือบโปร่งใส */
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 77, 77, 0.4); /* ขอบสีแดงโปร่งแสง */
+    box-shadow: 0 0 30px rgba(255, 77, 77, 0.4), /* เงาเรืองแสงรอบกล่อง */
+                0 15px 50px rgba(0, 0, 0, 0.7); /* เงาตกกระทบปกติ */
     position: relative;
     z-index: 1;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
-/* ปรับปรุง Animation ของเส้นเรืองแสงรอบ Container ให้ใช้ transform และ opacity */
-.container::before {
+/* เส้นเรืองแสงรอบ Container (สำหรับแนวโฮโลแกรม) */
+.main-container::before {
     content: '';
     position: absolute;
     top: -2px;
@@ -75,10 +78,11 @@ body::before {
     z-index: -1;
     filter: blur(10px);
     opacity: 0.7;
-    animation: rotateGlow 15s linear infinite; /* เพิ่มเวลาให้ช้าลง */
+    animation: rotateGlow 15s linear infinite; /* แอนิเมชันให้แสงหมุนช้าลง */
     border-radius: 12px;
 }
 
+/* Keyframes สำหรับแอนิเมชันการหมุนและเปล่งแสง */
 @keyframes rotateGlow {
     0% { background-position: 0% 50%; transform: scale(1) rotate(0deg); opacity: 0.7; }
     25% { transform: scale(1.01) rotate(90deg); opacity: 0.8; }
@@ -87,17 +91,18 @@ body::before {
     100% { background-position: 0% 50%; transform: scale(1) rotate(360deg); opacity: 0.7; }
 }
 
-
+/* หัวข้อ D.P.S. */
 h1 {
     color: var(--primary-red);
     margin-bottom: 25px;
     font-size: 2.2em;
     font-weight: 800;
     letter-spacing: 1px;
-    text-shadow: 0 0 10px rgba(255, 77, 77, 0.8);
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.8); /* เงาเรืองแสงข้อความ */
     line-height: 1.2;
 }
 
+/* คำอธิบาย Daily Performance System */
 h1 span {
     display: block;
     font-size: 0.4em;
@@ -118,18 +123,19 @@ label {
     display: none;
 }
 
+/* ช่องกรอกข้อมูล */
 input[type="number"] {
     width: calc(100% - 20px);
     padding: 12px 10px;
-    border: 1px solid var(--primary-red);
+    border: 1px solid var(--primary-red); /* ขอบสีแดง */
     border-radius: 8px;
     font-size: 1.1em;
     box-sizing: border-box;
     background-color: var(--darker-bg);
     color: var(--text-light);
     -moz-appearance: textfield;
-    text-align: center;
-    box-shadow: var(--input-shadow);
+    text-align: center; /* จัดตัวเลขอยู่ตรงกลาง */
+    box-shadow: var(--input-shadow); /* เงาด้านใน input */
 }
 
 input[type="number"]::placeholder {
@@ -144,31 +150,36 @@ input[type="number"]::-webkit-inner-spin-button {
     margin: 0;
 }
 
+/* เอฟเฟกต์เมื่อช่อง input ถูก Focus */
 input[type="number"]:focus {
     border-color: var(--primary-red);
-    box-shadow: 0 0 12px rgba(255, 77, 77, 1), var(--input-shadow);
+    box-shadow: 0 0 12px rgba(255, 77, 77, 1), var(--input-shadow); /* เงาเรืองแสงชัดขึ้นเมื่อ focus */
     outline: none;
 }
 
+/* ช่องแสดงผลลัพธ์ */
 .result {
     margin-top: 25px;
     padding: 15px;
     background-color: var(--darker-bg);
     border-radius: 8px;
-    border: 1px solid var(--primary-red);
+    border: 1px solid var(--primary-red); /* ขอบสีแดง */
     font-size: 1.2em;
     color: var(--text-light);
     font-weight: bold;
-    box-shadow: var(--input-shadow);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+    display: block; /* สไตล์เริ่มต้น: แสดงผลแบบ block */
+    text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
 }
 
 .result span {
-    color: var(--primary-red);
+    color: var(--primary-red); /* ตัวเลขผลลัพธ์ใช้สีแดงหลัก */
     font-size: 1.6em;
     font-weight: 800;
-    text-shadow: 0 0 8px rgba(255, 77, 77, 0.7);
+    text-shadow: 0 0 8px rgba(255, 77, 77, 0.7); /* เงาเรืองแสงตัวเลข */
 }
 
+/* ส่วนลิงก์ด้านล่าง */
 .links-container {
     margin-top: 30px;
     width: 100%;
@@ -183,21 +194,21 @@ input[type="number"]:focus {
 
 .links-container a {
     display: block;
-    background-color: rgba(17, 17, 17, 0.8); /* ใช้ค่า RGB โดยตรงสำหรับ rgba */
+    background-color: rgba(17, 17, 17, 0.8); /* พื้นหลังลิงก์ดำโปร่งแสง */
     color: var(--text-light);
     padding: 12px 20px;
     border-radius: 8px;
     text-decoration: none;
     font-size: 1.1em;
     cursor: pointer;
-    border: 1px solid rgba(255, 77, 77, 0.3);
-    box-shadow: 0 0 10px rgba(255, 77, 77, 0.2);
+    border: 1px solid rgba(255, 77, 77, 0.3); /* ขอบสีแดงโปร่งแสง */
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.2); /* เงาเรืองแสงจางๆ */
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     text-align: center;
 }
 
 .links-container a:hover {
-    background-color: rgba(255, 77, 77, 0.8);
+    background-color: rgba(255, 77, 77, 0.8); /* เปลี่ยนเป็นแดงเมื่อ hover */
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 0 20px rgba(255, 77, 77, 0.8);
@@ -209,14 +220,15 @@ input[type="number"]:focus {
     box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
 }
 
+/* ปุ่ม Fullscreen */
 .fullscreen-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
+    position: fixed; /* ลอยอยู่บนหน้าจอ */
+    top: 20px; /* ห่างจากขอบบน */
+    right: 20px; /* ห่างจากขอบขวา */
     background-color: rgba(10, 10, 10, 0.7);
-    color: var(--primary-red);
+    color: var(--primary-red); /* ไอคอนสีแดง */
     border: 1px solid rgba(255, 77, 77, 0.5);
-    border-radius: 50%;
+    border-radius: 50%; /* ทำให้เป็นวงกลม */
     width: 45px;
     height: 45px;
     display: flex;
@@ -242,8 +254,9 @@ input[type="number"]:focus {
 }
 
 
+/* Media Queries สำหรับการปรับ responsive */
 @media (max-width: 600px) {
-    .container {
+    .main-container {
         padding: 25px;
         margin-top: 10px;
     }
@@ -257,7 +270,7 @@ input[type="number"]:focus {
         margin-top: 3px;
     }
 
-    input[type="number"], .links-container a {
+    input[type="number"], .links-container a { 
         font-size: 1em;
         padding: 10px;
     }
