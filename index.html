@@ -58,7 +58,6 @@
 
         document.addEventListener('DOMContentLoaded', calculateAverage);
 
-        // --- JavaScript สำหรับ Fullscreen Toggle ---
         const fullscreenToggle = document.getElementById('fullscreenToggle');
 
         fullscreenToggle.addEventListener('click', () => {
@@ -68,16 +67,13 @@
                 document.documentElement.requestFullscreen();
             }
 
-            // สำหรับล็อก orientation (อาจไม่ทำงานบนทุกเบราว์เซอร์/อุปกรณ์)
             if (screen.orientation && screen.orientation.lock) {
                 if (screen.orientation.type.startsWith('landscape')) {
-                    // ถ้าอยู่ในแนวนอนอยู่แล้ว ให้ปลดล็อกเมื่อออก fullscreen
                     screen.orientation.unlock();
                 } else {
-                    // ล็อกเป็นแนวนอนเมื่อเข้า fullscreen
                     screen.orientation.lock('landscape');
                 }
-            } else if (screen.lockOrientation) { // สำหรับเบราว์เซอร์รุ่นเก่า
+            } else if (screen.lockOrientation) {
                 if (screen.orientation.type.startsWith('landscape')) {
                     screen.unlockOrientation();
                 } else {
@@ -86,11 +82,9 @@
             }
         });
 
-        // ซ่อนปุ่มถ้าเป็น Desktop หรือไม่รองรับ Fullscreen API
         if (!document.documentElement.requestFullscreen || !screen.orientation) {
             fullscreenToggle.style.display = 'none';
         }
-        // อัปเดตไอคอนตามสถานะ Fullscreen
         document.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement) {
                 fullscreenToggle.querySelector('i').classList.remove('fa-expand-arrows-alt');
