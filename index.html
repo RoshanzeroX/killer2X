@@ -61,7 +61,6 @@
         const fullscreenToggle = document.getElementById('fullscreenToggle');
         const mainContainer = document.getElementById('main-container');
         const resultContainer = document.getElementById('result');
-        // ตรวจสอบให้แน่ใจว่าไฟล์ภาพอยู่ในตำแหน่งที่ถูกต้องเมื่อรันจริง
         const imageFiles = ['1 (3).png', '1 (4).png', '1 (5).png', '1 (6).png', '1 (7).png', '1 (8).png', '1 (9).png'];
 
         fullscreenToggle.addEventListener('click', () => {
@@ -76,9 +75,9 @@
             if (document.fullscreenElement) {
                 // เข้าสู่ Fullscreen
                 mainContainer.style.display = 'none'; // ซ่อน container หลัก
-                
+
                 // ปรับสไตล์ resultContainer ให้เต็มจอและจัดกึ่งกลาง
-                resultContainer.style.display = 'flex';
+                resultContainer.style.display = 'flex'; // สำคัญ: ต้องเป็น flex เพื่อจัดกึ่งกลาง
                 resultContainer.style.flexDirection = 'column';
                 resultContainer.style.justifyContent = 'center';
                 resultContainer.style.alignItems = 'center';
@@ -95,6 +94,8 @@
                 resultContainer.style.backgroundSize = 'contain';
                 resultContainer.style.backgroundRepeat = 'no-repeat';
                 resultContainer.style.backgroundPosition = 'center';
+                // ทำให้ข้อความผลลัพธ์ใหญ่ขึ้นในโหมด Fullscreen
+                resultContainer.querySelector('span').style.fontSize = '8vw'; // ปรับขนาดให้ใหญ่ขึ้นตาม viewport width
 
                 // เปลี่ยนไอคอนปุ่ม
                 fullscreenToggle.querySelector('i').classList.remove('fa-expand-arrows-alt');
@@ -110,15 +111,17 @@
             } else {
                 // ออกจาก Fullscreen
                 mainContainer.style.display = 'flex'; // แสดง container หลักอีกครั้ง
-                
+
                 // คืนค่าสไตล์ resultContainer ให้เป็นปกติ
-                resultContainer.style.display = 'block';
+                resultContainer.style.display = 'block'; // สำคัญ: กลับไปเป็น block
                 resultContainer.style.width = 'auto';
                 resultContainer.style.height = 'auto';
                 resultContainer.style.backgroundImage = 'none';
                 resultContainer.style.boxShadow = 'inset 0 1px 3px rgba(0, 0, 0, 0.3)';
-                resultContainer.style.border = '1px solid var(--primary-red)'; // คืนขอบเป็นสีแดงตามธีม
-                resultContainer.style.backgroundColor = 'var(--darker-bg)'; // คืนพื้นหลังตามธีม
+                resultContainer.style.border = '1px solid var(--primary-red)';
+                resultContainer.style.backgroundColor = 'var(--darker-bg)';
+                // คืนขนาดข้อความผลลัพธ์
+                resultContainer.querySelector('span').style.fontSize = ''; // ลบ style ที่ตั้งไว้ใน JS
 
                 // เปลี่ยนไอคอนปุ่มกลับ
                 fullscreenToggle.querySelector('i').classList.remove('fa-compress-arrows-alt');
