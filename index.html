@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container">
+    <div class="main-container" id="main-container">
         <h1>D.P.S.<br><span>Daily Performance System</span></h1>
 
         <div class="input-group">
@@ -59,6 +59,10 @@
         document.addEventListener('DOMContentLoaded', calculateAverage);
 
         const fullscreenToggle = document.getElementById('fullscreenToggle');
+        const mainContainer = document.getElementById('main-container');
+        const resultContainer = document.getElementById('result');
+        // ตรวจสอบให้แน่ใจว่าไฟล์ภาพอยู่ในตำแหน่งที่ถูกต้องเมื่อรันจริง
+        const imageFiles = ['1 (3).png', '1 (4).png', '1 (5).png', '1 (6).png', '1 (7).png', '1 (8).png', '1 (9).png'];
 
         fullscreenToggle.addEventListener('click', () => {
             if (document.fullscreenElement) {
@@ -66,35 +70,73 @@
             } else {
                 document.documentElement.requestFullscreen();
             }
-
-            if (screen.orientation && screen.orientation.lock) {
-                if (screen.orientation.type.startsWith('landscape')) {
-                    screen.orientation.unlock();
-                } else {
-                    screen.orientation.lock('landscape');
-                }
-            } else if (screen.lockOrientation) {
-                if (screen.orientation.type.startsWith('landscape')) {
-                    screen.unlockOrientation();
-                } else {
-                    screen.lockOrientation('landscape');
-                }
-            }
         });
 
-        if (!document.documentElement.requestFullscreen || !screen.orientation) {
-            fullscreenToggle.style.display = 'none';
-        }
         document.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement) {
+                // เข้าสู่ Fullscreen
+                mainContainer.style.display = 'none'; // ซ่อน container หลัก
+                
+                // ปรับสไตล์ resultContainer ให้เต็มจอและจัดกึ่งกลาง
+                resultContainer.style.display = 'flex';
+                resultContainer.style.flexDirection = 'column';
+                resultContainer.style.justifyContent = 'center';
+                resultContainer.style.alignItems = 'center';
+                resultContainer.style.width = '100vw';
+                resultContainer.style.height = '100vh';
+                resultContainer.style.boxShadow = 'none'; // ลบเงาเดิม
+                resultContainer.style.border = 'none'; // ลบขอบเดิม
+                resultContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.9)'; // พื้นหลังดำทึบ
+
+                // สุ่มเลือกภาพ
+                const randomIndex = Math.floor(Math.random() * imageFiles.length);
+                const randomImage = imageFiles[randomIndex];
+                resultContainer.style.backgroundImage = `url('${randomImage}')`;
+                resultContainer.style.backgroundSize = 'contain';
+                resultContainer.style.backgroundRepeat = 'no-repeat';
+                resultContainer.style.backgroundPosition = 'center';
+
+                // เปลี่ยนไอคอนปุ่ม
                 fullscreenToggle.querySelector('i').classList.remove('fa-expand-arrows-alt');
                 fullscreenToggle.querySelector('i').classList.add('fa-compress-arrows-alt');
+
+                // พยายามล็อก orientation เป็นแนวนอน
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch(e => console.log('Orientation lock failed:', e));
+                } else if (screen.lockOrientation) { // สำหรับเบราว์เซอร์รุ่นเก่า
+                    screen.lockOrientation('landscape');
+                }
+
             } else {
+                // ออกจาก Fullscreen
+                mainContainer.style.display = 'flex'; // แสดง container หลักอีกครั้ง
+                
+                // คืนค่าสไตล์ resultContainer ให้เป็นปกติ
+                resultContainer.style.display = 'block';
+                resultContainer.style.width = 'auto';
+                resultContainer.style.height = 'auto';
+                resultContainer.style.backgroundImage = 'none';
+                resultContainer.style.boxShadow = 'inset 0 1px 3px rgba(0, 0, 0, 0.3)';
+                resultContainer.style.border = '1px solid var(--primary-red)'; // คืนขอบเป็นสีแดงตามธีม
+                resultContainer.style.backgroundColor = 'var(--darker-bg)'; // คืนพื้นหลังตามธีม
+
+                // เปลี่ยนไอคอนปุ่มกลับ
                 fullscreenToggle.querySelector('i').classList.remove('fa-compress-arrows-alt');
                 fullscreenToggle.querySelector('i').classList.add('fa-expand-arrows-alt');
+
+                // พยายามปลดล็อก orientation
+                if (screen.orientation && screen.orientation.unlock) {
+                    screen.orientation.unlock();
+                } else if (screen.unlockOrientation) {
+                    screen.unlockOrientation();
+                }
             }
         });
 
+        // ซ่อนปุ่มถ้าเบราว์เซอร์ไม่รองรับ Fullscreen API
+        if (!document.documentElement.requestFullscreen) {
+            fullscreenToggle.style.display = 'none';
+        }
     </script>
 </body>
 </html>
