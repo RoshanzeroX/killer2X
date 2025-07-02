@@ -10,7 +10,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* เปลี่ยนเป็น flex-start เพื่อให้เนื้อหาอยู่ด้านบน */
             min-height: 100vh;
             margin: 0;
             background-color: #f4f7f6;
@@ -28,6 +28,7 @@
             max-width: 400px;
             text-align: center;
             box-sizing: border-box;
+            margin-top: 20px; /* เพิ่มระยะห่างด้านบนเล็กน้อย */
         }
 
         h1 {
@@ -37,7 +38,7 @@
         }
 
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px; /* ลดระยะห่างระหว่างกลุ่ม input */
             text-align: left;
         }
 
@@ -104,6 +105,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            margin-bottom: 20px; /* เพิ่มระยะห่างด้านล่างเล็กน้อย */
         }
 
         .links-container a {
@@ -125,6 +127,7 @@
         @media (max-width: 600px) {
             .container {
                 padding: 25px;
+                margin-top: 10px;
             }
 
             h1 {
@@ -135,6 +138,10 @@
                 font-size: 1em;
                 padding: 10px;
             }
+
+            body {
+                padding: 15px; /* ลด padding โดยรวม */
+            }
         }
     </style>
 </head>
@@ -143,18 +150,18 @@
         <h1>คำนวณค่าเฉลี่ย Order Picker</h1>
 
         <div class="input-group">
-            <label for="sku">จำนวน SKU:</label>
-            <input type="number" id="sku" placeholder="ป้อนจำนวน SKU" value="0">
+            <label for="sku">SKU:</label>
+            <input type="number" id="sku" placeholder="ป้อนจำนวน SKU">
         </div>
 
         <div class="input-group">
-            <label for="mu">จำนวน MU:</label>
-            <input type="number" id="mu" placeholder="ป้อนจำนวน MU" value="0">
+            <label for="mu">MU:</label>
+            <input type="number" id="mu" placeholder="ป้อนจำนวน MU">
         </div>
 
         <div class="input-group">
             <label for="days">จำนวนวันทำงาน:</label>
-            <input type="number" id="days" placeholder="ป้อนจำนวนวันทำงาน" value="1">
+            <input type="number" id="days" placeholder="ป้อนจำนวนวันทำงาน">
         </div>
 
         <button onclick="calculateAverage()">คำนวณค่าเฉลี่ย</button>
@@ -172,12 +179,13 @@
 
     <script>
         function calculateAverage() {
-            const sku = parseFloat(document.getElementById('sku').value);
-            const mu = parseFloat(document.getElementById('mu').value);
-            const days = parseFloat(document.getElementById('days').value);
+            const sku = parseFloat(document.getElementById('sku').value || 0); /* ใช้ 0 ถ้าไม่มีค่า */
+            const mu = parseFloat(document.getElementById('mu').value || 0);   /* ใช้ 0 ถ้าไม่มีค่า */
+            const days = parseFloat(document.getElementById('days').value || 0); /* ใช้ 0 ถ้าไม่มีค่า */
+
 
             if (isNaN(sku) || isNaN(mu) || isNaN(days) || days <= 0) {
-                document.getElementById('result').innerHTML = 'ค่าเฉลี่ย: <span>กรุณาป้อนข้อมูลที่ถูกต้อง</span>';
+                document.getElementById('result').innerHTML = 'ค่าเฉลี่ย: <span>กรุณาป้อนข้อมูลที่ถูกต้อง (จำนวนวันทำงานต้องมากกว่า 0)</span>';
                 return;
             }
 
