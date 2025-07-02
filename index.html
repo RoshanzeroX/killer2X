@@ -3,31 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>คำนวณค่าเฉลี่ย Order Picker</title>
-    <link rel="stylesheet" href="style.css"> </head>
+    <title>D.P.S. - Daily Performance System</title> 
+    <link rel="stylesheet" href="style.css"> 
+</head>
 <body>
     <div class="container">
-        <h1>คำนวณค่าเฉลี่ย Order Picker</h1>
+        <h1>D.P.S.<br><span>Daily Performance System</span></h1>
 
         <div class="input-group">
             <label for="sku">SKU:</label>
-            <input type="number" id="sku" placeholder="📦 ป้อนจำนวน SKU">
+            <input type="number" id="sku" placeholder="📦 ป้อนจำนวน SKU" oninput="calculateAverage()">
         </div>
 
         <div class="input-group">
             <label for="mu">MU:</label>
-            <input type="number" id="mu" placeholder="🔢 ป้อนจำนวน MU">
+            <input type="number" id="mu" placeholder="🔢 ป้อนจำนวน MU" oninput="calculateAverage()">
         </div>
 
         <div class="input-group">
             <label for="days">จำนวนวันทำงาน:</label>
-            <input type="number" id="days" placeholder="🗓️ ป้อนจำนวนวันทำงาน">
+            <input type="number" id="days" placeholder="🗓️ ป้อนจำนวนวันทำงาน" oninput="calculateAverage()">
         </div>
 
-        <button onclick="calculateAverage()">คำนวณค่าเฉลี่ย</button>
-
         <div class="result" id="result">
-            ค่าเฉลี่ย: <span>0.00</span>
+            คุณจัดได้ <span>0.00</span> บิลต่อวัน
         </div>
     </div>
 
@@ -44,14 +43,15 @@
             const days = parseFloat(document.getElementById('days').value || 0);
 
             if (isNaN(sku) || isNaN(mu) || isNaN(days) || days <= 0) {
-                document.getElementById('result').innerHTML = 'ค่าเฉลี่ย: <span>⚠️ กรุณาป้อนข้อมูลที่ถูกต้อง (จำนวนวันทำงานต้องมากกว่า 0)</span>';
+                document.getElementById('result').innerHTML = 'คุณจัดได้ <span>0.00</span> บิลต่อวัน'; 
                 return;
             }
 
-            // สูตร: ((sku / 12) + (mu / 34)) / (2 * days)
             const average = ((sku / 12) + (mu / 34)) / (2 * days);
-            document.getElementById('result').innerHTML = `ค่าเฉลี่ย: <span>${average.toFixed(2)}</span>`;
+            document.getElementById('result').innerHTML = `คุณจัดได้ <span>${average.toFixed(2)}</span> บิลต่อวัน`;
         }
+
+        document.addEventListener('DOMContentLoaded', calculateAverage);
     </script>
 </body>
 </html>
