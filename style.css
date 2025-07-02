@@ -13,7 +13,6 @@
     --input-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6); /* เงาด้านใน input */
 }
 
-
 body {
     font-family: 'Montserrat', sans-serif;
     display: flex;
@@ -24,7 +23,7 @@ body {
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
-    color: var(--text-light); /* ใช้ตัวแปรสี */
+    color: var(--text-light);
     position: relative;
     overflow-x: hidden;
 }
@@ -40,18 +39,18 @@ body::before {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    filter: blur(4px) brightness(0.6); /* เบลอและมืดขึ้นอีกนิด เพื่อให้โฮโลแกรมเด่น */
+    filter: blur(4px) brightness(0.6);
     -webkit-filter: blur(4px) brightness(0.6);
     z-index: -1;
 }
 
 .container {
-    background-color: rgba(10, 10, 10, 0.85); /* พื้นหลังดำเกือบโปร่งใส */
+    background-color: rgba(10, 10, 10, 0.85);
     padding: 30px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 77, 77, 0.4); /* ขอบสีแดงโปร่งแสง */
-    box-shadow: 0 0 30px rgba(255, 77, 77, 0.4), /* เงาเรืองแสงรอบกล่อง */
-                0 15px 50px rgba(0, 0, 0, 0.7); /* เงาตกกระทบปกติ */
+    border: 1px solid rgba(255, 77, 77, 0.4);
+    box-shadow: 0 0 30px rgba(255, 77, 77, 0.4),
+                0 15px 50px rgba(0, 0, 0, 0.7);
     width: 100%;
     max-width: 400px;
     text-align: center;
@@ -59,10 +58,9 @@ body::before {
     margin-top: 20px;
     position: relative;
     z-index: 1;
-    overflow: hidden; /* ป้องกันเงาล้นออกนอกกรอบ */
+    overflow: hidden;
 }
 
-/* เพิ่มเส้นเรืองแสงรอบ Container (Optional, แต่จะดูโฮโลแกรมขึ้น) */
 .container::before {
     content: '';
     position: absolute;
@@ -75,8 +73,8 @@ body::before {
     z-index: -1;
     filter: blur(10px);
     opacity: 0.7;
-    animation: rotateGlow 10s linear infinite; /* แอนิเมชันให้แสงหมุน */
-    border-radius: 12px; /* ต้องตรงกับ container */
+    animation: rotateGlow 10s linear infinite;
+    border-radius: 12px;
 }
 
 @keyframes rotateGlow {
@@ -85,21 +83,20 @@ body::before {
     100% { background-position: 0% 50%; }
 }
 
-
 h1 {
-    color: var(--primary-red); /* ใช้ตัวแปรสี */
+    color: var(--primary-red);
     margin-bottom: 25px;
     font-size: 2.2em;
     font-weight: 800;
     letter-spacing: 1px;
-    text-shadow: 0 0 10px rgba(255, 77, 77, 0.8); /* เงาเรืองแสงข้อความ */
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.8);
     line-height: 1.2;
 }
 
 h1 span {
     display: block;
-    font-size: 0.4em; /* ทำให้เล็กกว่า D.P.S. อย่างชัดเจน */
-    color: var(--text-fade); /* สีข้อความจางลง */
+    font-size: 0.4em;
+    color: var(--text-fade);
     font-weight: 400;
     margin-top: 5px;
     letter-spacing: normal;
@@ -119,19 +116,19 @@ label {
 input[type="number"] {
     width: calc(100% - 20px);
     padding: 12px 10px;
-    border: 1px solid var(--primary-red); /* ขอบสีแดง */
+    border: 1px solid var(--primary-red);
     border-radius: 8px;
     font-size: 1.1em;
     box-sizing: border-box;
-    background-color: var(--darker-bg); /* พื้นหลัง input ดำเข้มกว่า */
+    background-color: var(--darker-bg);
     color: var(--text-light);
     -moz-appearance: textfield;
     text-align: center;
-    box-shadow: var(--input-shadow); /* เงาด้านใน input */
+    box-shadow: var(--input-shadow);
 }
 
 input[type="number"]::placeholder {
-    color: var(--text-fade); /* placeholder จางลง */
+    color: var(--text-fade);
     text-align: center;
     font-size: 0.95em;
 }
@@ -144,27 +141,27 @@ input[type="number"]::-webkit-inner-spin-button {
 
 input[type="number"]:focus {
     border-color: var(--primary-red);
-    box-shadow: 0 0 12px rgba(255, 77, 77, 1), var(--input-shadow); /* เงาเรืองแสงชัดขึ้นเมื่อ focus */
+    box-shadow: 0 0 12px rgba(255, 77, 77, 1), var(--input-shadow);
     outline: none;
 }
 
 .result {
     margin-top: 25px;
     padding: 15px;
-    background-color: var(--darker-bg); /* พื้นหลังผลลัพธ์ดำเข้มกว่า */
+    background-color: var(--darker-bg);
     border-radius: 8px;
-    border: 1px solid var(--primary-red); /* ขอบสีแดง */
+    border: 1px solid var(--primary-red);
     font-size: 1.2em;
     color: var(--text-light);
     font-weight: bold;
-    box-shadow: var(--input-shadow); /* เงาด้านในผลลัพธ์ */
+    box-shadow: var(--input-shadow);
 }
 
 .result span {
-    color: var(--primary-red); /* ตัวเลขผลลัพธ์ใช้สีแดงหลัก */
+    color: var(--primary-red);
     font-size: 1.6em;
     font-weight: 800;
-    text-shadow: 0 0 8px rgba(255, 77, 77, 0.7); /* เงาเรืองแสงตัวเลข */
+    text-shadow: 0 0 8px rgba(255, 77, 77, 0.7);
 }
 
 .links-container {
@@ -181,24 +178,24 @@ input[type="number"]:focus {
 
 .links-container a {
     display: block;
-    background-color: rgba(var(--darker-bg), 0.8); /* พื้นหลังลิงก์ดำโปร่งแสง */
+    background-color: rgba(var(--darker-bg), 0.8);
     color: var(--text-light);
     padding: 12px 20px;
     border-radius: 8px;
     text-decoration: none;
     font-size: 1.1em;
     cursor: pointer;
-    border: 1px solid rgba(255, 77, 77, 0.3); /* ขอบสีแดงโปร่งแสง */
-    box-shadow: 0 0 10px rgba(255, 77, 77, 0.2); /* เงาเรืองแสงจางๆ */
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม box-shadow ใน transition */
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     text-align: center;
 }
 
 .links-container a:hover {
-    background-color: rgba(var(--primary-red), 0.8); /* พื้นหลังลิงก์เปลี่ยนเป็นแดงเมื่อ hover */
-    color: white; /* เปลี่ยนสีข้อความเป็นขาวเมื่อ hover */
+    background-color: rgba(255, 77, 77, 0.8); /* ใช้ค่า RGB โดยตรง */
+    color: white;
     transform: translateY(-2px);
-    box-shadow: 0 0 20px rgba(255, 77, 77, 0.8); /* เรืองแสงชัดขึ้นเมื่อ hover */
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.8);
     border-color: var(--primary-red);
 }
 
@@ -207,6 +204,41 @@ input[type="number"]:focus {
     box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
 }
 
+/* --- สไตล์สำหรับปุ่ม Fullscreen --- */
+.fullscreen-toggle {
+    position: fixed; /* ลอยอยู่บนหน้าจอ */
+    top: 20px; /* ห่างจากขอบบน 20px */
+    right: 20px; /* ห่างจากขอบขวา 20px */
+    background-color: rgba(10, 10, 10, 0.7); /* พื้นหลังดำโปร่งแสง */
+    color: var(--primary-red); /* ไอคอนสีแดง */
+    border: 1px solid rgba(255, 77, 77, 0.5); /* ขอบสีแดงโปร่งแสง */
+    border-radius: 50%; /* ทำให้เป็นวงกลม */
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(255, 77, 77, 0.5); /* เงาเรืองแสง */
+    z-index: 1000; /* ให้อยู่บนสุด */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.fullscreen-toggle:hover {
+    background-color: rgba(255, 77, 77, 0.9); /* เปลี่ยนเป็นแดงเมื่อ hover */
+    color: white; /* เปลี่ยนไอคอนเป็นขาวเมื่อ hover */
+    box-shadow: 0 0 20px rgba(255, 77, 77, 1);
+    transform: scale(1.05); /* ขยายเล็กน้อย */
+}
+
+.fullscreen-toggle:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.7);
+}
+
+
+/* Media Query สำหรับมือถือ (ปรับปุ่ม Fullscreen) */
 @media (max-width: 600px) {
     .container {
         padding: 25px;
@@ -222,7 +254,7 @@ input[type="number"]:focus {
         margin-top: 3px;
     }
 
-    input[type="number"], .links-container a { 
+    input[type="number"], .links-container a {
         font-size: 1em;
         padding: 10px;
     }
@@ -230,4 +262,19 @@ input[type="number"]:focus {
     body {
         padding: 15px;
     }
+
+    .fullscreen-toggle {
+        width: 40px; /* ลดขนาดปุ่มบนมือถือ */
+        height: 40px;
+        font-size: 1em;
+        top: 15px; /* ปรับตำแหน่งบนมือถือ */
+        right: 15px;
+    }
+}
+
+/* แก้ไขปัญหา background-color ในลิงก์เมื่อใช้ rgba กับตัวแปร */
+/* เนื่องจาก var() ไม่สามารถใช้กับ rgba() ได้โดยตรงในบางกรณี */
+/* จึงต้องกำหนดค่า RGB แยกออกมา หรือใช้ hsl/hsla แทน */
+.links-container a:hover {
+    background-color: rgba(255, 77, 77, 0.8); /* ใช้ค่า RGB โดยตรง */
 }
