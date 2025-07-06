@@ -37,10 +37,10 @@
                 <li>เงื่อนไข "short pick ไม่เกิน 10% ต่อวัน" อาจมีผลต่อการได้รับ Incentive แต่ไม่ได้นำมาคำนวณในนี้</li>
                 <li>โบนัส 300 บาท สำหรับการทำงานครบ 24 วันต่อเดือน ไม่ได้รวมอยู่ในการคำนวณรายวัน</li>
             </ul>
-
+            
             <div class="detailed-results-in-notes">
                 <h3>รายละเอียด Tier และอัตรา Incentive:</h3>
-
+                
                 <h4>สำหรับ SKU (เงินบาทต่อ SKU):</h4>
                 <ul class="tier-list">
                     <li><strong>Silver:</strong> 132 - 179 SKU (0.50 บาท/SKU)</li>
@@ -70,7 +70,7 @@
                 <p><strong>เงิน Incentive จาก MU:</strong> <span id="muIncentive">0.00</span> บาท</p>
             </div>
         </div>
-
+        
         <div class="links-container">
             <a href="index.html">กลับไปหน้าหลัก</a>
         </div>
@@ -81,6 +81,10 @@
         function calculateIncentive() {
             const skuPerDay = parseFloat(document.getElementById('skuPerDay').value) || 0;
             const muPerDay = parseFloat(document.getElementById('muPerDay').value) || 0;
+
+            console.log('--- calculateIncentive Started ---');
+            console.log('Input SKU:', skuPerDay);
+            console.log('Input MU:', muPerDay);
 
             let skuTier = "N/A";
             let skuRatePerUnit = 0.00;
@@ -141,6 +145,12 @@
             const muIncentiveAmount = muPerDay * muRatePerUnit;
             const totalIncentiveCalculated = skuIncentiveAmount + muIncentiveAmount;
 
+            // --- DEBUG MU VALUES ---
+            console.log('MU Tier:', muTier);
+            console.log('MU Rate Per Unit:', muRatePerUnit);
+            console.log('MU Incentive Amount:', muIncentiveAmount);
+            // --- END DEBUG ---
+
             let totalIncentiveToDisplay = totalIncentiveCalculated;
             if (totalIncentiveCalculated > MAX_DAILY_INCENTIVE) {
                 totalIncentiveToDisplay = MAX_DAILY_INCENTIVE;
@@ -165,7 +175,7 @@
 
             progressBar.style.width = percentageAchieved.toFixed(0) + '%';
             progressPercentageSpan.textContent = percentageAchieved.toFixed(0) + '%';
-
+            
             if (percentageAchieved > 50) {
                 progressPercentageSpan.style.color = 'white';
             } else {
@@ -185,6 +195,7 @@
             } else if (percentageAchieved === 0) {
                 progressBar.style.width = '0%';
             }
+            console.log('--- calculateIncentive Finished ---');
         }
 
         document.addEventListener('DOMContentLoaded', calculateIncentive);
