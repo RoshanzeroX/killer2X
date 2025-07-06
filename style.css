@@ -11,6 +11,7 @@
     --border-dark: #333;
     --glow-shadow: 0 0 15px rgba(255, 77, 77, 0.7);
     --input-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
+    --highlight-green: #00ff99; /* สีเขียวสำหรับตัวเลขเงิน */
 }
 
 body {
@@ -141,9 +142,10 @@ input[type="number"] {
 }
 
 input[type="number"]::placeholder {
-    color: var(--text-fade);
+    color: var(--text-fade); /* สีของ placeholder */
     text-align: center;
     font-size: 0.95em;
+    opacity: 0.7; /* ทำให้จางลงเล็กน้อย */
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -222,7 +224,7 @@ input[type="number"]:focus {
 
 .links-container a:active {
     transform: translateY(0);
-    box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.7);
 }
 
 /* ปุ่ม Fullscreen */
@@ -290,4 +292,325 @@ input[type="number"]:focus {
         top: 15px;
         right: 15px;
     }
+
+    /* Media Queries สำหรับหน้า Incentive Calculator (ปรับให้เข้ากับ Responsive เดิม) */
+    .container { /* ปรับขนาดบนมือถือ */
+        padding: 25px;
+        margin-top: 10px;
+    }
+    .container h1 {
+        font-size: 1.8em;
+    }
+    .container h2 {
+        font-size: 1.3em;
+    }
+    .container button {
+        font-size: 1em;
+    }
+    /* .container .total-amount ถูกเปลี่ยนเป็น .total-amount-frame แล้ว */
+    .progress-bar {
+        height: 25px; /* ลดความสูงแถบ */
+        line-height: 25px;
+    }
+    .progress-bar span {
+        font-size: 0.9em;
+    }
+
+    /* Media Queries สำหรับส่วนใหม่ */
+    .total-amount-frame {
+        font-size: 1em !important; /* ปรับขนาดบนมือถือ */
+        padding: 8px 12px; /* ลด padding ลง */
+    }
+    .total-amount-frame strong {
+        margin-right: 5px; /* ลดระยะห่าง */
+    }
+    .total-amount-frame span {
+        font-size: 1.4em; /* ลดขนาดตัวเลขบนมือถือ */
+    }
+    .notes h3 {
+        font-size: 1em; /* ลดขนาด heading ย่อยใน notes */
+    }
+    .notes h4 { /* สำหรับ heading ย่อยของ Tier list */
+        font-size: 0.9em;
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+    .detailed-results-in-notes p, .detailed-results-in-notes ul li {
+        font-size: 0.85em; /* ลดขนาดข้อความรายละเอียดใน notes */
+        line-height: 1.3;
+    }
+}
+
+
+/* ========================================================= */
+/* CSS เพิ่มเติมสำหรับหน้า Incentive Calculator (incentive_calculator.html) */
+/* ========================================================= */
+
+/* สไตล์สำหรับ Container หลักของ Incentive Calculator */
+.container { /* นี่คือ .container ใน incentive_calculator.html */
+    background-color: rgba(10, 10, 10, 0.85); /* พื้นหลังดำเกือบโปร่งใส เหมือน main-container */
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 77, 77, 0.4); /* ขอบสีแดงโปร่งแสง เหมือน main-container */
+    box-shadow: 0 0 30px rgba(255, 77, 77, 0.4), /* เงาเรืองแสงรอบกล่อง เหมือน main-container */
+                0 15px 50px rgba(0, 0, 0, 0.7); /* เงาตกกระทบปกติ เหมือน main-container */
+    margin-top: 20px; /* เว้นระยะจากด้านบน */
+    width: 100%;
+    max-width: 400px; /* จำกัดความกว้างเหมือน main-container */
+    box-sizing: border-box;
+    position: relative; /* สำหรับ pseudo-elements หรือ absolute children */
+    z-index: 1; /* ให้มันอยู่เหนือพื้นหลัง */
+    overflow: hidden; /* เหมือน main-container */
+}
+
+/* ถ้าต้องการให้มีเส้นเรืองแสงรอบ container ของ Incentive Calculator ด้วย */
+.container::before { /* เพิ่ม ::before สำหรับเส้นเรืองแสง */
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--primary-red), transparent, var(--primary-red));
+    background-size: 200% 200%;
+    z-index: -1;
+    filter: blur(10px);
+    opacity: 0.7;
+    animation: rotateGlow 15s linear infinite; /* ใช้ keyframes เดียวกัน */
+    border-radius: 12px;
+}
+
+
+/* สไตล์สำหรับปุ่มใน Incentive Calculator */
+.container button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-red); /* ใช้สีแดงหลักของคุณ */
+    color: white;
+    border: none;
+    border-radius: 8px; /* ปรับให้เข้ากับ border-radius ของ input */
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    margin-top: 20px;
+    box-shadow: var(--glow-shadow); /* เพิ่มเงาเรืองแสงให้ปุ่ม */
+    font-weight: 700;
+}
+
+.container button:hover {
+    background-color: #ff3333; /* แดงเข้มขึ้นเล็กน้อย */
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.9);
+}
+
+.container button:active {
+    transform: translateY(0);
+    box-shadow: var(--glow-shadow);
+}
+
+/* สไตล์สำหรับหัวข้อ h1, h2 ใน Incentive Calculator */
+.container h1 { /* สำหรับ "คำนวณ Incentive OCS Picker" ใน incentive_calculator.html */
+    color: var(--primary-red);
+    margin-bottom: 25px;
+    font-size: 2.2em; /* ปรับให้เล็กลงกว่า h1 หลักใน index.html */
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(255, 77, 77, 0.8);
+    line-height: 1.2;
+    text-align: center;
+    width: 100%;
+}
+/* h2 สำหรับหัวข้อหลักใน container เช่น "หมายเหตุและรายละเอียดผลลัพธ์:" */
+.container h2 { 
+    color: var(--text-light); /* ใช้สีเดียวกับ text-light */
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    border-bottom: 1px dashed rgba(255, 77, 77, 0.3); /* เพิ่มเส้นแบ่ง */
+    padding-bottom: 10px;
+    text-align: left;
+}
+/* h3 สำหรับหัวข้อรองใน Notes (เช่น "รายละเอียด Tier และอัตรา Incentive:") */
+.notes h3 {
+    color: var(--primary-red); /* สีแดงสำหรับหัวข้อรอง */
+    font-size: 1.1em;
+    margin-top: 20px; /* เว้นระยะจากส่วนบนของ notes */
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted rgba(255, 77, 77, 0.2); /* เส้นประอ่อนๆ */
+}
+/* h4 สำหรับหัวข้อรองใน detailed-results-in-notes (เช่น "สำหรับ SKU", "สำหรับ MU", "ผลลัพธ์การคำนวณปัจจุบัน") */
+.notes h4 {
+    color: var(--text-light); /* สีเดียวกับ text-light */
+    font-size: 1em;
+    margin-top: 18px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+
+/* สไตล์สำหรับ Progress Bar */
+.progress-container {
+    width: 100%;
+    background-color: var(--darker-bg); /* พื้นหลังของแถบ */
+    border-radius: 5px;
+    margin-top: 25px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--border-dark);
+    box-shadow: var(--input-shadow);
+}
+
+.progress-bar {
+    width: 0%;
+    height: 30px;
+    background-color: var(--highlight-green); /* สีเขียวสดใสสำหรับ Progress */
+    border-radius: 5px;
+    text-align: center;
+    line-height: 30px;
+    color: var(--darker-bg); /* สีข้อความบนแถบ */
+    font-weight: bold;
+    transition: width 0.5s ease-in-out;
+    position: relative;
+    z-index: 1; /* เพื่อให้เนื้อหาอยู่บน */
+}
+
+.progress-bar span { /* ใช้ class ของ span ภายใน progress-bar */
+    position: absolute;
+    width: 100%;
+    left: 0;
+    color: var(--darker-bg); /* สีข้อความเปอร์เซ็นต์ */
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.3); /* เงาสำหรับข้อความ */
+    z-index: 2; /* ให้ข้อความอยู่เหนือแถบ */
+}
+
+.max-incentive-note {
+    font-size: 0.9em;
+    color: var(--text-fade);
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* สไตล์สำหรับ Notes */
+.notes {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-dark);
+    font-size: 0.9em; /* ขนาดข้อความโดยรวมใน notes */
+    color: var(--text-fade); /* สีข้อความโดยรวมใน notes */
+    text-align: left;
+}
+
+.notes h2 { /* สำหรับหัวข้อ "หมายเหตุและรายละเอียดผลลัพธ์:" */
+    font-size: 1.3em; /* ขนาดใหญ่ขึ้นกว่าเดิมเล็กน้อย */
+    color: var(--text-light); /* สีเดียวกับ text-light */
+    border-bottom: 1px dashed rgba(255, 77, 77, 0.3); /* เส้นแบ่ง */
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    text-align: left; /* ชิดซ้าย */
+}
+
+.notes ul {
+    list-style: disc inside;
+    padding-left: 10px;
+    margin-bottom: 15px; /* เว้นระยะห่างก่อนส่วนรายละเอียดผลลัพธ์ */
+}
+
+.notes li {
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+/* สำหรับจุดย่อยภายใน Notes เช่น *หมายเหตุ: 120 - 131 SKU... */
+.notes .note-sub-point {
+    font-size: 0.85em; /* เล็กลงเล็กน้อย */
+    list-style: none; /* ไม่มีจุดนำ */
+    margin-left: -10px; /* ชิดซ้ายขึ้นมา */
+    margin-top: 5px;
+    font-style: italic; /* ตัวเอียง */
+    color: rgba(160, 160, 160, 0.7); /* สีจางลง */
+}
+
+
+/* สไตล์สำหรับ "ยอดเงิน Incentive รวมต่อวัน:" ที่มีกรอบครอบ (กลับมาตำแหน่งเดิม) */
+.total-amount-frame {
+    margin-top: 20px; /* เว้นระยะห่างจากส่วนบน */
+    margin-bottom: 25px; /* เว้นระยะห่างจากส่วนล่าง */
+    padding: 12px 20px; /* ปรับ padding */
+    background-color: var(--darker-bg); /* พื้นหลังเข้มขึ้น */
+    border: 2px solid var(--primary-red); /* กรอบสีแดง */
+    border-radius: 8px;
+    font-size: 1.2em; /* ใหญ่กว่าข้อความทั่วไป */
+    font-weight: bold;
+    color: var(--text-light);
+    text-align: center;
+    display: flex; /* ใช้ flexbox เพื่อจัดให้อยู่บรรทัดเดียวกัน */
+    justify-content: center; /* จัดกึ่งกลางแนวนอน */
+    align-items: center; /* จัดกึ่งกลางแนวตั้ง */
+    flex-wrap: nowrap; /* สำคัญ: ป้องกันการขึ้นบรรทัดใหม่ */
+    box-shadow: 0 0 15px rgba(255, 77, 77, 0.4);
+}
+
+.total-amount-frame strong {
+    color: var(--text-light); /* ทำให้ข้อความ "ยอดเงิน..." เป็นสีขาว */
+    margin-right: 10px; /* เว้นระยะห่างจากตัวเลข */
+    white-space: nowrap; /* ป้องกันการขึ้นบรรทัดใหม่สำหรับข้อความ */
+}
+
+.total-amount-frame span {
+    color: var(--highlight-green); /* ตัวเลขเป็นสีเขียว */
+    font-size: 1.8em; /* ทำให้ตัวเลขใหญ่ขึ้นมาก */
+    text-shadow: 0 0 10px rgba(0, 255, 153, 0.8);
+    white-space: nowrap; /* ป้องกันการขึ้นบรรทัดใหม่สำหรับตัวเลข */
+}
+
+/* สไตล์สำหรับส่วนรายละเอียดผลลัพธ์ที่อยู่ใน Notes */
+.detailed-results-in-notes {
+    margin-top: 15px; /* เว้นระยะจาก ul ด้านบน */
+    padding-top: 15px; /* เพิ่ม padding ด้านบน */
+    border-top: 1px dashed rgba(255, 77, 77, 0.2); /* เส้นแบ่งส่วน */
+}
+
+/* สไตล์สำหรับรายการ Tier ใน .detailed-results-in-notes */
+.detailed-results-in-notes .tier-list {
+    list-style: none; /* ไม่มีจุดนำ */
+    padding-left: 0;
+    margin-bottom: 15px;
+}
+
+.detailed-results-in-notes .tier-list li {
+    margin-bottom: 4px;
+    font-size: 0.9em; /* ขนาดข้อความให้เหมือน notes */
+    color: var(--text-fade); /* สีข้อความให้เหมือน notes */
+    line-height: 1.3;
+}
+.detailed-results-in-notes .tier-list li strong {
+    color: var(--primary-red); /* ชื่อ Tier เป็นสีแดง */
+    display: inline-block; /* เพื่อจัด spacing ได้ */
+    min-width: 70px; /* ให้ชื่อ Tier มีความกว้างเท่ากัน */
+}
+
+
+.detailed-results-in-notes p { /* สำหรับ "Tier ของ SKU:", "เงิน Incentive จาก SKU:" */
+    font-size: 0.9em; /* ขนาดข้อความให้เหมือน notes */
+    margin-bottom: 5px;
+    color: var(--text-fade); /* สีข้อความให้เหมือน notes */
+    line-height: 1.4;
+}
+
+.detailed-results-in-notes strong { /* สำหรับ "Tier ของ SKU:" */
+    color: var(--text-light); /* ทำให้หัวข้อตัวหนาเด่นขึ้นเล็กน้อย */
+}
+
+.detailed-results-in-notes span { /* สำหรับค่าที่คำนวณได้ เช่น "Diamond", "0.83" */
+    font-weight: bold;
+    color: var(--highlight-green); /* ตัวเลขเป็นสีเขียว */
+    font-size: 0.95em; /* ขนาดตัวเลขใกล้เคียงข้อความ */
+    text-shadow: none; /* ลบเงาออกเพื่อให้เข้ากับ notes */
+}
+
+/* สไตล์สำหรับเส้นแบ่งใน Notes */
+.notes-separator {
+    border: none;
+    border-top: 1px dashed rgba(255, 77, 77, 0.2);
+    margin: 20px 0;
 }
