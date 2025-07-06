@@ -41,18 +41,18 @@
             <div class="detailed-results-in-notes">
                 <h3>รายละเอียด Tier และอัตรา Incentive:</h3>
                 
-                <h4>สำหรับ SKU (เงินบาทต่อ SKU):</h4>
-                <ul class="tier-list">
-                    <li><strong>Silver:</strong> 132 - 179 SKU (0.50 บาท/SKU)</li>
-                    <li><strong>Gold:</strong> 180 - 215 SKU (0.58 บาท/SKU)</li>
-                    <li><strong>Platinum:</strong> 216 - 251 SKU (0.67 บาท/SKU)</li>
-                    <li><strong>Diamond:</strong> 252 SKU ขึ้นไป (0.83 บาท/SKU)</li>
-                    <li><strong>ต่ำกว่าเกณฑ์ขั้นต่ำ:</strong> ต่ำกว่า 132 SKU (ไม่ได้ Payout)</li>
+                <h4>สำหรับ SKU (เงินบาทต่อ SKU):</h4> <ul class="tier-list">
+                    <li><strong>Silver:</strong> 132 - 179 SKU (0.50 บาท/SKU)</li> <li><strong>Gold:</strong> 180 - 215 SKU (0.58 บาท/SKU)</li> <li><strong>Platinum:</strong> 216 - 251 SKU (0.67 บาท/SKU)</li> <li><strong>Diamond:</strong> 252 SKU ขึ้นไป (0.83 บาท/SKU)</li> <li><strong>ต่ำกว่าเกณฑ์ขั้นต่ำ:</strong> ต่ำกว่า 132 SKU (ไม่ได้ Payout)</li>
                     <li class="note-sub-point">*หมายเหตุ: 120 - 131 SKU คือ Tier `<=10` (ไม่ได้ Payout)</li>
                 </ul>
 
-                <h4>สำหรับ MU (เงินบาทต่อ Tier):</h4> <ul class="tier-list">
-                    <li><strong>Silver:</strong> 374 - 509 MU (0.18 บาท)</li> <li><strong>Gold:</strong> 510 - 611 MU (0.21 บาท)</li> <li><strong>Platinum:</strong> 612 - 713 MU (0.24 บาท)</li> <li><strong>Diamond:</strong> 714 MU ขึ้นไป (0.29 บาท)</li> <li><strong>ต่ำกว่าเกณฑ์ขั้นต่ำ:</strong> ต่ำกว่า 374 MU (ไม่ได้ Payout)</li>
+                <h4>สำหรับ MU (เงินบาทต่อ Tier):</h4>
+                <ul class="tier-list">
+                    <li><strong>Silver:</strong> 374 - 509 MU (0.18 บาท)</li>
+                    <li><strong>Gold:</strong> 510 - 611 MU (0.21 บาท)</li>
+                    <li><strong>Platinum:</strong> 612 - 713 MU (0.24 บาท)</li>
+                    <li><strong>Diamond:</strong> 714 MU ขึ้นไป (0.29 บาท)</li>
+                    <li><strong>ต่ำกว่าเกณฑ์ขั้นต่ำ:</strong> ต่ำกว่า 374 MU (ไม่ได้ Payout)</li>
                     <li class="note-sub-point">*หมายเหตุ: 340 - 373 MU คือ Tier `<=10` (ไม่ได้ Payout)</li>
                 </ul>
 
@@ -78,28 +78,28 @@
             const muPerDay = parseFloat(document.getElementById('muPerDay').value) || 0;
 
             let skuTier = "N/A";
-            let skuRatePerUnit = 0.00;
+            let skuRatePerUnit = 0.00; // เปลี่ยนกลับเป็น Rate Per Unit สำหรับ SKU
             let muTier = "N/A";
-            let muAmountFixed = 0.00; // เปลี่ยนจาก muRatePerUnit เป็น muAmountFixed สำหรับ MU
+            let muAmountFixed = 0.00; 
 
             const MAX_DAILY_INCENTIVE = 216.00;
 
-            // Logic คำนวณ Incentive สำหรับ SKU
+            // Logic คำนวณ Incentive สำหรับ SKU (กลับมาใช้แบบ คูณด้วยอัตราต่อหน่วย)
             if (skuPerDay < 0) {
                 skuRatePerUnit = 0.00;
                 skuTier = "ป้อนค่าไม่ถูกต้อง";
-            } else if (skuPerDay >= 252) {
+            } else if (skuPerDay >= 252) { // Diamond
                 skuTier = "Diamond";
-                skuRatePerUnit = 0.83;
-            } else if (skuPerDay >= 216) {
+                skuRatePerUnit = 0.83; 
+            } else if (skuPerDay >= 216) { // Platinum
                 skuTier = "Platinum";
-                skuRatePerUnit = 0.67;
-            } else if (skuPerDay >= 180) {
+                skuRatePerUnit = 0.67; 
+            } else if (skuPerDay >= 180) { // Gold
                 skuTier = "Gold";
-                skuRatePerUnit = 0.58;
-            } else if (skuPerDay >= 132) {
+                skuRatePerUnit = 0.58; 
+            } else if (skuPerDay >= 132) { // Silver
                 skuTier = "Silver";
-                skuRatePerUnit = 0.50;
+                skuRatePerUnit = 0.50; 
             } else if (skuPerDay >= 120) {
                 skuTier = "<=10 (ไม่ได้ Payout)";
                 skuRatePerUnit = 0.00;
@@ -108,22 +108,22 @@
                 skuRatePerUnit = 0.00;
             }
 
-            // Logic คำนวณ Incentive สำหรับ MU (ปรับปรุงใหม่ตามความเข้าใจล่าสุด)
+            // Logic คำนวณ Incentive สำหรับ MU (เหมือนเดิมที่ได้เงินคงที่ตาม Tier)
             if (muPerDay < 0) {
                 muAmountFixed = 0.00;
                 muTier = "ป้อนค่าไม่ถูกต้อง";
             } else if (muPerDay >= 714) {
                 muTier = "Diamond";
-                muAmountFixed = 0.29; // ได้เงิน 0.29 บาททันที
+                muAmountFixed = 0.29; 
             } else if (muPerDay >= 612) {
                 muTier = "Platinum";
-                muAmountFixed = 0.24; // ได้เงิน 0.24 บาททันที
+                muAmountFixed = 0.24; 
             } else if (muPerDay >= 510) {
                 muTier = "Gold";
-                muAmountFixed = 0.21; // ได้เงิน 0.21 บาททันที
+                muAmountFixed = 0.21; 
             } else if (muPerDay >= 374) {
                 muTier = "Silver";
-                muAmountFixed = 0.18; // ได้เงิน 0.18 บาททันที
+                muAmountFixed = 0.18; 
             } else if (muPerDay >= 340) {
                 muTier = "<=10 (ไม่ได้ Payout)";
                 muAmountFixed = 0.00;
@@ -132,8 +132,8 @@
                 muAmountFixed = 0.00;
             }
 
-            const skuIncentiveAmount = skuPerDay * skuRatePerUnit;
-            const muIncentiveAmount = muAmountFixed; // ใช้ค่า muAmountFixed เป็นเงิน Incentive เลย
+            const skuIncentiveAmount = skuPerDay * skuRatePerUnit; // กลับมาคูณ SKU ด้วย Rate Per Unit
+            const muIncentiveAmount = muAmountFixed; 
             const totalIncentiveCalculated = skuIncentiveAmount + muIncentiveAmount;
 
             let totalIncentiveToDisplay = totalIncentiveCalculated;
@@ -154,7 +154,7 @@
             document.getElementById('skuTier').textContent = skuTier;
             document.getElementById('skuIncentive').textContent = skuIncentiveAmount.toFixed(2);
             document.getElementById('muTier').textContent = muTier;
-            document.getElementById('muIncentive').textContent = muIncentiveAmount.toFixed(2); // แสดงค่า muAmountFixed
+            document.getElementById('muIncentive').textContent = muIncentiveAmount.toFixed(2); 
             document.getElementById('totalIncentive').textContent = totalIncentiveToDisplay.toFixed(2);
 
             const progressBar = document.getElementById('incentiveProgressBar');
