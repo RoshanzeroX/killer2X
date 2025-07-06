@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำนวณ Incentive OCS Picker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>คำนวณ Incentive OCS Picker</h1>
+
+        <div class="input-group">
+            <label for="skuPerDay">จำนวน SKU ที่ทำได้ต่อวัน:</label>
+            <input type="number" id="skuPerDay" min="0" placeholder="กรอกจำนวน SKU ที่ทำได้" oninput="calculateIncentive()">
+        </div>
+
+        <div class="input-group">
+            <label for="muPerDay">จำนวน MU ที่ทำได้ต่อวัน:</label>
+            <input type="number" id="muPerDay" min="0" placeholder="กรอกจำนวน MU ที่ทำได้" oninput="calculateIncentive()">
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="incentiveProgressBar">
+                <span id="progressPercentage">0%</span>
+            </div>
+        </div>
+        <p class="max-incentive-note">เป้าหมายสูงสุด: 216 บาท/วัน</p>
+
+        <p class="total-amount-frame">
+            <strong>Incentive รวมต่อวัน:</strong> <span id="totalIncentive">0.00</span> บาท
+        </p>
+
+        <div class="notes">
+            <h2>หมายเหตุและรายละเอียดผลลัพธ์:</h2>
+            <ul>
+                <li>เงื่อนไข "short pick ไม่เกิน 10% ต่อวัน" อาจมีผลต่อการได้รับ Incentive แต่ไม่ได้นำมาคำนวณในนี้</li>
+                <li>โบนัส 300 บาท สำหรับการทำงานครบ 24 วันต่อเดือน ไม่ได้รวมอยู่ในการคำนวณรายวัน</li>
+            </ul>
+
+            <div class="detailed-results-in-notes">
+                <h3>รายละเอียด Tier และอัตรา Incentive:</h3>
+
+                <h4>สำหรับ SKU (เงินบาทต่อ SKU):</h4>
+                <ul class="tier-list">
+                    <li><strong>Silver:</strong> 132 - 179 SKU (0.50 บาท/SKU)</li>
+                    <li><strong>Gold:</strong> 180 - 215 SKU (0.58 บาท/SKU)</li>
+                    <li><strong>Platinum:</strong> 216 - 251 SKU (0.67 บาท/SKU)</li>
+                    <li><strong>Diamond:</strong> 252 SKU ขึ้นไป (0.83 บาท/SKU)</li>
+                    <li><strong>ต่ำกว่าเกณฑ์ขั้นต่ำ:</strong> ต่ำกว่า 132 SKU (ไม่ได้ Payout)</li>
+                    <li class="note-sub-point">*หมายเหตุ: 120 - 131 SKU คือ Tier `<=10` (ไม่ได้ Payout)</li>
+                </ul>
+
+                <h4>สำหรับ MU (เงินบาทต่อ MU):</h4>
+                <ul class="tier-list">
+                    <li><strong>Silver:</strong> 374 - 509 MU (0.18 บาท/MU)</li>
+                    <li><strong>Gold:</strong> 510 - 611 MU (0.21 บาท/MU)</li>
+                    <li><strong>Platinum:</strong> 612 - 713 MU (0.24 บาท/MU)</li>
+                    <li><strong>Diamond:</strong> 714 MU ขึ้นไป (0.29 บาท/MU)</li>
+                    <li><strong>ต่ำกว่าเกณฑ์ขั้นต่ำ:</strong> ต่ำกว่า 374 MU (ไม่ได้ Payout)</li>
+                    <li class="note-sub-point">*หมายเหตุ: 340 - 373 MU คือ Tier `<=10` (ไม่ได้ Payout)</li>
+                </ul>
+
+                <hr class="notes-separator">
+
+                <h4>ผลลัพธ์การคำนวณปัจจุบัน:</h4>
+                <p><strong>Tier ของ SKU:</strong> <span id="skuTier">N/A</span></p>
+                <p><strong>เงิน Incentive จาก SKU:</strong> <span id="skuIncentive">0.00</span> บาท</p>
+                <p><strong>Tier ของ MU:</strong> <span id="muTier">N/A</span></p>
+                <p><strong>เงิน Incentive จาก MU:</strong> <span id="muIncentive">0.00</span> บาท</p>
+            </div>
+        </div>
+
+        <div class="links-container">
+            <a href="index.html">กลับไปหน้าหลัก</a>
+        </div>
+
+    </div>
+
+    <script>
+        function calculateIncentive() {
+            const skuPerDay = parseFloat(document.getElementById('skuPerDay').value) || 0;
+            const muPerDay = parseFloat(document.getElementById('muPerDay').value) || 0;
+
+            let skuTier = "N/A";
+            let skuRatePerUnit = 0.00;
+            let muTier = "N/A";
+            let muRatePerUnit = 0.00;
+
+            const MAX_DAILY_INCENTIVE = 216.00;
+
+            // Logic คำนวณ Incentive สำหรับ SKU
+            if (skuPerDay < 0) {
+                skuRatePerUnit = 0.00;
+                skuTier = "ป้อนค่าไม่ถูกต้อง";
+            } else if (skuPerDay >= 252) {
+                skuTier = "Diamond";
+                skuRatePerUnit = 0.83;
+            } else if (skuPerDay >= 216) {
+                skuTier = "Platinum";
+                skuRatePerUnit = 0.67;
+            } else if (skuPerDay >= 180) {
+                skuTier = "Gold";
+                skuRatePerUnit = 0.58;
+            } else if (skuPerDay >= 132) {
+                skuTier = "Silver";
+                skuRatePerUnit = 0.50;
+            } else if (skuPerDay >= 120) {
+                skuTier = "<=10 (ไม่ได้ Payout)";
+                skuRatePerUnit = 0.00;
+            } else {
+                skuTier = "ต่ำกว่าเกณฑ์ขั้นต่ำ (ไม่ได้ Payout)";
+                skuRatePerUnit = 0.00;
+            }
+
+            // Logic คำนวณ Incentive สำหรับ MU
+            if (muPerDay < 0) {
+                muRatePerUnit = 0.00;
+                muTier = "ป้อนค่าไม่ถูกต้อง";
+            } else if (muPerDay >= 714) {
+                muTier = "Diamond";
+                muRatePerUnit = 0.29;
+            } else if (muPerDay >= 612) {
+                muTier = "Platinum";
+                muRatePerUnit = 0.24;
+            } else if (muPerDay >= 510) {
+                muTier = "Gold";
+                muRatePerUnit = 0.21;
+            } else if (muPerDay >= 374) {
+                muTier = "Silver";
+                muRatePerUnit = 0.18;
+            } else if (muPerDay >= 340) {
+                muTier = "<=10 (ไม่ได้ Payout)";
+                muRatePerUnit = 0.00;
+            } else {
+                muTier = "ต่ำกว่าเกณฑ์ขั้นต่ำ (ไม่ได้ Payout)";
+                muRatePerUnit = 0.00;
+            }
+
+            const skuIncentiveAmount = skuPerDay * skuRatePerUnit;
+            const muIncentiveAmount = muPerDay * muRatePerUnit;
+            const totalIncentiveCalculated = skuIncentiveAmount + muIncentiveAmount;
+
+            let totalIncentiveToDisplay = totalIncentiveCalculated;
+            if (totalIncentiveCalculated > MAX_DAILY_INCENTIVE) {
+                totalIncentiveToDisplay = MAX_DAILY_INCENTIVE;
+            }
+
+            let percentageAchieved = (totalIncentiveCalculated / MAX_DAILY_INCENTIVE) * 100;
+            if (percentageAchieved > 100) {
+                percentageAchieved = 100;
+            }
+            if (percentageAchieved < 0) {
+                percentageAchieved = 0;
+            }
+
+            document.getElementById('skuTier').textContent = skuTier;
+            document.getElementById('skuIncentive').textContent = skuIncentiveAmount.toFixed(2);
+            document.getElementById('muTier').textContent = muTier;
+            document.getElementById('muIncentive').textContent = muIncentiveAmount.toFixed(2);
+            document.getElementById('totalIncentive').textContent = totalIncentiveToDisplay.toFixed(2);
+
+            const progressBar = document.getElementById('incentiveProgressBar');
+            const progressPercentageSpan = document.getElementById('progressPercentage');
+
+            progressBar.style.width = percentageAchieved.toFixed(0) + '%';
+            progressPercentageSpan.textContent = percentageAchieved.toFixed(0) + '%';
+
+            if (percentageAchieved > 50) {
+                progressPercentageSpan.style.color = 'white';
+            } else {
+                progressPercentageSpan.style.color = '#333';
+            }
+
+            if (skuPerDay === 0 && muPerDay === 0) {
+                progressBar.style.width = '0%';
+                progressPercentageSpan.textContent = '0%';
+                document.getElementById('skuTier').textContent = "N/A";
+                document.getElementById('skuIncentive').textContent = "0.00";
+                document.getElementById('muTier').textContent = "N/A";
+                document.getElementById('muIncentive').textContent = "0.00";
+                document.getElementById('totalIncentive').textContent = "0.00";
+            } else if (percentageAchieved === 0 && totalIncentiveCalculated > 0) {
+                progressBar.style.width = '2%';
+            } else if (percentageAchieved === 0) {
+                progressBar.style.width = '0%';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', calculateIncentive);
+    </script>
+</body>
+</html>
