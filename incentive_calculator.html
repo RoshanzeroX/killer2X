@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>คำนวณ Incentive OCS Picker</title>
-    <link rel="stylesheet" href="style.css">
+    <title>C.A.S.H. - Compensation & Achievement Scoring Hub</title> <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>คำนวณ Incentive OCS Picker</h1>
-
-        <div class="input-group">
+        <h1>C.A.S.H.<br><span>Compensation & Achievement Scoring Hub</span></h1> <div class="input-group">
             <label for="skuPerDay">จำนวน SKU ที่ทำได้ต่อวัน:</label>
             <input type="number" id="skuPerDay" min="0" placeholder="กรอกจำนวน SKU ที่ทำได้" oninput="calculateIncentive()">
         </div>
@@ -82,10 +79,6 @@
             const skuPerDay = parseFloat(document.getElementById('skuPerDay').value) || 0;
             const muPerDay = parseFloat(document.getElementById('muPerDay').value) || 0;
 
-            console.log('--- calculateIncentive Started ---');
-            console.log('Input SKU:', skuPerDay);
-            console.log('Input MU:', muPerDay);
-
             let skuTier = "N/A";
             let skuRatePerUnit = 0.00;
             let muTier = "N/A";
@@ -145,23 +138,19 @@
             const muIncentiveAmount = muPerDay * muRatePerUnit;
             const totalIncentiveCalculated = skuIncentiveAmount + muIncentiveAmount;
 
-            // --- DEBUG MU VALUES ---
-            console.log('MU Tier:', muTier);
-            console.log('MU Rate Per Unit:', muRatePerUnit);
-            console.log('MU Incentive Amount:', muIncentiveAmount);
-            // --- END DEBUG ---
-
             let totalIncentiveToDisplay = totalIncentiveCalculated;
             if (totalIncentiveCalculated > MAX_DAILY_INCENTIVE) {
                 totalIncentiveToDisplay = MAX_DAILY_INCENTIVE;
             }
 
-            let percentageAchieved = (totalIncentiveCalculated / MAX_DAILY_INCENTIVE) * 100;
-            if (percentageAchieved > 100) {
-                percentageAchieved = 100;
+            let actualPercentage = (totalIncentiveCalculated / MAX_DAILY_INCENTIVE) * 100;
+            if (actualPercentage < 0) {
+                actualPercentage = 0;
             }
-            if (percentageAchieved < 0) {
-                percentageAchieved = 0;
+
+            let progressBarDisplayPercentage = actualPercentage;
+            if (progressBarDisplayPercentage > 100) {
+                progressBarDisplayPercentage = 100;
             }
 
             document.getElementById('skuTier').textContent = skuTier;
@@ -171,31 +160,33 @@
             document.getElementById('totalIncentive').textContent = totalIncentiveToDisplay.toFixed(2);
 
             const progressBar = document.getElementById('incentiveProgressBar');
-            const progressPercentageSpan = document.getElementById('progressPercentage');
+            const progressPercentageSpan = document.getElementById('progressPercentage'); 
 
-            progressBar.style.width = percentageAchieved.toFixed(0) + '%';
-            progressPercentageSpan.textContent = percentageAchieved.toFixed(0) + '%';
-            
-            if (percentageAchieved > 50) {
-                progressPercentageSpan.style.color = 'white';
-            } else {
-                progressPercentageSpan.style.color = '#333';
-            }
-
+            // จัดการกรณีค่าเป็น 0 เพื่อรีเซ็ตหน้าจอ
             if (skuPerDay === 0 && muPerDay === 0) {
                 progressBar.style.width = '0%';
                 progressPercentageSpan.textContent = '0%';
+                progressPercentageSpan.style.color = '#333'; // Default color
                 document.getElementById('skuTier').textContent = "N/A";
                 document.getElementById('skuIncentive').textContent = "0.00";
                 document.getElementById('muTier').textContent = "N/A";
                 document.getElementById('muIncentive').textContent = "0.00";
                 document.getElementById('totalIncentive').textContent = "0.00";
-            } else if (percentageAchieved === 0 && totalIncentiveCalculated > 0) {
-                progressBar.style.width = '2%';
-            } else if (percentageAchieved === 0) {
-                progressBar.style.width = '0%';
+            } else {
+                // อัปเดตความกว้างของ Progress Bar (สูงสุด 100%)
+                progressBar.style.width = progressBarDisplayPercentage.toFixed(0) + '%';
+
+                // Logic สำหรับการแสดงข้อความเปอร์เซ็นต์และสี
+                progressPercentageSpan.textContent = actualPercentage.toFixed(0) + '%';
+
+                if (actualPercentage > 100) {
+                    progressPercentageSpan.style.color = 'red'; // สีแดงถ้าเกิน 100%
+                } else if (actualPercentage > 50) {
+                    progressPercentageSpan.style.color = 'white'; // สีขาวถ้าเกิน 50%
+                } else {
+                    progressPercentageSpan.style.color = '#333'; // สีเทาเข้มถ้าไม่เกิน 50%
+                }
             }
-            console.log('--- calculateIncentive Finished ---');
         }
 
         document.addEventListener('DOMContentLoaded', calculateIncentive);
