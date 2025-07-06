@@ -41,8 +41,8 @@
             <div class="detailed-results-in-notes">
                 <h3>รายละเอียด Tier และอัตรา Incentive:</h3>
                 
-                <h4>สำหรับ SKU (เงินบาทต่อ SKU):</h4> <ul class="tier-list">
-                    <li><strong>Silver:</strong> 132 - 179 SKU (0.50 บาท/SKU)</li> <li><strong>Gold:</strong> 180 - 215 SKU (0.58 บาท/SKU)</li> <li><strong>Platinum:</strong> 216 - 251 SKU (0.67 บาท/SKU)</li> <li><strong>Diamond:</strong> 252 SKU ขึ้นไป (0.83 บาท/SKU)</li> <li><strong>ต่ำกว่าเกณฑ์ขั้นต่ำ:</strong> ต่ำกว่า 132 SKU (ไม่ได้ Payout)</li>
+                <h4>สำหรับ SKU (เงินบาทต่อ Tier):</h4> <ul class="tier-list">
+                    <li><strong>Silver:</strong> 132 - 179 SKU (0.50 บาท)</li> <li><strong>Gold:</strong> 180 - 215 SKU (0.58 บาท)</li> <li><strong>Platinum:</strong> 216 - 251 SKU (0.67 บาท)</li> <li><strong>Diamond:</strong> 252 SKU ขึ้นไป (0.83 บาท)</li> <li><strong>ต่ำกว่าเกณฑ์ขั้นต่ำ:</strong> ต่ำกว่า 132 SKU (ไม่ได้ Payout)</li>
                     <li class="note-sub-point">*หมายเหตุ: 120 - 131 SKU คือ Tier `<=10` (ไม่ได้ Payout)</li>
                 </ul>
 
@@ -78,34 +78,34 @@
             const muPerDay = parseFloat(document.getElementById('muPerDay').value) || 0;
 
             let skuTier = "N/A";
-            let skuRatePerUnit = 0.00; // เปลี่ยนกลับเป็น Rate Per Unit สำหรับ SKU
+            let skuAmountFixed = 0.00; // เปลี่ยนเป็น skuAmountFixed สำหรับ SKU
             let muTier = "N/A";
             let muAmountFixed = 0.00; 
 
             const MAX_DAILY_INCENTIVE = 216.00;
 
-            // Logic คำนวณ Incentive สำหรับ SKU (กลับมาใช้แบบ คูณด้วยอัตราต่อหน่วย)
+            // Logic คำนวณ Incentive สำหรับ SKU (ปรับให้ได้เงินคงที่ตาม Tier)
             if (skuPerDay < 0) {
-                skuRatePerUnit = 0.00;
+                skuAmountFixed = 0.00;
                 skuTier = "ป้อนค่าไม่ถูกต้อง";
             } else if (skuPerDay >= 252) { // Diamond
                 skuTier = "Diamond";
-                skuRatePerUnit = 0.83; 
+                skuAmountFixed = 0.83; // ได้เงิน 0.83 บาททันที
             } else if (skuPerDay >= 216) { // Platinum
                 skuTier = "Platinum";
-                skuRatePerUnit = 0.67; 
+                skuAmountFixed = 0.67; // ได้เงิน 0.67 บาททันที
             } else if (skuPerDay >= 180) { // Gold
                 skuTier = "Gold";
-                skuRatePerUnit = 0.58; 
+                skuAmountFixed = 0.58; // ได้เงิน 0.58 บาททันที
             } else if (skuPerDay >= 132) { // Silver
                 skuTier = "Silver";
-                skuRatePerUnit = 0.50; 
+                skuAmountFixed = 0.50; // ได้เงิน 0.50 บาททันที
             } else if (skuPerDay >= 120) {
                 skuTier = "<=10 (ไม่ได้ Payout)";
-                skuRatePerUnit = 0.00;
+                skuAmountFixed = 0.00;
             } else {
                 skuTier = "ต่ำกว่าเกณฑ์ขั้นต่ำ (ไม่ได้ Payout)";
-                skuRatePerUnit = 0.00;
+                skuAmountFixed = 0.00;
             }
 
             // Logic คำนวณ Incentive สำหรับ MU (เหมือนเดิมที่ได้เงินคงที่ตาม Tier)
@@ -132,7 +132,7 @@
                 muAmountFixed = 0.00;
             }
 
-            const skuIncentiveAmount = skuPerDay * skuRatePerUnit; // กลับมาคูณ SKU ด้วย Rate Per Unit
+            const skuIncentiveAmount = skuAmountFixed; // ใช้ค่า skuAmountFixed เป็นเงิน Incentive เลย
             const muIncentiveAmount = muAmountFixed; 
             const totalIncentiveCalculated = skuIncentiveAmount + muIncentiveAmount;
 
