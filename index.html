@@ -12,17 +12,17 @@
         <h1>D.P.S.<br><span>Daily Performance System</span></h1>
 
         <div class="input-group">
-            <label for="sku">SKU:</label>
-            <input type="number" id="sku" placeholder="📦 ป้อนจำนวน SKU" oninput="calculateAverage()">
+            <label for="sku">SKU (รวมทั้งเดือน):</label>
+            <input type="number" id="sku" placeholder="📦 ป้อนจำนวน SKU รวม" oninput="calculateAverage()">
         </div>
 
         <div class="input-group">
-            <label for="mu">MU:</label>
-            <input type="number" id="mu" placeholder="🔢 ป้อนจำนวน MU" oninput="calculateAverage()">
+            <label for="mu">MU (รวมทั้งเดือน):</label>
+            <input type="number" id="mu" placeholder="🔢 ป้อนจำนวน MU รวม" oninput="calculateAverage()">
         </div>
 
         <div class="input-group">
-            <label for="days">จำนวนวันทำงาน:</label>
+            <label for="days">จำนวนวันทำงาน (ในเดือนนี้):</label>
             <input type="number" id="days" placeholder="🗓️ ป้อนจำนวนวันทำงาน" oninput="calculateAverage()">
         </div>
 
@@ -43,17 +43,37 @@
 
     <script>
         function calculateAverage() {
-            const sku = parseFloat(document.getElementById('sku').value || 0);
-            const mu = parseFloat(document.getElementById('mu').value || 0);
-            const days = parseFloat(document.getElementById('days').value || 0);
+            const totalSku = parseFloat(document.getElementById('sku').value || 0);
+            const totalMu = parseFloat(document.getElementById('mu').value || 0);
+            const daysWorked = parseFloat(document.getElementById('days').value || 0);
 
-            if (isNaN(sku) || isNaN(mu) || isNaN(days) || days <= 0) {
+            // ตรวจสอบค่าที่ไม่ถูกต้อง
+            if (isNaN(totalSku) || isNaN(totalMu) || isNaN(daysWorked) || daysWorked <= 0) {
                 document.getElementById('result').innerHTML = 'คุณจัดได้ <span>0.00</span> บิลต่อวัน';
                 return;
             }
 
-            const average = ((sku / 12) + (mu / 34)) / (2 * days);
-            document.getElementById('result').innerHTML = `คุณจัดได้ <span>${average.toFixed(2)}</span> บิลต่อวัน`;
+            // เป้าหมายเฉลี่ยต่อวันที่คุณกำหนด
+            const targetSkuPerDay = 120;
+            const targetMuPerDay = 340;
+            const equivalentBillsIfTargetMet = 12; // หากทำได้ตามเป้าหมาย 120 SKU และ 340 MU จะเท่ากับ 12 บิล
+
+            // 1. คำนวณ SKU/MU เฉลี่ยต่อวันจากค่ารวมที่ป้อน
+            const actualSkuPerDay = totalSku / daysWorked;
+            const actualMuPerDay = totalMu / daysWorked;
+
+            // 2. คำนวณอัตราส่วนประสิทธิภาพเทียบกับเป้าหมาย
+            // (1.0 ถ้าทำได้เท่าเป้าหมาย, <1.0 ถ้าทำได้น้อยกว่า, >1.0 ถ้าทำได้มากกว่า)
+            const skuPerformanceRatio = actualSkuPerDay / targetSkuPerDay;
+            const muPerformanceRatio = actualMuPerDay / targetMuPerDay;
+
+            // 3. หาค่าเฉลี่ยของอัตราส่วนประสิทธิภาพทั้งสอง
+            const averagePerformanceRatio = (skuPerformanceRatio + muPerformanceRatio) / 2;
+
+            // 4. แปลงค่าเฉลี่ยประสิทธิภาพนี้ให้เป็น "จำนวนบิลต่อวัน"
+            const billsPerDay = averagePerformanceRatio * equivalentBillsIfTargetMet;
+            
+            document.getElementById('result').innerHTML = `คุณจัดได้ <span>${billsPerDay.toFixed(2)}</span> บิลต่อวัน`;
         }
 
         document.addEventListener('DOMContentLoaded', calculateAverage);
