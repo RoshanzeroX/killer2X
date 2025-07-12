@@ -6,6 +6,55 @@
     <title>D.P.S. - Daily Performance System</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS สำหรับอนิเมชัน */
+        .animated-number {
+            font-weight: bold;
+            display: inline-block; /* เพื่อให้สามารถใช้ transform ได้ */
+            /* เพิ่ม transition เพื่อให้การเปลี่ยนแปลงดูนุ่มนวลขึ้น */
+            transition: transform 0.3s ease-out;
+        }
+
+        /* สำหรับไอคอน/อีโมจิ */
+        .comparison-icon {
+            margin-left: 8px; /* ระยะห่างจากข้อความ */
+            font-size: 1.2em; /* ขนาดไอคอน/อีโมจิ */
+            display: inline-block;
+            animation: none; /* เริ่มต้นไม่มีอนิเมชัน */
+        }
+
+        /* Keyframes สำหรับอนิเมชัน */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-5px);
+            }
+            60% {
+                transform: translateY(-3px);
+            }
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            50% { transform: translateX(0); }
+            75% { transform: translateX(2px); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* เพิ่ม style สำหรับ .result span เพื่อรองรับ animated-number */
+        .result span {
+            display: inline-block; /* สำคัญเพื่อให้ animated-number ทำงานได้ */
+        }
+    </style>
 </head>
 <body>
     <div class="main-container" id="main-container">
@@ -27,7 +76,7 @@
         </div>
 
         <div class="result" id="result">
-            คุณจัดได้ <span>0.00</span> บิลต่อวัน
+            คุณจัดได้ <span id="billsPerDayValue">0.00</span> บิลต่อวัน
         </div>
     </div>
 
@@ -57,6 +106,35 @@
     </button>
 
     <script>
+        // เก็บค่าสุดท้ายของ billsPerDay เพื่อใช้อ้างอิงในการนับ
+        let lastBillsPerDay = 0;
+
+        function animateNumber(elementId, start, end, duration) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            let startTime = null;
+
+            function easeOutQuad(t) {
+                return t * (2 - t);
+            }
+
+            function animate(currentTime) {
+                if (!startTime) startTime = currentTime;
+                const progress = Math.min((currentTime - startTime) / duration, 1);
+                const easedProgress = easeOutQuad(progress); // ใช้ easeOutQuad เพื่อให้การนับดูเป็นธรรมชาติ
+                const currentValue = start + (end - start) * easedProgress;
+                element.textContent = currentValue.toFixed(2);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    element.textContent = end.toFixed(2); // ตรวจสอบให้แน่ใจว่าค่าสุดท้ายถูกต้อง
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
         function calculateAverage() {
             const totalSku = parseFloat(document.getElementById('sku').value || 0);
             const totalMu = parseFloat(document.getElementById('mu').value || 0);
@@ -67,7 +145,8 @@
             const targetMuPerDay = 340;
             const equivalentBillsIfTargetMet = 12;
 
-            // Elements สำหรับแสดงผลลัพธ์ใหม่
+            // Elements สำหรับแสดงผลลัพธ์
+            const billsPerDayValueElement = document.getElementById('billsPerDayValue'); // สำหรับ Number Counting
             const actualSkuPerDayDisplay = document.getElementById('actualSkuPerDayDisplay');
             const actualMuPerDayDisplay = document.getElementById('actualMuPerDayDisplay');
             const skuComparisonDisplay = document.getElementById('skuComparison');
@@ -75,11 +154,12 @@
 
             // ตรวจสอบค่าที่ไม่ถูกต้อง
             if (isNaN(totalSku) || isNaN(totalMu) || isNaN(daysWorked) || daysWorked <= 0) {
-                document.getElementById('result').innerHTML = 'คุณจัดได้ <span>0.00</span> บิลต่อวัน';
+                billsPerDayValueElement.textContent = '0.00'; // รีเซ็ตค่า Number Counting
+                lastBillsPerDay = 0; // รีเซ็ตค่าสุดท้าย
                 actualSkuPerDayDisplay.textContent = '0.00';
                 actualMuPerDayDisplay.textContent = '0.00';
-                skuComparisonDisplay.innerHTML = 'N/A'; // เปลี่ยนเป็น innerHTML
-                muComparisonDisplay.innerHTML = 'N/A'; // เปลี่ยนเป็น innerHTML
+                skuComparisonDisplay.innerHTML = 'N/A';
+                muComparisonDisplay.innerHTML = 'N/A';
                 return;
             }
 
@@ -97,34 +177,45 @@
             // 4. แปลงค่าเฉลี่ยประสิทธิภาพนี้ให้เป็น "จำนวนบิลต่อวัน"
             const billsPerDay = averagePerformanceRatio * equivalentBillsIfTargetMet;
             
-            document.getElementById('result').innerHTML = `คุณจัดได้ <span>${billsPerDay.toFixed(2)}</span> บิลต่อวัน`;
+            // --- Number Counting Animation ---
+            animateNumber('billsPerDayValue', lastBillsPerDay, billsPerDay, 800); // 800ms duration
+            lastBillsPerDay = billsPerDay; // อัปเดตค่าสุดท้าย
 
-            // --- ส่วนแสดงผลลัพธ์ใหม่ ---
+            // --- ส่วนแสดงผลลัพธ์เพิ่มเติม ---
             actualSkuPerDayDisplay.textContent = actualSkuPerDay.toFixed(2);
             actualMuPerDayDisplay.textContent = actualMuPerDay.toFixed(2);
 
-            // ฟังก์ชันช่วยในการสร้างข้อความเปรียบเทียบพร้อมสี
+            // ฟังก์ชันช่วยในการสร้างข้อความเปรียบเทียบพร้อมสีและไอคอน/อีโมจิ
             function getComparisonHTML(actual, target, unit) {
                 const diff = actual - target;
                 let color = '';
                 let text = '';
+                let icon = '';
+                let animationClass = '';
+
                 if (diff > 0) {
                     color = '#4CAF50'; // สีเขียว
                     text = `สูงกว่าเป้าหมาย ${diff.toFixed(2)} ${unit}`;
+                    icon = '🚀'; // จรวด
+                    animationClass = 'pulse'; // อนิเมชันเต้น
                 } else if (diff < 0) {
                     color = '#F44336'; // สีแดง
                     text = `ต่ำกว่าเป้าหมาย ${Math.abs(diff).toFixed(2)} ${unit}`;
+                    icon = '🙁'; // หน้าเศร้า
+                    animationClass = 'shake'; // อนิเมชันสั่น
                 } else {
                     color = '#FFFFFF'; // สีขาว (ตรงตามเป้าหมาย)
                     text = `ตรงตามเป้าหมาย`;
+                    icon = '✅'; // เครื่องหมายถูก
+                    animationClass = 'bounce'; // อนิเมชันกระโดด
                 }
-                return `<span style="color: ${color};">${text}</span>`;
+                // ลบอนิเมชันเก่าออกก่อนเพิ่มใหม่
+                return `<span style="color: ${color};">${text}</span> <span class="comparison-icon" style="animation: ${animationClass} 0.8s ease-in-out forwards;">${icon}</span>`;
             }
 
-            // ใช้ innerHTML เพื่อให้แสดงผลสีได้
+            // ใช้ innerHTML เพื่อให้แสดงผลสีและไอคอนได้
             skuComparisonDisplay.innerHTML = getComparisonHTML(actualSkuPerDay, targetSkuPerDay, 'SKU');
             muComparisonDisplay.innerHTML = getComparisonHTML(actualMuPerDay, targetMuPerDay, 'MU');
-            // --- สิ้นสุดส่วนแสดงผลลัพธ์ใหม่ ---
         }
 
         document.addEventListener('DOMContentLoaded', calculateAverage);
