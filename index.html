@@ -4,178 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D.P.S. - Daily Performance System</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* CSS สำหรับอนิเมชัน */
-        .animated-number {
-            font-weight: bold;
-            display: inline-block; /* เพื่อให้สามารถใช้ transform ได้ */
-            transition: transform 0.3s ease-out;
-        }
-
-        /* สำหรับไอคอน/อีโมจิ */
-        .comparison-icon {
-            margin-left: 8px; /* ระยะห่างจากข้อความ */
-            font-size: 1.2em; /* ขนาดไอคอน/อีโมจิ */
-            display: inline-block;
-            animation: none; /* เริ่มต้นไม่มีอนิเมชัน */
-        }
-
-        /* Keyframes สำหรับอนิเมชัน */
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-5px);
-            }
-            60% {
-                transform: translateY(-3px);
-            }
-        }
-
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-2px); }
-            50% { transform: translateX(0); }
-            75% { transform: translateX(2px); }
-            100% { transform: translateX(0); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        /* เพิ่ม style สำหรับ .result span เพื่อรองรับ animated-number */
-        .result span {
-            display: inline-block; /* สำคัญเพื่อให้ animated-number ทำงานได้ */
-        }
-
-        /* --- การปรับแก้สำหรับปัญหาแป้นพิมพ์บังผลลัพธ์ (No Scroll) และข้อความโดนครอป --- */
-        html, body {
-            height: 100%; /* กำหนดความสูง 100% ของ viewport */
-            margin: 0;
-            padding: 0;
-            overflow: hidden; /* สำคัญ: ป้องกันการ scroll ของ body */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; /* กระจายเนื้อหา */
-        }
-
-        .main-container {
-            flex-grow: 1; /* ส่วนนี้จะขยายเพื่อเติมพื้นที่ */
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* จัดกึ่งกลางแนวตั้งสำหรับ input และ result */
-            padding-bottom: 10px; /* เพิ่ม padding ด้านล่างเล็กน้อย */
-            min-height: fit-content; /* ทำให้ main-container ไม่หดเล็กกว่าเนื้อหา */
-            padding-top: 10px; /* เพิ่ม padding ด้านบน */
-        }
-        
-        .input-group {
-            margin-bottom: 8px; /* ลด margin ระหว่าง input groups */
-        }
-
-        .result {
-            margin-top: 15px; /* ปรับ margin เหนือ result */
-            font-size: 1.5em; /* ทำให้ผลลัพธ์เด่นขึ้น */
-            min-height: 2em; /* กำหนดขั้นต่ำเพื่อป้องกันการครอป */
-            line-height: 1.2; /* ปรับ line-height ให้เหมาะสมกับ font-size */
-            
-            /* --- Progress Ring Specific Styles --- */
-            position: relative; /* เพื่อให้เนื้อหาภายในจัดตำแหน่งได้ง่าย */
-            width: 180px; /* ขนาดของวงแหวน */
-            height: 180px; /* ขนาดของวงแหวน */
-            margin: 20px auto; /* จัดกึ่งกลางและมีระยะห่าง */
-            display: flex; /* ใช้ flexbox จัดกึ่งกลางข้อความภายใน result */
-            flex-direction: column; /* ให้ข้อความเรียงลงมา */
-            align-items: center; /* จัดกึ่งกลางแนวนอน */
-            justify-content: center; /* จัดกึ่งกลางแนวตั้ง */
-            color: #fff; /* สีข้อความ */
-            border: none; /* ลบขอบเดิม */
-            box-shadow: none; /* ลบเงาเดิม */
-            background-color: transparent; /* ลบพื้นหลังเดิม */
-        }
-
-        .result svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transform: rotate(-90deg); /* หมุนวงแหวนให้เริ่มต้นจากด้านบน */
-        }
-
-        .progress-ring__circle {
-            transition: stroke-dashoffset 0.8s ease-out; /* อนิเมชันการเติมวงแหวน */
-            stroke: var(--primary-red); /* สีวงแหวน */
-            stroke-width: 10; /* ความหนาของวงแหวน */
-            fill: transparent; /* ไม่มีพื้นหลังภายในวงแหวน */
-        }
-
-        .progress-ring__background {
-            stroke: rgba(255, 255, 255, 0.2); /* สีพื้นหลังวงแหวนจางๆ */
-            stroke-width: 10;
-            fill: transparent;
-        }
-
-        .result-text {
-            position: relative; /* เพื่อให้อยู่เหนือ SVG */
-            text-align: center;
-            font-size: 0.9em; /* ขนาดข้อความ "คุณจัดได้" */
-        }
-
-        .result-value {
-            font-size: 2.2em; /* ขนาดตัวเลข */
-            font-weight: bold;
-            margin-top: 5px;
-            margin-bottom: 5px;
-        }
-
-        .result-unit {
-            font-size: 0.9em; /* ขนาดข้อความ "บิลต่อวัน" */
-        }
-
-        /* สีวงแหวนตามประสิทธิภาพ */
-        .progress-green .progress-ring__circle { stroke: #4CAF50; } /* สูง */
-        .progress-yellow .progress-ring__circle { stroke: #FFEB3B; } /* ปานกลาง */
-        .progress-red .progress-ring__circle { stroke: #F44336; } /* ต่ำ */
-
-
-        .notes {
-            flex-shrink: 0; /* ไม่ให้ส่วนนี้หดตัวเมื่อพื้นที่จำกัด */
-            max-height: 40%; /* จำกัดความสูงของส่วน notes ให้ไม่เกิน 40% ของหน้าจอ */
-            overflow-y: auto; /* สำคัญ: ทำให้ notes มี scrollbar ของตัวเองถ้าเนื้อหาเกิน */
-            padding-bottom: 10px; /* เพิ่ม padding ด้านล่าง */
-            padding-top: 5px; /* เพิ่ม padding ด้านบนเล็กน้อย */
-        }
-
-        .notes h2, .notes h3 {
-            margin-top: 5px; /* ลด margin ด้านบนของหัวข้อใน notes */
-            margin-bottom: 5px; /* ลด margin ด้านล่างของหัวข้อใน notes */
-        }
-        .notes p {
-            margin-top: 3px; /* ลด margin ของ p ใน notes */
-            margin-bottom: 3px; /* ลด margin ของ p ใน notes */
-        }
-
-        .links-container {
-            flex-shrink: 0; /* ไม่ให้ส่วนนี้หดตัว */
-            padding-top: 5px; /* ลด padding ด้านบน */
-            padding-bottom: 5px; /* ลด padding ด้านล่าง */
-            font-size: 0.9em; /* ลดขนาด font สำหรับลิงก์ */
-        }
-
-        .fullscreen-toggle {
-            position: fixed; /* ทำให้ปุ่มอยู่กับที่ */
-            bottom: 10px; /* ปรับตำแหน่ง */
-            right: 10px; /* ปรับตำแหน่ง */
-            z-index: 1000; /* ให้ปุ่มอยู่เหนือองค์ประกอบอื่น */
-        }
-    </style>
+    <link rel="stylesheet" href="style.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="main-container" id="main-container">
@@ -280,17 +109,23 @@
         }
 
         // --- Progress Ring Functionality ---
-        const progressCircle = document.getElementById('progressCircle');
-        const radius = progressCircle.r.baseVal.value;
-        const circumference = radius * 2 * Math.PI;
+        let progressCircle; // ประกาศตัวแปรนี้ไว้ข้างนอกเพื่อให้เข้าถึงได้ทั่วถึง
 
-        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-        progressCircle.style.strokeDashoffset = `${circumference}`; // เริ่มต้นวงแหวนว่างเปล่า
-
-        // กำหนดเป้าหมายสูงสุดสำหรับวงแหวน (เช่น ถ้า 12 คือขั้นต่ำ, 15 อาจเป็นเป้าหมาย 100% สำหรับวงแหวน)
-        const maxBillsForRing = 15; // ปรับค่านี้ได้ตามต้องการ เพื่อให้วงแหวนเต็ม 100% ที่ค่านี้
+        let radius = 80; // Default radius (ควรตรงกับ r ใน SVG)
+        let circumference = radius * 2 * Math.PI;
 
         function setProgress(percent) {
+            if (!progressCircle) {
+                progressCircle = document.getElementById('progressCircle');
+                if (progressCircle) {
+                    radius = progressCircle.r.baseVal.value; // ดึงรัศมีจริงจาก SVG
+                    circumference = radius * 2 * Math.PI;
+                    progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+                } else {
+                    return;
+                }
+            }
+            
             const offset = circumference - percent / 100 * circumference;
             progressCircle.style.strokeDashoffset = offset;
         }
@@ -299,14 +134,12 @@
             const resultDiv = document.getElementById('result');
             resultDiv.classList.remove('progress-green', 'progress-yellow', 'progress-red');
 
-            // ใช้เกณฑ์เดียวกับข้อความสถานะภาพรวมประสิทธิภาพ
-            const targetBills = 12; // เป้าหมาย "บิลต่อวัน" ที่ถือว่าดี
-            
-            if (billsPerDay > targetBills * 1.1) { // 110% ของเป้าหมาย หรือสูงกว่าเล็กน้อย
+            // เกณฑ์การเปลี่ยนสี
+            if (billsPerDay >= 12) { // ถ้า 12 บิล/วัน หรือมากกว่า = สีเขียว
                 resultDiv.classList.add('progress-green');
-            } else if (billsPerDay >= targetBills * 0.8) { // 80% - 110% ของเป้าหมาย
+            } else if (billsPerDay >= 8) { // ถ้า 8-11.99 บิล/วัน = สีเหลือง
                 resultDiv.classList.add('progress-yellow');
-            } else { // ต่ำกว่า 80%
+            } else { // ต่ำกว่า 8 บิล/วัน = สีแดง
                 resultDiv.classList.add('progress-red');
             }
         }
@@ -361,8 +194,11 @@
             lastBillsPerDay = billsPerDay; // อัปเดตค่าสุดท้าย
 
             // --- Progress Ring Update ---
-            const progressPercent = (billsPerDay / maxBillsForRing) * 100;
-            setProgress(Math.min(progressPercent, 100)); // ไม่ให้เกิน 100% ของวงแหวน แต่ค่า billsPerDay อาจสูงกว่า maxBillsForRing ได้
+            // กำหนดให้ 12 บิลต่อวันคือ 100% เต็มของวงแหวน
+            const maxBillsForRing = 12; 
+            let progressPercent = (billsPerDay / maxBillsForRing) * 100;
+            // ถ้า billsPerDay เกิน maxBillsForRing ก็ให้วงแหวนเต็ม 100% ไปเลย ไม่ให้เกิน
+            setProgress(Math.min(progressPercent, 100)); 
             updateRingColor(billsPerDay); // อัปเดตสีวงแหวนตามค่า billsPerDay
 
             // --- ส่วนแสดงผลลัพธ์เพิ่มเติม ---
@@ -401,104 +237,142 @@
             muComparisonDisplay.innerHTML = getComparisonHTML(actualMuPerDay, targetMuPerDay, 'MU');
         }
 
-        document.addEventListener('DOMContentLoaded', calculateAverage);
+        // --- DOMContentLoaded Event Listener สำหรับ JavaScript ทั้งหมด ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // เรียกใช้ calculateAverage() ครั้งแรกเมื่อ DOM โหลดเสร็จ
+            calculateAverage();
 
-        const fullscreenToggle = document.getElementById('fullscreenToggle');
-        const mainContainer = document.getElementById('main-container');
-        const resultContainer = document.getElementById('result'); // นี่คือ div.result ที่ตอนนี้เป็น progress ring
-        const imageFiles = ['1 (3).png', '1 (4).png', '1 (5).png', '1 (6).png', '1 (7).png', '1 (8).png', '1 (9).png'];
-
-        fullscreenToggle.addEventListener('click', () => {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-            } else {
-                document.documentElement.requestFullscreen();
+            // ดึง element ของ progressCircle หลังจาก DOM โหลดเสร็จ
+            progressCircle = document.getElementById('progressCircle');
+            if (progressCircle) {
+                radius = progressCircle.r.baseVal.value;
+                circumference = radius * 2 * Math.PI;
+                progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+                progressCircle.style.strokeDashoffset = `${circumference}`;
             }
-        });
 
-        document.addEventListener('fullscreenchange', () => {
-            if (document.fullscreenElement) {
-                // เข้าสู่ Fullscreen
-                mainContainer.style.display = 'none'; // ซ่อน container หลัก
-
-                // ปรับสไตล์ resultContainer ให้เต็มจอและจัดกึ่งกลาง
-                resultContainer.style.display = 'flex'; // สำคัญ: ต้องเป็น flex เพื่อจัดกึ่งกลาง
-                resultContainer.style.flexDirection = 'column';
-                resultContainer.style.justifyContent = 'center';
-                resultContainer.style.alignItems = 'center';
-                resultContainer.style.width = '100vw';
-                resultContainer.style.height = '100vh';
-                resultContainer.style.boxShadow = 'none'; // ลบเงาเดิม
-                resultContainer.style.border = 'none'; // ลบขอบเดิม
-                resultContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.9)'; // พื้นหลังดำทึบ
-
-                // สุ่มเลือกภาพ
-                const randomIndex = Math.floor(Math.random() * imageFiles.length);
-                const randomImage = imageFiles[randomIndex];
-                resultContainer.style.backgroundImage = `url('${randomImage}')`;
-                resultContainer.style.backgroundSize = 'contain';
-                resultContainer.style.backgroundRepeat = 'no-repeat';
-                resultContainer.style.backgroundPosition = 'center';
-                // ทำให้ข้อความผลลัพธ์ใหญ่ขึ้นในโหมด Fullscreen
-                // เนื่องจาก result ถูกเปลี่ยนเป็นวงแหวน เราต้องเข้าถึง result-value
-                resultContainer.querySelector('.result-value #billsPerDayValue').style.fontSize = '8vw'; 
-                resultContainer.querySelector('.result-text').style.fontSize = '4vw';
-                resultContainer.querySelector('.result-unit').style.fontSize = '4vw';
-                resultContainer.querySelector('.result-content').style.color = 'white'; // ข้อความสีขาว
-
-                // ซ่อน SVG ใน Fullscreen mode เพื่อให้เห็นแต่ภาพพื้นหลังและตัวเลข
-                resultContainer.querySelector('svg').style.display = 'none';
+            const fullscreenToggle = document.getElementById('fullscreenToggle');
+            const mainContainer = document.getElementById('main-container');
+            const resultContainer = document.getElementById('result'); // นี่คือ div.result ที่ตอนนี้เป็น progress ring
+            // ตรวจสอบชื่อไฟล์รูปภาพให้ถูกต้อง (กรณีนี้คือ 517697050...)
+            const imageFiles = ['517697050_749557407535592_1291856605384937587_n.jpg', '1 (4).png', '1 (5).png', '1 (6).png', '1 (7).png', '1 (8).png', '1 (9).png'];
 
 
-                // เปลี่ยนไอคอนปุ่ม
-                fullscreenToggle.querySelector('i').classList.remove('fa-expand-arrows-alt');
-                fullscreenToggle.querySelector('i').classList.add('fa-compress-arrows-alt');
-
-                // พยายามล็อก orientation เป็นแนวนอน
-                if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('landscape').catch(e => console.log('Orientation lock failed:', e));
-                } else if (screen.lockOrientation) { // สำหรับเบราว์เซอร์รุ่นเก่า
-                    screen.lockOrientation('landscape');
+            // ซ่อนปุ่มถ้าเบราว์เซอร์ไม่รองรับ Fullscreen API
+            if (!document.documentElement.requestFullscreen) {
+                if (fullscreenToggle) {
+                    fullscreenToggle.style.display = 'none';
                 }
-
-            } else {
-                // ออกจาก Fullscreen
-                mainContainer.style.display = 'flex'; // แสดง container หลักอีกครั้ง
-
-                // คืนค่าสไตล์ resultContainer ให้เป็นปกติ
-                resultContainer.style.display = 'flex'; // ยังคง flex เพื่อจัดเนื้อหาภายใน
-                resultContainer.style.width = '180px'; // กลับไปใช้ขนาดวงแหวน
-                resultContainer.style.height = '180px'; // กลับไปใช้ขนาดวงแหวน
-                resultContainer.style.backgroundImage = 'none';
-                resultContainer.style.boxShadow = 'none'; // ไม่มี box-shadow สำหรับวงแหวน
-                resultContainer.style.border = 'none'; // ไม่มี border สำหรับวงแหวน
-                resultContainer.style.backgroundColor = 'transparent'; // ไม่มีพื้นหลังสำหรับวงแหวน
-                // คืนขนาดข้อความผลลัพธ์
-                resultContainer.querySelector('.result-value #billsPerDayValue').style.fontSize = ''; 
-                resultContainer.querySelector('.result-text').style.fontSize = '';
-                resultContainer.querySelector('.result-unit').style.fontSize = '';
-                resultContainer.querySelector('.result-content').style.color = ''; // ลบ style ที่ตั้งไว้ใน JS
-
-                // แสดง SVG กลับมา
-                resultContainer.querySelector('svg').style.display = 'block';
-
-                // เปลี่ยนไอคอนปุ่มกลับ
-                fullscreenToggle.querySelector('i').classList.remove('fa-compress-arrows-alt');
-                fullscreenToggle.querySelector('i').classList.add('fa-expand-arrows-alt');
-
-                // พยายามปลดล็อก orientation
-                if (screen.orientation && screen.orientation.unlock) {
-                    screen.orientation.unlock();
-                } else if (screen.unlockOrientation) {
-                    screen.unlockOrientation();
-                }
+                // ไม่ต้อง return ถ้าไม่รองรับ fullscreen เพราะส่วนอื่นยังทำงานได้
             }
-        });
 
-        // ซ่อนปุ่มถ้าเบราว์เซอร์ไม่รองรับ Fullscreen API
-        if (!document.documentElement.requestFullscreen) {
-            fullscreenToggle.style.display = 'none';
-        }
+            if (fullscreenToggle) { // ตรวจสอบว่า element มีอยู่จริงก่อน addEventListener
+                fullscreenToggle.addEventListener('click', () => {
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                    } else {
+                        document.documentElement.requestFullscreen();
+                    }
+                });
+            }
+
+            document.addEventListener('fullscreenchange', () => {
+                if (document.fullscreenElement) {
+                    // เข้าสู่ Fullscreen
+                    if (mainContainer) mainContainer.style.display = 'none'; // ซ่อน container หลัก
+
+                    // ปรับสไตล์ resultContainer ให้เต็มจอและจัดกึ่งกลาง
+                    if (resultContainer) {
+                        resultContainer.style.display = 'flex'; // สำคัญ: ต้องเป็น flex เพื่อจัดกึ่งกลาง
+                        resultContainer.style.flexDirection = 'column';
+                        resultContainer.style.justifyContent = 'center';
+                        resultContainer.style.alignItems = 'center';
+                        resultContainer.style.width = '100vw';
+                        resultContainer.style.height = '100vh';
+                        resultContainer.style.boxShadow = 'none';
+                        resultContainer.style.border = 'none';
+                        resultContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+
+                        // สุ่มเลือกภาพ
+                        const randomIndex = Math.floor(Math.random() * imageFiles.length);
+                        const randomImage = imageFiles[randomIndex];
+                        resultContainer.style.backgroundImage = `url('${randomImage}')`;
+                        resultContainer.style.backgroundSize = 'contain';
+                        resultContainer.style.backgroundRepeat = 'no-repeat';
+                        resultContainer.style.backgroundPosition = 'center';
+                        
+                        // ทำให้ข้อความผลลัพธ์ใหญ่ขึ้นในโหมด Fullscreen
+                        const billsPerDayValueSpan = resultContainer.querySelector('.result-value #billsPerDayValue');
+                        const resultTextDiv = resultContainer.querySelector('.result-text');
+                        const resultUnitDiv = resultContainer.querySelector('.result-unit');
+                        const resultContentDiv = resultContainer.querySelector('.result-content');
+                        const svgElement = resultContainer.querySelector('svg');
+
+                        if (billsPerDayValueSpan) billsPerDayValueSpan.style.fontSize = '8vw'; 
+                        if (resultTextDiv) resultTextDiv.style.fontSize = '4vw';
+                        if (resultUnitDiv) resultUnitDiv.style.fontSize = '4vw';
+                        if (resultContentDiv) resultContentDiv.style.color = 'white'; // ข้อความสีขาว
+
+                        // ซ่อน SVG ใน Fullscreen mode เพื่อให้เห็นแต่ภาพพื้นหลังและตัวเลข
+                        if (svgElement) svgElement.style.display = 'none';
+                    }
+
+                    if (fullscreenToggle) {
+                        fullscreenToggle.querySelector('i').classList.remove('fa-expand-arrows-alt');
+                        fullscreenToggle.querySelector('i').classList.add('fa-compress-arrows-alt');
+                    }
+
+                    // พยายามล็อก orientation เป็นแนวนอน
+                    if (screen.orientation && screen.orientation.lock) {
+                        screen.orientation.lock('landscape').catch(e => console.log('Orientation lock failed:', e));
+                    } else if (screen.lockOrientation) { // สำหรับเบราว์เซอร์รุ่นเก่า
+                        screen.lockOrientation('landscape');
+                    }
+
+                } else {
+                    // ออกจาก Fullscreen
+                    if (mainContainer) mainContainer.style.display = 'flex'; // แสดง container หลักอีกครั้ง
+
+                    // คืนค่าสไตล์ resultContainer ให้เป็นปกติ
+                    if (resultContainer) {
+                        resultContainer.style.display = 'flex'; // ยังคง flex เพื่อจัดเนื้อหาภายใน
+                        resultContainer.style.width = '180px'; // กลับไปใช้ขนาดวงแหวน
+                        resultContainer.style.height = '180px'; // กลับไปใช้ขนาดวงแหวน
+                        resultContainer.style.backgroundImage = 'none';
+                        resultContainer.style.boxShadow = 'none'; // ไม่มี box-shadow สำหรับวงแหวน
+                        resultContainer.style.border = 'none'; // ไม่มี border สำหรับวงแหวน
+                        resultContainer.style.backgroundColor = 'transparent'; // ไม่มีพื้นหลังสำหรับวงแหวน
+                        
+                        // คืนขนาดข้อความผลลัพธ์
+                        const billsPerDayValueSpan = resultContainer.querySelector('.result-value #billsPerDayValue');
+                        const resultTextDiv = resultContainer.querySelector('.result-text');
+                        const resultUnitDiv = resultContainer.querySelector('.result-unit');
+                        const resultContentDiv = resultContainer.querySelector('.result-content');
+                        const svgElement = resultContainer.querySelector('svg');
+
+                        if (billsPerDayValueSpan) billsPerDayValueSpan.style.fontSize = ''; // ล้างค่า CSS ที่ถูกตั้งโดย JS
+                        if (resultTextDiv) resultTextDiv.style.fontSize = ''; // จะกลับไปใช้ค่าใน style.css
+                        if (resultUnitDiv) resultUnitDiv.style.fontSize = ''; // จะกลับไปใช้ค่าใน style.css
+                        if (resultContentDiv) resultContentDiv.style.color = ''; // ลบ style ที่ตั้งไว้ใน JS
+
+                        // แสดง SVG กลับมา
+                        if (svgElement) svgElement.style.display = 'block';
+                    }
+
+                    if (fullscreenToggle) {
+                        fullscreenToggle.querySelector('i').classList.remove('fa-compress-arrows-alt');
+                        fullscreenToggle.querySelector('i').classList.add('fa-expand-arrows-alt');
+                    }
+
+                    // พยายามปลดล็อก orientation
+                    if (screen.orientation && screen.orientation.unlock) {
+                        screen.orientation.unlock();
+                    } else if (screen.unlockOrientation) {
+                        screen.unlockOrientation();
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
