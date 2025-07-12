@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D.P.S. - Daily Performance System</title>
-    <link rel="stylesheet" href="style.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="main-container" id="main-container">
@@ -95,30 +96,30 @@
             function animate(currentTime) {
                 if (!startTime) startTime = currentTime;
                 const progress = Math.min((currentTime - startTime) / duration, 1);
-                const easedProgress = easeOutQuad(progress); // ใช้ easeOutQuad เพื่อให้การนับดูเป็นธรรมชาติ
+                const easedProgress = easeOutQuad(progress);
                 const currentValue = start + (end - start) * easedProgress;
                 element.textContent = currentValue.toFixed(2);
 
                 if (progress < 1) {
                     requestAnimationFrame(animate);
                 } else {
-                    element.textContent = end.toFixed(2); // ตรวจสอบให้แน่ใจว่าค่าสุดท้ายถูกต้อง
+                    element.textContent = end.toFixed(2);
                 }
             }
             requestAnimationFrame(animate);
         }
 
         // --- Progress Ring Functionality ---
-        let progressCircle; // ประกาศตัวแปรนี้ไว้ข้างนอกเพื่อให้เข้าถึงได้ทั่วถึง
+        let progressCircle;
 
-        let radius = 80; // Default radius (ควรตรงกับ r ใน SVG)
+        let radius = 80;
         let circumference = radius * 2 * Math.PI;
 
         function setProgress(percent) {
             if (!progressCircle) {
                 progressCircle = document.getElementById('progressCircle');
                 if (progressCircle) {
-                    radius = progressCircle.r.baseVal.value; // ดึงรัศมีจริงจาก SVG
+                    radius = progressCircle.r.baseVal.value;
                     circumference = radius * 2 * Math.PI;
                     progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
                 } else {
@@ -132,15 +133,24 @@
 
         function updateRingColor(billsPerDay) {
             const resultDiv = document.getElementById('result');
+            const billsPerDayValueSpan = document.getElementById('billsPerDayValue'); // อ้างอิงถึง span ที่แสดงตัวเลข
+
+            // ลบคลาสสีเก่าทั้งหมดออกจาก Progress Ring
             resultDiv.classList.remove('progress-green', 'progress-yellow', 'progress-red');
+            // ลบคลาสสีเก่าทั้งหมดออกจากตัวเลข (billsPerDayValueSpan)
+            billsPerDayValueSpan.classList.remove('value-green', 'value-yellow', 'value-red');
+
 
             // เกณฑ์การเปลี่ยนสี
             if (billsPerDay >= 12) { // ถ้า 12 บิล/วัน หรือมากกว่า = สีเขียว
                 resultDiv.classList.add('progress-green');
+                billsPerDayValueSpan.classList.add('value-green'); // เพิ่มคลาสสีเขียวให้กับตัวเลข
             } else if (billsPerDay >= 8) { // ถ้า 8-11.99 บิล/วัน = สีเหลือง
                 resultDiv.classList.add('progress-yellow');
+                billsPerDayValueSpan.classList.add('value-yellow'); // เพิ่มคลาสสีเหลืองให้กับตัวเลข
             } else { // ต่ำกว่า 8 บิล/วัน = สีแดง
                 resultDiv.classList.add('progress-red');
+                billsPerDayValueSpan.classList.add('value-red'); // เพิ่มคลาสสีแดงให้กับตัวเลข
             }
         }
 
@@ -156,7 +166,7 @@
             const equivalentBillsIfTargetMet = 12;
 
             // Elements สำหรับแสดงผลลัพธ์
-            const billsPerDayValueElement = document.getElementById('billsPerDayValue'); // สำหรับ Number Counting
+            const billsPerDayValueElement = document.getElementById('billsPerDayValue');
             const actualSkuPerDayDisplay = document.getElementById('actualSkuPerDayDisplay');
             const actualMuPerDayDisplay = document.getElementById('actualMuPerDayDisplay');
             const skuComparisonDisplay = document.getElementById('skuComparison');
@@ -164,14 +174,19 @@
 
             // ตรวจสอบค่าที่ไม่ถูกต้อง
             if (isNaN(totalSku) || isNaN(totalMu) || isNaN(daysWorked) || daysWorked <= 0) {
-                billsPerDayValueElement.textContent = '0.00'; // รีเซ็ตค่า Number Counting
-                lastBillsPerDay = 0; // รีเซ็ตค่าสุดท้าย
+                billsPerDayValueElement.textContent = '0.00';
+                lastBillsPerDay = 0;
                 actualSkuPerDayDisplay.textContent = '0.00';
                 actualMuPerDayDisplay.textContent = '0.00';
                 skuComparisonDisplay.innerHTML = 'N/A';
                 muComparisonDisplay.innerHTML = 'N/A';
-                setProgress(0); // รีเซ็ต Progress Ring
-                document.getElementById('result').classList.remove('progress-green', 'progress-yellow', 'progress-red'); // ลบสี
+                setProgress(0);
+                // ต้องลบ class สีออกด้วยเมื่อข้อมูลไม่ถูกต้อง
+                document.getElementById('result').classList.remove('progress-green', 'progress-yellow', 'progress-red');
+                billsPerDayValueElement.classList.remove('value-green', 'value-yellow', 'value-red');
+                // ตั้งค่าเริ่มต้นเป็นสีขาว (หรือสี default ของ .result-value)
+                billsPerDayValueElement.style.color = ''; // ลบ inline style
+                billsPerDayValueElement.style.textShadow = ''; // ลบ inline style
                 return;
             }
 
@@ -190,16 +205,14 @@
             const billsPerDay = averagePerformanceRatio * equivalentBillsIfTargetMet;
             
             // --- Number Counting Animation ---
-            animateNumber('billsPerDayValue', lastBillsPerDay, billsPerDay, 800); // 800ms duration
-            lastBillsPerDay = billsPerDay; // อัปเดตค่าสุดท้าย
+            animateNumber('billsPerDayValue', lastBillsPerDay, billsPerDay, 800);
+            lastBillsPerDay = billsPerDay;
 
-            // --- Progress Ring Update ---
-            // กำหนดให้ 12 บิลต่อวันคือ 100% เต็มของวงแหวน
+            // --- Progress Ring & Value Color Update ---
             const maxBillsForRing = 12; 
             let progressPercent = (billsPerDay / maxBillsForRing) * 100;
-            // ถ้า billsPerDay เกิน maxBillsForRing ก็ให้วงแหวนเต็ม 100% ไปเลย ไม่ให้เกิน
             setProgress(Math.min(progressPercent, 100)); 
-            updateRingColor(billsPerDay); // อัปเดตสีวงแหวนตามค่า billsPerDay
+            updateRingColor(billsPerDay); // ฟังก์ชันนี้จะจัดการทั้งสีวงแหวนและสีตัวเลข
 
             // --- ส่วนแสดงผลลัพธ์เพิ่มเติม ---
             actualSkuPerDayDisplay.textContent = actualSkuPerDay.toFixed(2);
@@ -214,35 +227,33 @@
                 let animationClass = '';
 
                 if (diff > 0) {
-                    color = '#4CAF50'; // สีเขียว
+                    color = 'var(--performance-green)';
                     text = `สูงกว่าเป้าหมาย ${diff.toFixed(2)} ${unit}`;
-                    icon = '🚀'; // จรวด
-                    animationClass = 'pulse'; // อนิเมชันเต้น
+                    icon = '🚀';
+                    animationClass = 'pulse';
                 } else if (diff < 0) {
-                    color = '#F44336'; // สีแดง
+                    color = 'var(--performance-red)';
                     text = `ต่ำกว่าเป้าหมาย ${Math.abs(diff).toFixed(2)} ${unit}`;
-                    icon = '🙁'; // หน้าเศร้า
-                    animationClass = 'shake'; // อนิเมชันสั่น
+                    icon = '🙁';
+                    animationClass = 'shake';
                 } else {
-                    color = '#FFFFFF'; // สีขาว (ตรงตามเป้าหมาย)
+                    color = 'var(--text-light)'; // หรือเป็นสีขาวตาม text-light
                     text = `ตรงตามเป้าหมาย`;
-                    icon = '✅'; // เครื่องหมายถูก
-                    animationClass = 'bounce'; // อนิเมชันกระโดด
+                    icon = '✅';
+                    animationClass = 'bounce';
                 }
+                // ใช้ span สำหรับข้อความสี เพื่อให้ class animation ทำงานแยกได้
                 return `<span style="color: ${color};">${text}</span> <span class="comparison-icon" style="animation: ${animationClass} 0.8s ease-in-out forwards;">${icon}</span>`;
             }
 
-            // ใช้ innerHTML เพื่อให้แสดงผลสีและไอคอนได้
             skuComparisonDisplay.innerHTML = getComparisonHTML(actualSkuPerDay, targetSkuPerDay, 'SKU');
             muComparisonDisplay.innerHTML = getComparisonHTML(actualMuPerDay, targetMuPerDay, 'MU');
         }
 
         // --- DOMContentLoaded Event Listener สำหรับ JavaScript ทั้งหมด ---
         document.addEventListener('DOMContentLoaded', () => {
-            // เรียกใช้ calculateAverage() ครั้งแรกเมื่อ DOM โหลดเสร็จ
             calculateAverage();
 
-            // ดึง element ของ progressCircle หลังจาก DOM โหลดเสร็จ
             progressCircle = document.getElementById('progressCircle');
             if (progressCircle) {
                 radius = progressCircle.r.baseVal.value;
@@ -253,20 +264,18 @@
 
             const fullscreenToggle = document.getElementById('fullscreenToggle');
             const mainContainer = document.getElementById('main-container');
-            const resultContainer = document.getElementById('result'); // นี่คือ div.result ที่ตอนนี้เป็น progress ring
-            // ตรวจสอบชื่อไฟล์รูปภาพให้ถูกต้อง (กรณีนี้คือ 517697050...)
-            const imageFiles = ['517697050_749557407535592_1291856605384937587_n.jpg', '1 (4).png', '1 (5).png', '1 (6).png', '1 (7).png', '1 (8).png', '1 (9).png'];
+            const resultContainer = document.getElementById('result');
+            // อัปเดตรายการไฟล์รูปภาพที่ใช้ใน Fullscreen Mode ด้วยรูปที่คุณมี
+            const imageFiles = ['1 (4).png', '1 (5).png', '1 (6).png', '1 (7).png', '1 (8).png', '1 (9).png', '517697050_749557407535592_1291856605384937587_n.jpg']; 
 
 
-            // ซ่อนปุ่มถ้าเบราว์เซอร์ไม่รองรับ Fullscreen API
             if (!document.documentElement.requestFullscreen) {
                 if (fullscreenToggle) {
                     fullscreenToggle.style.display = 'none';
                 }
-                // ไม่ต้อง return ถ้าไม่รองรับ fullscreen เพราะส่วนอื่นยังทำงานได้
             }
 
-            if (fullscreenToggle) { // ตรวจสอบว่า element มีอยู่จริงก่อน addEventListener
+            if (fullscreenToggle) {
                 fullscreenToggle.addEventListener('click', () => {
                     if (document.fullscreenElement) {
                         document.exitFullscreen();
@@ -278,12 +287,10 @@
 
             document.addEventListener('fullscreenchange', () => {
                 if (document.fullscreenElement) {
-                    // เข้าสู่ Fullscreen
-                    if (mainContainer) mainContainer.style.display = 'none'; // ซ่อน container หลัก
+                    if (mainContainer) mainContainer.style.display = 'none';
 
-                    // ปรับสไตล์ resultContainer ให้เต็มจอและจัดกึ่งกลาง
                     if (resultContainer) {
-                        resultContainer.style.display = 'flex'; // สำคัญ: ต้องเป็น flex เพื่อจัดกึ่งกลาง
+                        resultContainer.style.display = 'flex';
                         resultContainer.style.flexDirection = 'column';
                         resultContainer.style.justifyContent = 'center';
                         resultContainer.style.alignItems = 'center';
@@ -293,7 +300,6 @@
                         resultContainer.style.border = 'none';
                         resultContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
 
-                        // สุ่มเลือกภาพ
                         const randomIndex = Math.floor(Math.random() * imageFiles.length);
                         const randomImage = imageFiles[randomIndex];
                         resultContainer.style.backgroundImage = `url('${randomImage}')`;
@@ -301,19 +307,23 @@
                         resultContainer.style.backgroundRepeat = 'no-repeat';
                         resultContainer.style.backgroundPosition = 'center';
                         
-                        // ทำให้ข้อความผลลัพธ์ใหญ่ขึ้นในโหมด Fullscreen
                         const billsPerDayValueSpan = resultContainer.querySelector('.result-value #billsPerDayValue');
                         const resultTextDiv = resultContainer.querySelector('.result-text');
                         const resultUnitDiv = resultContainer.querySelector('.result-unit');
                         const resultContentDiv = resultContainer.querySelector('.result-content');
                         const svgElement = resultContainer.querySelector('svg');
 
-                        if (billsPerDayValueSpan) billsPerDayValueSpan.style.fontSize = '8vw'; 
+                        if (billsPerDayValueSpan) {
+                            billsPerDayValueSpan.style.fontSize = '8vw';
+                            // ใน Fullscreen เราต้องการให้สีตัวเลขเป็นสีขาวและมีเงา
+                            billsPerDayValueSpan.classList.remove('value-green', 'value-yellow', 'value-red'); // ลบคลาสสีออกก่อน
+                            billsPerDayValueSpan.style.color = 'white'; 
+                            billsPerDayValueSpan.style.textShadow = '0 0 20px rgba(255, 255, 255, 0.8)'; 
+                        }
                         if (resultTextDiv) resultTextDiv.style.fontSize = '4vw';
                         if (resultUnitDiv) resultUnitDiv.style.fontSize = '4vw';
-                        if (resultContentDiv) resultContentDiv.style.color = 'white'; // ข้อความสีขาว
+                        if (resultContentDiv) resultContentDiv.style.color = 'white';
 
-                        // ซ่อน SVG ใน Fullscreen mode เพื่อให้เห็นแต่ภาพพื้นหลังและตัวเลข
                         if (svgElement) svgElement.style.display = 'none';
                     }
 
@@ -322,40 +332,41 @@
                         fullscreenToggle.querySelector('i').classList.add('fa-compress-arrows-alt');
                     }
 
-                    // พยายามล็อก orientation เป็นแนวนอน
                     if (screen.orientation && screen.orientation.lock) {
                         screen.orientation.lock('landscape').catch(e => console.log('Orientation lock failed:', e));
-                    } else if (screen.lockOrientation) { // สำหรับเบราว์เซอร์รุ่นเก่า
+                    } else if (screen.lockOrientation) {
                         screen.lockOrientation('landscape');
                     }
 
                 } else {
-                    // ออกจาก Fullscreen
-                    if (mainContainer) mainContainer.style.display = 'flex'; // แสดง container หลักอีกครั้ง
+                    if (mainContainer) mainContainer.style.display = 'flex';
 
-                    // คืนค่าสไตล์ resultContainer ให้เป็นปกติ
                     if (resultContainer) {
-                        resultContainer.style.display = 'flex'; // ยังคง flex เพื่อจัดเนื้อหาภายใน
-                        resultContainer.style.width = '180px'; // กลับไปใช้ขนาดวงแหวน
-                        resultContainer.style.height = '180px'; // กลับไปใช้ขนาดวงแหวน
+                        resultContainer.style.display = 'flex';
+                        resultContainer.style.width = '180px';
+                        resultContainer.style.height = '180px';
                         resultContainer.style.backgroundImage = 'none';
-                        resultContainer.style.boxShadow = 'none'; // ไม่มี box-shadow สำหรับวงแหวน
-                        resultContainer.style.border = 'none'; // ไม่มี border สำหรับวงแหวน
-                        resultContainer.style.backgroundColor = 'transparent'; // ไม่มีพื้นหลังสำหรับวงแหวน
+                        resultContainer.style.boxShadow = 'none';
+                        resultContainer.style.border = 'none';
+                        resultContainer.style.backgroundColor = 'transparent';
                         
-                        // คืนขนาดข้อความผลลัพธ์
                         const billsPerDayValueSpan = resultContainer.querySelector('.result-value #billsPerDayValue');
                         const resultTextDiv = resultContainer.querySelector('.result-text');
                         const resultUnitDiv = resultContainer.querySelector('.result-unit');
                         const resultContentDiv = resultContainer.querySelector('.result-content');
                         const svgElement = resultContainer.querySelector('svg');
 
-                        if (billsPerDayValueSpan) billsPerDayValueSpan.style.fontSize = ''; // ล้างค่า CSS ที่ถูกตั้งโดย JS
-                        if (resultTextDiv) resultTextDiv.style.fontSize = ''; // จะกลับไปใช้ค่าใน style.css
-                        if (resultUnitDiv) resultUnitDiv.style.fontSize = ''; // จะกลับไปใช้ค่าใน style.css
-                        if (resultContentDiv) resultContentDiv.style.color = ''; // ลบ style ที่ตั้งไว้ใน JS
+                        if (billsPerDayValueSpan) {
+                            billsPerDayValueSpan.style.fontSize = '';
+                            // เมื่อออกจาก Fullscreen ให้ลบ inline style ออกเพื่อให้ class CSS กลับมาทำงาน
+                            billsPerDayValueSpan.style.color = ''; 
+                            billsPerDayValueSpan.style.textShadow = '';
+                            updateRingColor(lastBillsPerDay); // เรียกใช้เพื่อกำหนดสีกลับคืน
+                        }
+                        if (resultTextDiv) resultTextDiv.style.fontSize = '';
+                        if (resultUnitDiv) resultUnitDiv.style.fontSize = '';
+                        if (resultContentDiv) resultContentDiv.style.color = '';
 
-                        // แสดง SVG กลับมา
                         if (svgElement) svgElement.style.display = 'block';
                     }
 
@@ -364,7 +375,6 @@
                         fullscreenToggle.querySelector('i').classList.add('fa-expand-arrows-alt');
                     }
 
-                    // พยายามปลดล็อก orientation
                     if (screen.orientation && screen.orientation.unlock) {
                         screen.orientation.unlock();
                     } else if (screen.unlockOrientation) {
