@@ -82,17 +82,67 @@
         .result {
             margin-top: 15px; /* ปรับ margin เหนือ result */
             font-size: 1.5em; /* ทำให้ผลลัพธ์เด่นขึ้น */
-            /* เพิ่มความยืดหยุ่นในการแสดงผลของ result */
             min-height: 2em; /* กำหนดขั้นต่ำเพื่อป้องกันการครอป */
             line-height: 1.2; /* ปรับ line-height ให้เหมาะสมกับ font-size */
+            
+            /* --- Progress Ring Specific Styles --- */
+            position: relative; /* เพื่อให้เนื้อหาภายในจัดตำแหน่งได้ง่าย */
+            width: 180px; /* ขนาดของวงแหวน */
+            height: 180px; /* ขนาดของวงแหวน */
+            margin: 20px auto; /* จัดกึ่งกลางและมีระยะห่าง */
             display: flex; /* ใช้ flexbox จัดกึ่งกลางข้อความภายใน result */
-            align-items: center; /* จัดกึ่งกลางแนวตั้ง */
-            justify-content: center; /* จัดกึ่งกลางแนวนอน */
-            padding: 5px 10px; /* เพิ่ม padding ภายใน result */
+            flex-direction: column; /* ให้ข้อความเรียงลงมา */
+            align-items: center; /* จัดกึ่งกลางแนวนอน */
+            justify-content: center; /* จัดกึ่งกลางแนวตั้ง */
+            color: #fff; /* สีข้อความ */
+            border: none; /* ลบขอบเดิม */
+            box-shadow: none; /* ลบเงาเดิม */
+            background-color: transparent; /* ลบพื้นหลังเดิม */
         }
-        .result span {
-            line-height: 1.2; /* ตรวจสอบให้แน่ใจว่า span ก็มี line-height ที่เหมาะสม */
+
+        .result svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg); /* หมุนวงแหวนให้เริ่มต้นจากด้านบน */
         }
+
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.8s ease-out; /* อนิเมชันการเติมวงแหวน */
+            stroke: var(--primary-red); /* สีวงแหวน */
+            stroke-width: 10; /* ความหนาของวงแหวน */
+            fill: transparent; /* ไม่มีพื้นหลังภายในวงแหวน */
+        }
+
+        .progress-ring__background {
+            stroke: rgba(255, 255, 255, 0.2); /* สีพื้นหลังวงแหวนจางๆ */
+            stroke-width: 10;
+            fill: transparent;
+        }
+
+        .result-text {
+            position: relative; /* เพื่อให้อยู่เหนือ SVG */
+            text-align: center;
+            font-size: 0.9em; /* ขนาดข้อความ "คุณจัดได้" */
+        }
+
+        .result-value {
+            font-size: 2.2em; /* ขนาดตัวเลข */
+            font-weight: bold;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .result-unit {
+            font-size: 0.9em; /* ขนาดข้อความ "บิลต่อวัน" */
+        }
+
+        /* สีวงแหวนตามประสิทธิภาพ */
+        .progress-green .progress-ring__circle { stroke: #4CAF50; } /* สูง */
+        .progress-yellow .progress-ring__circle { stroke: #FFEB3B; } /* ปานกลาง */
+        .progress-red .progress-ring__circle { stroke: #F44336; } /* ต่ำ */
 
 
         .notes {
@@ -147,7 +197,30 @@
         </div>
 
         <div class="result" id="result">
-            คุณจัดได้ <span id="billsPerDayValue">0.00</span> บิลต่อวัน
+            <svg class="progress-ring" width="180" height="180">
+                <circle 
+                    class="progress-ring__background" 
+                    stroke-width="10" 
+                    fill="transparent" 
+                    r="80" 
+                    cx="90" 
+                    cy="90"
+                />
+                <circle 
+                    class="progress-ring__circle" 
+                    stroke-width="10" 
+                    fill="transparent" 
+                    r="80" 
+                    cx="90" 
+                    cy="90" 
+                    id="progressCircle"
+                />
+            </svg>
+            <div class="result-content">
+                <div class="result-text">คุณจัดได้</div>
+                <div class="result-value"><span id="billsPerDayValue">0.00</span></div>
+                <div class="result-unit">บิลต่อวัน</div>
+            </div>
         </div>
     </div>
 
@@ -206,6 +279,39 @@
             requestAnimationFrame(animate);
         }
 
+        // --- Progress Ring Functionality ---
+        const progressCircle = document.getElementById('progressCircle');
+        const radius = progressCircle.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+
+        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+        progressCircle.style.strokeDashoffset = `${circumference}`; // เริ่มต้นวงแหวนว่างเปล่า
+
+        // กำหนดเป้าหมายสูงสุดสำหรับวงแหวน (เช่น ถ้า 12 คือขั้นต่ำ, 15 อาจเป็นเป้าหมาย 100% สำหรับวงแหวน)
+        const maxBillsForRing = 15; // ปรับค่านี้ได้ตามต้องการ เพื่อให้วงแหวนเต็ม 100% ที่ค่านี้
+
+        function setProgress(percent) {
+            const offset = circumference - percent / 100 * circumference;
+            progressCircle.style.strokeDashoffset = offset;
+        }
+
+        function updateRingColor(billsPerDay) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.remove('progress-green', 'progress-yellow', 'progress-red');
+
+            // ใช้เกณฑ์เดียวกับข้อความสถานะภาพรวมประสิทธิภาพ
+            const targetBills = 12; // เป้าหมาย "บิลต่อวัน" ที่ถือว่าดี
+            
+            if (billsPerDay > targetBills * 1.1) { // 110% ของเป้าหมาย หรือสูงกว่าเล็กน้อย
+                resultDiv.classList.add('progress-green');
+            } else if (billsPerDay >= targetBills * 0.8) { // 80% - 110% ของเป้าหมาย
+                resultDiv.classList.add('progress-yellow');
+            } else { // ต่ำกว่า 80%
+                resultDiv.classList.add('progress-red');
+            }
+        }
+
+
         function calculateAverage() {
             const totalSku = parseFloat(document.getElementById('sku').value || 0);
             const totalMu = parseFloat(document.getElementById('mu').value || 0);
@@ -231,6 +337,8 @@
                 actualMuPerDayDisplay.textContent = '0.00';
                 skuComparisonDisplay.innerHTML = 'N/A';
                 muComparisonDisplay.innerHTML = 'N/A';
+                setProgress(0); // รีเซ็ต Progress Ring
+                document.getElementById('result').classList.remove('progress-green', 'progress-yellow', 'progress-red'); // ลบสี
                 return;
             }
 
@@ -251,6 +359,11 @@
             // --- Number Counting Animation ---
             animateNumber('billsPerDayValue', lastBillsPerDay, billsPerDay, 800); // 800ms duration
             lastBillsPerDay = billsPerDay; // อัปเดตค่าสุดท้าย
+
+            // --- Progress Ring Update ---
+            const progressPercent = (billsPerDay / maxBillsForRing) * 100;
+            setProgress(Math.min(progressPercent, 100)); // ไม่ให้เกิน 100% ของวงแหวน แต่ค่า billsPerDay อาจสูงกว่า maxBillsForRing ได้
+            updateRingColor(billsPerDay); // อัปเดตสีวงแหวนตามค่า billsPerDay
 
             // --- ส่วนแสดงผลลัพธ์เพิ่มเติม ---
             actualSkuPerDayDisplay.textContent = actualSkuPerDay.toFixed(2);
@@ -292,7 +405,7 @@
 
         const fullscreenToggle = document.getElementById('fullscreenToggle');
         const mainContainer = document.getElementById('main-container');
-        const resultContainer = document.getElementById('result');
+        const resultContainer = document.getElementById('result'); // นี่คือ div.result ที่ตอนนี้เป็น progress ring
         const imageFiles = ['1 (3).png', '1 (4).png', '1 (5).png', '1 (6).png', '1 (7).png', '1 (8).png', '1 (9).png'];
 
         fullscreenToggle.addEventListener('click', () => {
@@ -327,7 +440,15 @@
                 resultContainer.style.backgroundRepeat = 'no-repeat';
                 resultContainer.style.backgroundPosition = 'center';
                 // ทำให้ข้อความผลลัพธ์ใหญ่ขึ้นในโหมด Fullscreen
-                resultContainer.querySelector('span').style.fontSize = '8vw'; // ปรับขนาดให้ใหญ่ขึ้นตาม viewport width
+                // เนื่องจาก result ถูกเปลี่ยนเป็นวงแหวน เราต้องเข้าถึง result-value
+                resultContainer.querySelector('.result-value #billsPerDayValue').style.fontSize = '8vw'; 
+                resultContainer.querySelector('.result-text').style.fontSize = '4vw';
+                resultContainer.querySelector('.result-unit').style.fontSize = '4vw';
+                resultContainer.querySelector('.result-content').style.color = 'white'; // ข้อความสีขาว
+
+                // ซ่อน SVG ใน Fullscreen mode เพื่อให้เห็นแต่ภาพพื้นหลังและตัวเลข
+                resultContainer.querySelector('svg').style.display = 'none';
+
 
                 // เปลี่ยนไอคอนปุ่ม
                 fullscreenToggle.querySelector('i').classList.remove('fa-expand-arrows-alt');
@@ -345,262 +466,21 @@
                 mainContainer.style.display = 'flex'; // แสดง container หลักอีกครั้ง
 
                 // คืนค่าสไตล์ resultContainer ให้เป็นปกติ
-                resultContainer.style.display = 'block'; // สำคัญ: กลับไปเป็น block
-                resultContainer.style.width = 'auto';
-                resultContainer.style.height = 'auto';
+                resultContainer.style.display = 'flex'; // ยังคง flex เพื่อจัดเนื้อหาภายใน
+                resultContainer.style.width = '180px'; // กลับไปใช้ขนาดวงแหวน
+                resultContainer.style.height = '180px'; // กลับไปใช้ขนาดวงแหวน
                 resultContainer.style.backgroundImage = 'none';
-                resultContainer.style.boxShadow = 'inset 0 1px 3px rgba(0, 0, 0, 0.3)';
-                resultContainer.style.border = '1px solid var(--primary-red)';
-                resultContainer.style.backgroundColor = 'var(--darker-bg)';
+                resultContainer.style.boxShadow = 'none'; // ไม่มี box-shadow สำหรับวงแหวน
+                resultContainer.style.border = 'none'; // ไม่มี border สำหรับวงแหวน
+                resultContainer.style.backgroundColor = 'transparent'; // ไม่มีพื้นหลังสำหรับวงแหวน
                 // คืนขนาดข้อความผลลัพธ์
-                resultContainer.querySelector('span').style.fontSize = ''; // ลบ style ที่ตั้งไว้ใน JS
+                resultContainer.querySelector('.result-value #billsPerDayValue').style.fontSize = ''; 
+                resultContainer.querySelector('.result-text').style.fontSize = '';
+                resultContainer.querySelector('.result-unit').style.fontSize = '';
+                resultContainer.querySelector('.result-content').style.color = ''; // ลบ style ที่ตั้งไว้ใน JS
 
-                // เปลี่ยนไอคอนปุ่มกลับ
-                fullscreenToggle.querySelector('i').classList.remove('fa-compress-arrows-alt');
-                fullscreenToggle.querySelector('i').classList.add('fa-expand-arrows-alt');
-
-                // พยายามปลดล็อก orientation
-                if (screen.orientation && screen.orientation.unlock) {
-                    screen.orientation.unlock();
-                } else if (screen.unlockOrientation) {
-                    screen.unlockOrientation();
-                }
-            }
-        });
-
-        // ซ่อนปุ่มถ้าเบราว์เซอร์ไม่รองรับ Fullscreen API
-        if (!document.documentElement.requestFullscreen) {
-            fullscreenToggle.style.display = 'none';
-        }
-    </script>
-</head>
-<body>
-    <div class="main-container" id="main-container">
-        <h1>D.P.S.<br><span>Daily Performance System</span></h1>
-
-        <div class="input-group">
-            <label for="sku">SKU (รวมทั้งเดือน):</label>
-            <input type="number" id="sku" placeholder="📦 ป้อนจำนวน SKU รวม" oninput="calculateAverage()">
-        </div>
-
-        <div class="input-group">
-            <label for="mu">MU (รวมทั้งเดือน):</label>
-            <input type="number" id="mu" placeholder="🔢 ป้อนจำนวน MU รวม" oninput="calculateAverage()">
-        </div>
-
-        <div class="input-group">
-            <label for="days">จำนวนวันทำงาน (ในเดือนนี้):</label>
-            <input type="number" id="days" placeholder="🗓️ ป้อนจำนวนวันทำงาน" oninput="calculateAverage()">
-        </div>
-
-        <div class="result" id="result">
-            คุณจัดได้ <span id="billsPerDayValue">0.00</span> บิลต่อวัน
-        </div>
-    </div>
-
-    <div class="notes">
-        <h2>รายละเอียดประสิทธิภาพเพิ่มเติม:</h2>
-        <div class="detailed-results-in-notes">
-            <h3>ค่าเฉลี่ยรายวัน:</h3>
-            <p><strong>SKU เฉลี่ยต่อวัน:</strong> <span id="actualSkuPerDayDisplay">0.00</span> SKU</p>
-            <p><strong>MU เฉลี่ยต่อวัน:</strong> <span id="actualMuPerDayDisplay">0.00</span> MU</p>
-            
-            <hr class="notes-separator">
-
-            <h3>การเปรียบเทียบกับเป้าหมาย (120 SKU / 340 MU):</h3>
-            <p><strong>SKU:</strong> <span id="skuComparison">N/A</span></p>
-            <p><strong>MU:</strong> <span id="muComparison">N/A</span></p>
-        </div>
-    </div>
-
-    <div class="links-container">
-        <a href="incentive_calculator.html">🔗 ลิงก์ไปยังหน้าคำนวณ Incentive</a>
-        <a href="https://example.com/page2" target="_blank">🔗 ลิงก์ไปยังหน้า 2</a>
-        <a href="https://example.com/page3" target="_blank">🔗 ลิงก์ไปยังหน้า 3</a>
-    </div>
-
-    <button id="fullscreenToggle" class="fullscreen-toggle" aria-label="Toggle Fullscreen">
-        <i class="fas fa-expand-arrows-alt"></i>
-    </button>
-
-    <script>
-        // เก็บค่าสุดท้ายของ billsPerDay เพื่อใช้อ้างอิงในการนับ
-        let lastBillsPerDay = 0;
-
-        function animateNumber(elementId, start, end, duration) {
-            const element = document.getElementById(elementId);
-            if (!element) return;
-
-            let startTime = null;
-
-            function easeOutQuad(t) {
-                return t * (2 - t);
-            }
-
-            function animate(currentTime) {
-                if (!startTime) startTime = currentTime;
-                const progress = Math.min((currentTime - startTime) / duration, 1);
-                const easedProgress = easeOutQuad(progress); // ใช้ easeOutQuad เพื่อให้การนับดูเป็นธรรมชาติ
-                const currentValue = start + (end - start) * easedProgress;
-                element.textContent = currentValue.toFixed(2);
-
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
-                } else {
-                    element.textContent = end.toFixed(2); // ตรวจสอบให้แน่ใจว่าค่าสุดท้ายถูกต้อง
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-
-        function calculateAverage() {
-            const totalSku = parseFloat(document.getElementById('sku').value || 0);
-            const totalMu = parseFloat(document.getElementById('mu').value || 0);
-            const daysWorked = parseFloat(document.getElementById('days').value || 0);
-
-            // กำหนดเป้าหมายเฉลี่ยต่อวันและค่าเทียบเท่า "บิล"
-            const targetSkuPerDay = 120;
-            const targetMuPerDay = 340;
-            const equivalentBillsIfTargetMet = 12;
-
-            // Elements สำหรับแสดงผลลัพธ์
-            const billsPerDayValueElement = document.getElementById('billsPerDayValue'); // สำหรับ Number Counting
-            const actualSkuPerDayDisplay = document.getElementById('actualSkuPerDayDisplay');
-            const actualMuPerDayDisplay = document.getElementById('actualMuPerDayDisplay');
-            const skuComparisonDisplay = document.getElementById('skuComparison');
-            const muComparisonDisplay = document.getElementById('muComparison');
-
-            // ตรวจสอบค่าที่ไม่ถูกต้อง
-            if (isNaN(totalSku) || isNaN(totalMu) || isNaN(daysWorked) || daysWorked <= 0) {
-                billsPerDayValueElement.textContent = '0.00'; // รีเซ็ตค่า Number Counting
-                lastBillsPerDay = 0; // รีเซ็ตค่าสุดท้าย
-                actualSkuPerDayDisplay.textContent = '0.00';
-                actualMuPerDayDisplay.textContent = '0.00';
-                skuComparisonDisplay.innerHTML = 'N/A';
-                muComparisonDisplay.innerHTML = 'N/A';
-                return;
-            }
-
-            // 1. คำนวณ SKU/MU เฉลี่ยต่อวันจากค่ารวมที่ป้อน
-            const actualSkuPerDay = totalSku / daysWorked;
-            const actualMuPerDay = totalMu / daysWorked;
-
-            // 2. คำนวณอัตราส่วนประสิทธิภาพเทียบกับเป้าหมาย
-            const skuPerformanceRatio = actualSkuPerDay / targetSkuPerDay;
-            const muPerformanceRatio = actualMuPerDay / targetMuPerDay;
-
-            // 3. หาค่าเฉลี่ยของอัตราส่วนประสิทธิภาพทั้งสอง
-            const averagePerformanceRatio = (skuPerformanceRatio + muPerformanceRatio) / 2;
-
-            // 4. แปลงค่าเฉลี่ยประสิทธิภาพนี้ให้เป็น "จำนวนบิลต่อวัน"
-            const billsPerDay = averagePerformanceRatio * equivalentBillsIfTargetMet;
-            
-            // --- Number Counting Animation ---
-            animateNumber('billsPerDayValue', lastBillsPerDay, billsPerDay, 800); // 800ms duration
-            lastBillsPerDay = billsPerDay; // อัปเดตค่าสุดท้าย
-
-            // --- ส่วนแสดงผลลัพธ์เพิ่มเติม ---
-            actualSkuPerDayDisplay.textContent = actualSkuPerDay.toFixed(2);
-            actualMuPerDayDisplay.textContent = actualMuPerDay.toFixed(2);
-
-            // ฟังก์ชันช่วยในการสร้างข้อความเปรียบเทียบพร้อมสีและไอคอน/อีโมจิ
-            function getComparisonHTML(actual, target, unit) {
-                const diff = actual - target;
-                let color = '';
-                let text = '';
-                let icon = '';
-                let animationClass = '';
-
-                if (diff > 0) {
-                    color = '#4CAF50'; // สีเขียว
-                    text = `สูงกว่าเป้าหมาย ${diff.toFixed(2)} ${unit}`;
-                    icon = '🚀'; // จรวด
-                    animationClass = 'pulse'; // อนิเมชันเต้น
-                } else if (diff < 0) {
-                    color = '#F44336'; // สีแดง
-                    text = `ต่ำกว่าเป้าหมาย ${Math.abs(diff).toFixed(2)} ${unit}`;
-                    icon = '🙁'; // หน้าเศร้า
-                    animationClass = 'shake'; // อนิเมชันสั่น
-                } else {
-                    color = '#FFFFFF'; // สีขาว (ตรงตามเป้าหมาย)
-                    text = `ตรงตามเป้าหมาย`;
-                    icon = '✅'; // เครื่องหมายถูก
-                    animationClass = 'bounce'; // อนิเมชันกระโดด
-                }
-                return `<span style="color: ${color};">${text}</span> <span class="comparison-icon" style="animation: ${animationClass} 0.8s ease-in-out forwards;">${icon}</span>`;
-            }
-
-            // ใช้ innerHTML เพื่อให้แสดงผลสีและไอคอนได้
-            skuComparisonDisplay.innerHTML = getComparisonHTML(actualSkuPerDay, targetSkuPerDay, 'SKU');
-            muComparisonDisplay.innerHTML = getComparisonHTML(actualMuPerDay, targetMuPerDay, 'MU');
-        }
-
-        document.addEventListener('DOMContentLoaded', calculateAverage);
-
-        const fullscreenToggle = document.getElementById('fullscreenToggle');
-        const mainContainer = document.getElementById('main-container');
-        const resultContainer = document.getElementById('result');
-        const imageFiles = ['1 (3).png', '1 (4).png', '1 (5).png', '1 (6).png', '1 (7).png', '1 (8).png', '1 (9).png'];
-
-        fullscreenToggle.addEventListener('click', () => {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-            } else {
-                document.documentElement.requestFullscreen();
-            }
-        });
-
-        document.addEventListener('fullscreenchange', () => {
-            if (document.fullscreenElement) {
-                // เข้าสู่ Fullscreen
-                mainContainer.style.display = 'none'; // ซ่อน container หลัก
-
-                // ปรับสไตล์ resultContainer ให้เต็มจอและจัดกึ่งกลาง
-                resultContainer.style.display = 'flex'; // สำคัญ: ต้องเป็น flex เพื่อจัดกึ่งกลาง
-                resultContainer.style.flexDirection = 'column';
-                resultContainer.style.justifyContent = 'center';
-                resultContainer.style.alignItems = 'center';
-                resultContainer.style.width = '100vw';
-                resultContainer.style.height = '100vh';
-                resultContainer.style.boxShadow = 'none'; // ลบเงาเดิม
-                resultContainer.style.border = 'none'; // ลบขอบเดิม
-                resultContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.9)'; // พื้นหลังดำทึบ
-
-                // สุ่มเลือกภาพ
-                const randomIndex = Math.floor(Math.random() * imageFiles.length);
-                const randomImage = imageFiles[randomIndex];
-                resultContainer.style.backgroundImage = `url('${randomImage}')`;
-                resultContainer.style.backgroundSize = 'contain';
-                resultContainer.style.backgroundRepeat = 'no-repeat';
-                resultContainer.style.backgroundPosition = 'center';
-                // ทำให้ข้อความผลลัพธ์ใหญ่ขึ้นในโหมด Fullscreen
-                resultContainer.querySelector('span').style.fontSize = '8vw'; // ปรับขนาดให้ใหญ่ขึ้นตาม viewport width
-
-                // เปลี่ยนไอคอนปุ่ม
-                fullscreenToggle.querySelector('i').classList.remove('fa-expand-arrows-alt');
-                fullscreenToggle.querySelector('i').classList.add('fa-compress-arrows-alt');
-
-                // พยายามล็อก orientation เป็นแนวนอน
-                if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('landscape').catch(e => console.log('Orientation lock failed:', e));
-                } else if (screen.lockOrientation) { // สำหรับเบราว์เซอร์รุ่นเก่า
-                    screen.lockOrientation('landscape');
-                }
-
-            } else {
-                // ออกจาก Fullscreen
-                mainContainer.style.display = 'flex'; // แสดง container หลักอีกครั้ง
-
-                // คืนค่าสไตล์ resultContainer ให้เป็นปกติ
-                resultContainer.style.display = 'block'; // สำคัญ: กลับไปเป็น block
-                resultContainer.style.width = 'auto';
-                resultContainer.style.height = 'auto';
-                resultContainer.style.backgroundImage = 'none';
-                resultContainer.style.boxShadow = 'inset 0 1px 3px rgba(0, 0, 0, 0.3)';
-                resultContainer.style.border = '1px solid var(--primary-red)';
-                resultContainer.style.backgroundColor = 'var(--darker-bg)';
-                // คืนขนาดข้อความผลลัพธ์
-                resultContainer.querySelector('span').style.fontSize = ''; // ลบ style ที่ตั้งไว้ใน JS
+                // แสดง SVG กลับมา
+                resultContainer.querySelector('svg').style.display = 'block';
 
                 // เปลี่ยนไอคอนปุ่มกลับ
                 fullscreenToggle.querySelector('i').classList.remove('fa-compress-arrows-alt');
