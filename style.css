@@ -14,6 +14,7 @@
     --highlight-green: #00ff99; /* สีเขียวสำหรับตัวเลขเงิน */
 }
 
+/* --- Global Styles --- */
 body {
     font-family: 'Montserrat', sans-serif;
     display: flex;
@@ -46,7 +47,7 @@ body::before {
     z-index: -1;
 }
 
-/* Container หลักของเนื้อหา (ยกเว้น Fullscreen Result) */
+/* --- Main Container Styles --- */
 .main-container {
     display: flex;
     flex-direction: column;
@@ -64,6 +65,12 @@ body::before {
     z-index: 1;
     overflow: hidden;
     box-sizing: border-box;
+    /* เพิ่มการจัดวางสำหรับ No-Scroll Layout */
+    flex-grow: 1; /* ส่วนนี้จะขยายเพื่อเติมพื้นที่ */
+    justify-content: center; /* จัดกึ่งกลางแนวตั้งสำหรับ input และ result */
+    padding-bottom: 10px; /* เพิ่ม padding ด้านล่างเล็กน้อย */
+    min-height: fit-content; /* ทำให้ main-container ไม่หดเล็กกว่าเนื้อหา */
+    padding-top: 10px; /* เพิ่ม padding ด้านบน */
 }
 
 /* เส้นเรืองแสงรอบ Container (สำหรับแนวโฮโลแกรม) */
@@ -117,13 +124,14 @@ h1 span {
     opacity: 0.8;
 }
 
+/* Input Group Styles */
 .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 8px; /* ลด margin ระหว่าง input groups */
     text-align: left;
 }
 
 label {
-    display: none;
+    display: none; /* ซ่อน label */
 }
 
 /* ช่องกรอกข้อมูล */
@@ -161,34 +169,143 @@ input[type="number"]:focus {
     outline: none;
 }
 
-/* ช่องแสดงผลลัพธ์ */
+/* --- Progress Ring Specific Styles (ย้ายมาจาก index.html) --- */
 .result {
-    margin-top: 25px;
-    padding: 15px;
-    background-color: var(--darker-bg);
-    border-radius: 8px;
-    border: 1px solid var(--primary-red);
-    font-size: 1.2em; /* ขนาดข้อความเริ่มต้น */
-    color: var(--text-light);
-    font-weight: bold;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
-    display: block; /* สไตล์เริ่มต้น: แสดงผลแบบ block */
+    margin-top: 15px; /* ปรับ margin เหนือ result */
+    font-size: 1.5em; /* ทำให้ผลลัพธ์เด่นขึ้น */
+    min-height: 2em; /* กำหนดขั้นต่ำเพื่อป้องกันการครอป */
+    line-height: 1.2; /* ปรับ line-height ให้เหมาะสมกับ font-size */
+    
+    position: relative; /* สำคัญ: เพื่อให้ SVG และ content จัดตำแหน่งได้สัมพันธ์กัน */
+    width: 180px; /* **ขนาดของวงแหวน** - ปรับตรงนี้ */
+    height: 180px; /* **ขนาดของวงแหวน** - ปรับตรงนี้ */
+    margin: 20px auto; /* จัดกึ่งกลางและมีระยะห่าง */
+    
+    display: flex; /* **สำคัญ:** ใช้ flexbox จัดกึ่งกลางทั้ง SVG และ content */
+    align-items: center; /* จัดกึ่งกลางแนวตั้ง */
+    justify-content: center; /* จัดกึ่งกลางแนวนอน */
+    
+    color: #fff; /* สีข้อความ */
+    border: none; /* ลบขอบเดิม */
+    box-shadow: none; /* ลบเงาเดิม */
+    background-color: transparent; /* ลบพื้นหลังเดิม */
+    /* เดิมมี transition ตรงนี้ แต่ย้ายไปที่ element ย่อยแล้ว */
+}
+
+.result svg {
+    position: absolute; /* ลอยอยู่เหนือ content */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg); /* หมุนวงแหวนให้เริ่มต้นจากด้านบน */
+    z-index: 1; /* ให้ SVG อยู่ใต้ข้อความ */
+}
+
+.progress-ring__circle {
+    transition: stroke-dashoffset 0.8s ease-out; /* อนิเมชันการเติมวงแหวน */
+    stroke: var(--primary-red); /* สีวงแหวน (จะถูก override ด้วย JS) */
+    stroke-width: 10; /* **ความหนาของเส้นวงแหวน** - ปรับตรงนี้ */
+    fill: transparent; /* ไม่มีพื้นหลังภายในวงแหวน */
+}
+
+.progress-ring__background {
+    stroke: rgba(255, 255, 255, 0.2); /* สีพื้นหลังวงแหวนจางๆ */
+    stroke-width: 10; /* **ความหนาของเส้นวงแหวน** - ปรับตรงนี้ */
+    fill: transparent;
+}
+
+.result-content {
+    position: relative; /* **สำคัญ:** ทำให้เนื้อหานี้อยู่เหนือ SVG */
+    z-index: 2; /* ให้ข้อความอยู่เหนือ SVG */
     text-align: center;
-    transition: all 0.3s ease; /* เพิ่ม transition เพื่อให้การเปลี่ยนสไตล์ดูนุ่มนวลขึ้น */
 }
 
-/* ตัวเลขผลลัพธ์ (มีการปรับขนาดด้วย JS ในโหมด Fullscreen) */
+.result-text {
+    font-size: 1.1em; /* **ปรับตรงนี้:** ขนาดข้อความ "คุณจัดได้" (เพิ่มขึ้น) */
+    line-height: 1.2; /* ปรับ line-height หากข้อความหลายบรรทัด */
+}
+
+.result-value {
+    font-size: 1.9em; /* **ปรับตรงนี้:** ขนาดตัวเลขผลลัพธ์ (ลดลง) */
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    line-height: 1; /* ทำให้ตัวเลขไม่กินพื้นที่มาก */
+}
+
+.result-unit {
+    font-size: 1.1em; /* **ปรับตรงนี้:** ขนาดข้อความ "บิลต่อวัน" (เพิ่มขึ้น) */
+    line-height: 1.2; /* ปรับ line-height หากข้อความหลายบรรทัด */
+}
+
+/* สีวงแหวนตามประสิทธิภาพ */
+.progress-green .progress-ring__circle { stroke: #4CAF50; } /* สูง */
+.progress-yellow .progress-ring__circle { stroke: #FFEB3B; } /* ปานกลาง */
+.progress-red .progress-ring__circle { stroke: #F44336; } /* ต่ำ */
+
+/* เพิ่ม style สำหรับ .result span เพื่อรองรับ animated-number (ย้ายมาที่นี่) */
 .result span {
-    color: var(--primary-red);
-    font-size: 1.6em; /* ขนาดเริ่มต้น */
-    font-weight: 800;
-    text-shadow: 0 0 8px rgba(255, 77, 77, 0.7);
-    transition: font-size 0.3s ease; /* เพิ่ม transition สำหรับ font-size */
+    display: inline-block; /* สำคัญเพื่อให้ animated-number ทำงานได้ */
 }
 
-/* ส่วนลิงก์ด้านล่าง */
+/* --- Detailed Results in Notes Styles --- */
+.notes {
+    flex-shrink: 0; /* ไม่ให้ส่วนนี้หดตัวเมื่อพื้นที่จำกัด */
+    max-height: 40%; /* จำกัดความสูงของส่วน notes ให้ไม่เกิน 40% ของหน้าจอ */
+    overflow-y: auto; /* สำคัญ: ทำให้ notes มี scrollbar ของตัวเองถ้าเนื้อหาเกิน */
+    padding-bottom: 10px; /* เพิ่ม padding ด้านล่าง */
+    padding-top: 5px; /* เพิ่ม padding ด้านบนเล็กน้อย */
+    margin-top: 30px; /* ย้าย margin-top มาไว้ที่นี่ */
+    padding-top: 20px; /* ย้าย padding-top มาไว้ที่นี่ */
+    border-top: 1px solid var(--border-dark); /* ย้าย border-top มาไว้ที่นี่ */
+    font-size: 0.9em; /* ขนาดข้อความโดยรวมใน notes */
+    color: var(--text-fade); /* สีข้อความโดยรวมใน notes */
+    text-align: left;
+}
+
+.notes h2, .notes h3 {
+    margin-top: 5px; /* ลด margin ด้านบนของหัวข้อใน notes */
+    margin-bottom: 5px; /* ลด margin ด้านล่างของหัวข้อใน notes */
+}
+
+.notes h2 { /* สำหรับหัวข้อ "รายละเอียดประสิทธิภาพเพิ่มเติม:" */
+    font-size: 1.3em;
+    color: var(--text-light);
+    border-bottom: 1px dashed rgba(255, 77, 77, 0.3);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.notes h3 { /* สำหรับ "ค่าเฉลี่ยรายวัน:" และ "การเปรียบเทียบกับเป้าหมาย:" */
+    color: var(--primary-red);
+    font-size: 1.1em;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted rgba(255, 77, 77, 0.2);
+}
+
+.notes p {
+    margin-top: 3px; /* ลด margin ของ p ใน notes */
+    margin-bottom: 3px; /* ลด margin ของ p ใน notes */
+}
+
+/* สไตล์สำหรับเส้นแบ่งใน Notes */
+.notes-separator {
+    border: none;
+    border-top: 1px dashed rgba(255, 77, 77, 0.2);
+    margin: 20px 0;
+}
+
+/* --- Links Container Styles --- */
 .links-container {
-    margin-top: 30px;
+    flex-shrink: 0; /* ไม่ให้ส่วนนี้หดตัว */
+    padding-top: 5px; /* ลด padding ด้านบน */
+    padding-bottom: 5px; /* ลด padding ด้านล่าง */
+    font-size: 0.9em; /* ลดขนาด font สำหรับลิงก์ */
+    margin-top: 30px; /* ย้าย margin-top มาที่นี่ */
     width: 100%;
     max-width: 400px;
     display: flex;
@@ -227,11 +344,11 @@ input[type="number"]:focus {
     box-shadow: 0 0 10px rgba(255, 77, 77, 0.7);
 }
 
-/* ปุ่ม Fullscreen */
+/* --- Fullscreen Toggle Button Styles --- */
 .fullscreen-toggle {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    bottom: 10px; /* เปลี่ยนจาก top เป็น bottom */
+    right: 10px; /* เปลี่ยนจาก right เป็น 10px */
     background-color: rgba(10, 10, 10, 0.7);
     color: var(--primary-red);
     border: 1px solid rgba(255, 77, 77, 0.5);
@@ -260,87 +377,47 @@ input[type="number"]:focus {
     box-shadow: 0 0 10px rgba(255, 77, 77, 0.7);
 }
 
-/* Media Queries สำหรับการปรับ responsive */
-@media (max-width: 600px) {
-    .main-container {
-        padding: 25px;
-        margin-top: 10px;
+/* --- Animation Keyframes --- */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
     }
-
-    h1 {
-        font-size: 2.5em; /* ปรับขนาด h1 บนมือถือ */
-        letter-spacing: 0.8px;
+    40% {
+        transform: translateY(-5px);
     }
-    h1 span {
-        font-size: 0.45em;
-        margin-top: 3px;
-    }
-
-    input[type="number"], .links-container a {
-        font-size: 1em;
-        padding: 10px;
-    }
-
-    body {
-        padding: 15px;
-    }
-
-    .fullscreen-toggle {
-        width: 40px;
-        height: 40px;
-        font-size: 1em;
-        top: 15px;
-        right: 15px;
-    }
-
-    /* Media Queries สำหรับหน้า Incentive Calculator (ปรับให้เข้ากับ Responsive เดิม) */
-    .container { /* ปรับขนาดบนมือถือ */
-        padding: 25px;
-        margin-top: 10px;
-    }
-    .container h1 {
-        font-size: 1.8em;
-    }
-    .container h2 {
-        font-size: 1.3em;
-    }
-    .container button {
-        font-size: 1em;
-    }
-    /* .container .total-amount ถูกเปลี่ยนเป็น .total-amount-frame แล้ว */
-    .progress-bar {
-        height: 25px; /* ลดความสูงแถบ */
-        line-height: 25px;
-    }
-    .progress-bar span {
-        font-size: 0.9em;
-    }
-
-    /* Media Queries สำหรับส่วนใหม่ */
-    .total-amount-frame {
-        font-size: 1em !important; /* ปรับขนาดบนมือถือ */
-        padding: 8px 12px; /* ลด padding ลง */
-    }
-    .total-amount-frame strong {
-        margin-right: 5px; /* ลดระยะห่าง */
-    }
-    .total-amount-frame span {
-        font-size: 1.4em; /* ลดขนาดตัวเลขบนมือถือ */
-    }
-    .notes h3 {
-        font-size: 1em; /* ลดขนาด heading ย่อยใน notes */
-    }
-    .notes h4 { /* สำหรับ heading ย่อยของ Tier list */
-        font-size: 0.9em;
-        margin-top: 15px;
-        margin-bottom: 5px;
-    }
-    .detailed-results-in-notes p, .detailed-results-in-notes ul li {
-        font-size: 0.85em; /* ลดขนาดข้อความรายละเอียดใน notes */
-        line-height: 1.3;
+    60% {
+        transform: translateY(-3px);
     }
 }
 
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    50% { transform: translateX(0); }
+    75% { transform: translateX(2px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* สำหรับไอคอน/อีโมจิ */
+.comparison-icon {
+    margin-left: 8px; /* ระยะห่างจากข้อความ */
+    font-size: 1.2em; /* ขนาดไอคอน/อีโมจิ */
+    display: inline-block;
+    animation: none; /* เริ่มต้นไม่มีอนิเมชัน */
+}
+
+/* CSS สำหรับอนิเมชันตัวเลข (animated-number) */
+.animated-number {
+    font-weight: bold;
+    display: inline-block; /* เพื่อให้สามารถใช้ transform ได้ */
+    transition: transform 0.3s ease-out;
+}
 
 /* ========================================================= */
 /* CSS เพิ่มเติมสำหรับหน้า Incentive Calculator (incentive_calculator.html) */
@@ -492,23 +569,7 @@ input[type="number"]:focus {
 }
 
 /* สไตล์สำหรับ Notes */
-.notes {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-dark);
-    font-size: 0.9em; /* ขนาดข้อความโดยรวมใน notes */
-    color: var(--text-fade); /* สีข้อความโดยรวมใน notes */
-    text-align: left;
-}
-
-.notes h2 { /* สำหรับหัวข้อ "หมายเหตุและรายละเอียดผลลัพธ์:" */
-    font-size: 1.3em; /* ขนาดใหญ่ขึ้นกว่าเดิมเล็กน้อย */
-    color: var(--text-light); /* สีเดียวกับ text-light */
-    border-bottom: 1px dashed rgba(255, 77, 77, 0.3); /* เส้นแบ่ง */
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-    text-align: left; /* ชิดซ้าย */
-}
+/* .notes ถูกกำหนดไว้ด้านบนแล้ว (รวมสไตล์สำหรับ index.html ด้วย) */
 
 .notes ul {
     list-style: disc inside;
@@ -608,9 +669,83 @@ input[type="number"]:focus {
     text-shadow: none; /* ลบเงาออกเพื่อให้เข้ากับ notes */
 }
 
-/* สไตล์สำหรับเส้นแบ่งใน Notes */
-.notes-separator {
-    border: none;
-    border-top: 1px dashed rgba(255, 77, 77, 0.2);
-    margin: 20px 0;
+/* Media Queries สำหรับการปรับ responsive */
+@media (max-width: 600px) {
+    .main-container {
+        padding: 25px;
+        margin-top: 10px;
+    }
+
+    h1 {
+        font-size: 2.5em; /* ปรับขนาด h1 บนมือถือ */
+        letter-spacing: 0.8px;
+    }
+    h1 span {
+        font-size: 0.45em;
+        margin-top: 3px;
+    }
+
+    input[type="number"], .links-container a {
+        font-size: 1em;
+        padding: 10px;
+    }
+
+    body {
+        padding: 15px;
+    }
+
+    .fullscreen-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 1em;
+        bottom: 15px; /* ปรับตำแหน่งปุ่ม Fullscreen บนมือถือ */
+        right: 15px;
+    }
+
+    /* Media Queries สำหรับหน้า Incentive Calculator (ปรับให้เข้ากับ Responsive เดิม) */
+    .container { /* ปรับขนาดบนมือถือ */
+        padding: 25px;
+        margin-top: 10px;
+    }
+    .container h1 {
+        font-size: 1.8em;
+    }
+    .container h2 {
+        font-size: 1.3em;
+    }
+    .container button {
+        font-size: 1em;
+    }
+    /* .container .total-amount ถูกเปลี่ยนเป็น .total-amount-frame แล้ว */
+    .progress-bar {
+        height: 25px; /* ลดความสูงแถบ */
+        line-height: 25px;
+    }
+    .progress-bar span {
+        font-size: 0.9em;
+    }
+
+    /* Media Queries สำหรับส่วนใหม่ */
+    .total-amount-frame {
+        font-size: 1em !important; /* ปรับขนาดบนมือถือ */
+        padding: 8px 12px; /* ลด padding ลง */
+    }
+    .total-amount-frame strong {
+        margin-right: 5px; /* ลดระยะห่าง */
+    }
+    .total-amount-frame span {
+        font-size: 1.4em; /* ลดขนาดตัวเลขบนมือถือ */
+    }
+    .notes h3 {
+        font-size: 1em; /* ลดขนาด heading ย่อยใน notes */
+    }
+    .notes h4 { /* สำหรับ heading ย่อยของ Tier list */
+        font-size: 0.9em;
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+    .detailed-results-in-notes p, .detailed-results-in-notes ul li {
+        font-size: 0.85em; /* ลดขนาดข้อความรายละเอียดใน notes */
+        line-height: 1.3;
+    }
 }
