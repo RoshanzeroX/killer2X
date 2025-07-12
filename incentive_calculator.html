@@ -12,12 +12,12 @@
 
         <div class="input-group">
             <label for="skuPerDay">จำนวน SKU ที่ทำได้ต่อวัน:</label>
-            <input type="number" id="skuPerDay" min="0" placeholder="กรอกจำนวน SKU ที่ทำได้" oninput="calculateIncentive()">
+            <input type="number" id="skuPerDay" min="0" placeholder="📦 กรอกจำนวน SKU ที่ทำได้" oninput="calculateIncentive()">
         </div>
 
         <div class="input-group">
             <label for="muPerDay">จำนวน MU ที่ทำได้ต่อวัน:</label>
-            <input type="number" id="muPerDay" min="0" placeholder="กรอกจำนวน MU ที่ทำได้" oninput="calculateIncentive()">
+            <input type="number" id="muPerDay" min="0" placeholder="🔢 กรอกจำนวน MU ที่ทำได้" oninput="calculateIncentive()">
         </div>
 
         <div class="progress-container">
@@ -25,9 +25,7 @@
                 <span id="progressPercentage">0%</span>
             </div>
         </div>
-        <p class="max-incentive-note">เป้าหมายสูงสุด: 216 บาท/วัน</p>
-
-        <p class="total-amount-frame">
+        <p class="max-incentive-note">เป้าหมายสูงสุด: 218 บาท/วัน</p> <p class="total-amount-frame">
             <strong>Incentive รวมต่อวัน:</strong> <span id="totalIncentive">0.00</span> บาท
         </p>
 
@@ -41,22 +39,22 @@
             <div class="detailed-results-in-notes">
                 <h3>รายละเอียด Tier และอัตรา Incentive:</h3>
                 
-                <h4>สำหรับ SKU (เงินบาทต่อ SKU ส่วนที่เกินเกณฑ์):</h4> 
+                <h4>สำหรับ SKU (เงินบาทต่อ SKU ส่วนที่เกินเกณฑ์):</h4>
                 <ul class="tier-list">
-                    <li><strong>Silver:</strong> 132 - 179 SKU (0.50 บาท/SKU ส่วนที่เกิน 131 SKU)</li> 
-                    <li><strong>Gold:</strong> 180 - 215 SKU (0.58 บาท/SKU ส่วนที่เกิน 131 SKU)</li> 
-                    <li><strong>Platinum:</strong> 216 - 251 SKU (0.67 บาท/SKU ส่วนที่เกิน 131 SKU)</li> 
-                    <li><strong>Diamond:</strong> 252 SKU ขึ้นไป (0.83 บาท/SKU ส่วนที่เกิน 131 SKU)</li> 
+                    <li><strong>Silver:</strong> 132 - 179 SKU (0.50 บาท/SKU ส่วนที่เกิน 131 SKU)</li>
+                    <li><strong>Gold:</strong> 180 - 215 SKU (0.58 บาท/SKU ส่วนที่เกิน 131 SKU)</li>
+                    <li><strong>Platinum:</strong> 216 - 251 SKU (0.67 บาท/SKU ส่วนที่เกิน 131 SKU)</li>
+                    <li><strong>Diamond:</strong> 252 SKU ขึ้นไป (0.83 บาท/SKU ส่วนที่เกิน 131 SKU)</li>
                     <li><strong>ต่ำกว่าเกณฑ์ขั้นต่ำ:</strong> ต่ำกว่า 132 SKU (ไม่ได้ Payout)</li>
                     <li class="note-sub-point">*หมายเหตุ: 120 - 131 SKU คือ Tier `<=10` (ไม่ได้ Payout)</li>
                 </ul>
 
-                <h4>สำหรับ MU (เงินบาทต่อ MU ส่วนที่เกินเกณฑ์):</h4> 
+                <h4>สำหรับ MU (เงินบาทต่อ MU ส่วนที่เกินเกณฑ์):</h4>
                 <ul class="tier-list">
-                    <li><strong>Silver:</strong> 374 - 509 MU (0.18 บาท/MU ส่วนที่เกิน 373 MU)</li> 
-                    <li><strong>Gold:</strong> 510 - 611 MU (0.21 บาท/MU ส่วนที่เกิน 373 MU)</li> 
-                    <li><strong>Platinum:</strong> 612 - 713 MU (0.24 บาท/MU ส่วนที่เกิน 373 MU)</li> 
-                    <li><strong>Diamond:</strong> 714 MU ขึ้นไป (0.29 บาท/MU ส่วนที่เกิน 373 MU)</li> 
+                    <li><strong>Silver:</strong> 374 - 509 MU (0.18 บาท/MU ส่วนที่เกิน 373 MU)</li>
+                    <li><strong>Gold:</strong> 510 - 611 MU (0.21 บาท/MU ส่วนที่เกิน 373 MU)</li>
+                    <li><strong>Platinum:</strong> 612 - 713 MU (0.24 บาท/MU ส่วนที่เกิน 373 MU)</li>
+                    <li><strong>Diamond:</strong> 714 MU ขึ้นไป (0.29 บาท/MU ส่วนที่เกิน 373 MU)</li>
                     <li><strong>ต่ำกว่าเกณฑ์ขั้นต่ำ:</strong> ต่ำกว่า 374 MU (ไม่ได้ Payout)</li>
                     <li class="note-sub-point">*หมายเหตุ: 340 - 373 MU คือ Tier `<=10` (ไม่ได้ Payout)</li>
                 </ul>
@@ -78,16 +76,45 @@
     </div>
 
     <script>
+        // เก็บค่า Incentive รวมล่าสุดเพื่อใช้ในการอนิเมชั่น
+        let lastIncentive = 0;
+
+        function animateNumber(elementId, start, end, duration) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            let startTime = null;
+
+            function easeOutQuad(t) {
+                return t * (2 - t);
+            }
+
+            function animate(currentTime) {
+                if (!startTime) startTime = currentTime;
+                const progress = Math.min((currentTime - startTime) / duration, 1);
+                const easedProgress = easeOutQuad(progress);
+                const currentValue = start + (end - start) * easedProgress;
+                element.textContent = currentValue.toFixed(2);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    element.textContent = end.toFixed(2);
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
         function calculateIncentive() {
             const skuPerDay = parseFloat(document.getElementById('skuPerDay').value) || 0;
             const muPerDay = parseFloat(document.getElementById('muPerDay').value) || 0;
 
             let skuTier = "N/A";
-            let skuRatePerUnit = 0.00; 
+            let skuRatePerUnit = 0.00;
             let muTier = "N/A";
-            let muRatePerUnit = 0.00; 
+            let muRatePerUnit = 0.00;
 
-            const MAX_DAILY_INCENTIVE = 216.00;
+            const MAX_DAILY_INCENTIVE = 218.00; // อัปเดตค่าสูงสุดเป็น 218 บาท
 
             // --- Logic คำนวณ Incentive สำหรับ SKU (ปรับปรุงใหม่: ลบ 131 ก่อนคูณเรท) ---
             let skuCalculatedForRate = 0; // ตัวแปรสำหรับ SKU ที่จะนำไปคูณเรท
@@ -96,55 +123,60 @@
                 skuTier = "ป้อนค่าไม่ถูกต้อง";
             } else if (skuPerDay >= 252) { // Diamond
                 skuTier = "Diamond";
-                skuRatePerUnit = 0.83; 
+                skuRatePerUnit = 0.83;
                 skuCalculatedForRate = skuPerDay - 131; // ลบ 131 ก่อนคูณเรท
             } else if (skuPerDay >= 216) { // Platinum
                 skuTier = "Platinum";
-                skuRatePerUnit = 0.67; 
+                skuRatePerUnit = 0.67;
                 skuCalculatedForRate = skuPerDay - 131; // ลบ 131 ก่อนคูณเรท
             } else if (skuPerDay >= 180) { // Gold
                 skuTier = "Gold";
-                skuRatePerUnit = 0.58; 
+                skuRatePerUnit = 0.58;
                 skuCalculatedForRate = skuPerDay - 131; // ลบ 131 ก่อนคูณเรท
             } else if (skuPerDay >= 132) { // Silver
                 skuTier = "Silver";
-                skuRatePerUnit = 0.50; 
+                skuRatePerUnit = 0.50;
                 skuCalculatedForRate = skuPerDay - 131; // ลบ 131 ก่อนคูณเรท
             } else { // สำหรับ SKU ที่ต่ำกว่า 132 (รวมถึง <=10 และต่ำกว่าเกณฑ์ขั้นต่ำ)
                 skuTier = (skuPerDay >= 120) ? "<=10 (ไม่ได้ Payout)" : "ต่ำกว่าเกณฑ์ขั้นต่ำ (ไม่ได้ Payout)";
                 skuRatePerUnit = 0.00;
                 skuCalculatedForRate = 0; // จะได้ 0 บาท
             }
+            // ตรวจสอบให้แน่ใจว่า skuCalculatedForRate ไม่เป็นลบ
+            skuCalculatedForRate = Math.max(0, skuCalculatedForRate);
 
-            // --- Logic คำนวณ Incentive สำหรับ MU (เหมือนเดิมที่ปรับแก้ไปแล้ว) ---
+            // --- Logic คำนวณ Incentive สำหรับ MU (ปรับปรุงใหม่: ลบ 373 ก่อนคูณเรท) ---
             let muCalculatedForRate = 0; // ตัวแปรสำหรับ MU ที่จะนำไปคูณเรท
             if (muPerDay < 0) {
                 muRatePerUnit = 0.00;
                 muTier = "ป้อนค่าไม่ถูกต้อง";
             } else if (muPerDay >= 714) {
                 muTier = "Diamond";
-                muRatePerUnit = 0.29; 
-                muCalculatedForRate = muPerDay - 373; 
+                muRatePerUnit = 0.29;
+                muCalculatedForRate = muPerDay - 373; // ลบ 373 ก่อนคูณเรท
             } else if (muPerDay >= 612) {
                 muTier = "Platinum";
-                muRatePerUnit = 0.24; 
-                muCalculatedForRate = muPerDay - 373; 
+                muRatePerUnit = 0.24;
+                muCalculatedForRate = muPerDay - 373; // ลบ 373 ก่อนคูณเรท
             } else if (muPerDay >= 510) {
                 muTier = "Gold";
-                muRatePerUnit = 0.21; 
-                muCalculatedForRate = muPerDay - 373; 
+                muRatePerUnit = 0.21;
+                muCalculatedForRate = muPerDay - 373; // ลบ 373 ก่อนคูณเรท
             } else if (muPerDay >= 374) {
                 muTier = "Silver";
-                muRatePerUnit = 0.18; 
-                muCalculatedForRate = muPerDay - 373; 
-            } else { 
+                muRatePerUnit = 0.18;
+                muCalculatedForRate = muPerDay - 373; // ลบ 373 ก่อนคูณเรท
+            } else {
                 muTier = (muPerDay >= 340) ? "<=10 (ไม่ได้ Payout)" : "ต่ำกว่าเกณฑ์ขั้นต่ำ (ไม่ได้ Payout)";
                 muRatePerUnit = 0.00;
-                muCalculatedForRate = 0; 
+                muCalculatedForRate = 0;
             }
+            // ตรวจสอบให้แน่ใจว่า muCalculatedForRate ไม่เป็นลบ
+            muCalculatedForRate = Math.max(0, muCalculatedForRate);
 
-            const skuIncentiveAmount = skuCalculatedForRate * skuRatePerUnit; 
-            const muIncentiveAmount = muCalculatedForRate * muRatePerUnit; 
+
+            const skuIncentiveAmount = skuCalculatedForRate * skuRatePerUnit;
+            const muIncentiveAmount = muCalculatedForRate * muRatePerUnit;
             const totalIncentiveCalculated = skuIncentiveAmount + muIncentiveAmount;
 
             let totalIncentiveToDisplay = totalIncentiveCalculated;
@@ -165,8 +197,11 @@
             document.getElementById('skuTier').textContent = skuTier;
             document.getElementById('skuIncentive').textContent = skuIncentiveAmount.toFixed(2);
             document.getElementById('muTier').textContent = muTier;
-            document.getElementById('muIncentive').textContent = muIncentiveAmount.toFixed(2); 
-            document.getElementById('totalIncentive').textContent = totalIncentiveToDisplay.toFixed(2);
+            document.getElementById('muIncentive').textContent = muIncentiveAmount.toFixed(2);
+
+            // เรียกใช้ฟังก์ชัน animateNumber เพื่อแสดง Incentive รวม
+            animateNumber('totalIncentive', lastIncentive, totalIncentiveToDisplay, 800);
+            lastIncentive = totalIncentiveToDisplay;
 
             const progressBar = document.getElementById('incentiveProgressBar');
             const progressPercentageSpan = document.getElementById('progressPercentage'); 
@@ -181,6 +216,7 @@
                 document.getElementById('muTier').textContent = "N/A";
                 document.getElementById('muIncentive').textContent = "0.00";
                 document.getElementById('totalIncentive').textContent = "0.00";
+                lastIncentive = 0; // รีเซ็ตค่า Incentive ล่าสุดด้วย
             } else {
                 // อัปเดตความกว้างของ Progress Bar (สูงสุด 100%)
                 progressBar.style.width = progressBarDisplayPercentage.toFixed(0) + '%';
