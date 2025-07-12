@@ -78,8 +78,8 @@
                 document.getElementById('result').innerHTML = 'คุณจัดได้ <span>0.00</span> บิลต่อวัน';
                 actualSkuPerDayDisplay.textContent = '0.00';
                 actualMuPerDayDisplay.textContent = '0.00';
-                skuComparisonDisplay.textContent = 'N/A';
-                muComparisonDisplay.textContent = 'N/A';
+                skuComparisonDisplay.innerHTML = 'N/A'; // เปลี่ยนเป็น innerHTML
+                muComparisonDisplay.innerHTML = 'N/A'; // เปลี่ยนเป็น innerHTML
                 return;
             }
 
@@ -103,20 +103,27 @@
             actualSkuPerDayDisplay.textContent = actualSkuPerDay.toFixed(2);
             actualMuPerDayDisplay.textContent = actualMuPerDay.toFixed(2);
 
-            // ฟังก์ชันช่วยในการสร้างข้อความเปรียบเทียบ
-            function getComparisonText(actual, target, unit) {
+            // ฟังก์ชันช่วยในการสร้างข้อความเปรียบเทียบพร้อมสี
+            function getComparisonHTML(actual, target, unit) {
                 const diff = actual - target;
+                let color = '';
+                let text = '';
                 if (diff > 0) {
-                    return `สูงกว่าเป้าหมาย ${diff.toFixed(2)} ${unit}`;
+                    color = '#4CAF50'; // สีเขียว
+                    text = `สูงกว่าเป้าหมาย ${diff.toFixed(2)} ${unit}`;
                 } else if (diff < 0) {
-                    return `ต่ำกว่าเป้าหมาย ${Math.abs(diff).toFixed(2)} ${unit}`;
+                    color = '#F44336'; // สีแดง
+                    text = `ต่ำกว่าเป้าหมาย ${Math.abs(diff).toFixed(2)} ${unit}`;
                 } else {
-                    return `ตรงตามเป้าหมาย`;
+                    color = '#FFFFFF'; // สีขาว (ตรงตามเป้าหมาย)
+                    text = `ตรงตามเป้าหมาย`;
                 }
+                return `<span style="color: ${color};">${text}</span>`;
             }
 
-            skuComparisonDisplay.textContent = getComparisonText(actualSkuPerDay, targetSkuPerDay, 'SKU');
-            muComparisonDisplay.textContent = getComparisonText(actualMuPerDay, targetMuPerDay, 'MU');
+            // ใช้ innerHTML เพื่อให้แสดงผลสีได้
+            skuComparisonDisplay.innerHTML = getComparisonHTML(actualSkuPerDay, targetSkuPerDay, 'SKU');
+            muComparisonDisplay.innerHTML = getComparisonHTML(actualMuPerDay, targetMuPerDay, 'MU');
             // --- สิ้นสุดส่วนแสดงผลลัพธ์ใหม่ ---
         }
 
