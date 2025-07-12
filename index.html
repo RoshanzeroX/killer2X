@@ -11,7 +11,6 @@
         .animated-number {
             font-weight: bold;
             display: inline-block; /* เพื่อให้สามารถใช้ transform ได้ */
-            /* เพิ่ม transition เพื่อให้การเปลี่ยนแปลงดูนุ่มนวลขึ้น */
             transition: transform 0.3s ease-out;
         }
 
@@ -53,6 +52,25 @@
         /* เพิ่ม style สำหรับ .result span เพื่อรองรับ animated-number */
         .result span {
             display: inline-block; /* สำคัญเพื่อให้ animated-number ทำงานได้ */
+        }
+
+        /* --- การปรับแก้สำหรับปัญหาแป้นพิมพ์บังผลลัพธ์ --- */
+        body {
+            min-height: 100vh; /* ทำให้ body มีความสูงอย่างน้อยเท่ากับ viewport */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ป้องกันไม่ให้ส่วนเหล่านี้หดตัวมากเกินไป แต่ควรเลื่อนได้ */
+        .main-container, .notes, .links-container {
+            flex-shrink: 0;
+        }
+
+        /* เพิ่มการ padding ด้านล่าง เพื่อให้มีพื้นที่เหลือสำหรับการ scroll เมื่อคีย์บอร์ดขึ้น */
+        body::after {
+            content: '';
+            display: block;
+            height: 150px; /* สามารถปรับค่าได้ตามความเหมาะสม */
         }
     </style>
 </head>
@@ -158,8 +176,8 @@
                 lastBillsPerDay = 0; // รีเซ็ตค่าสุดท้าย
                 actualSkuPerDayDisplay.textContent = '0.00';
                 actualMuPerDayDisplay.textContent = '0.00';
-                skuComparisonDisplay.innerHTML = 'N/A';
-                muComparisonDisplay.innerHTML = 'N/A';
+                skuComparisonDisplay.innerHTML = 'N/A'; // เปลี่ยนเป็น innerHTML
+                muComparisonDisplay.innerHTML = 'N/A'; // เปลี่ยนเป็น innerHTML
                 return;
             }
 
@@ -209,7 +227,6 @@
                     icon = '✅'; // เครื่องหมายถูก
                     animationClass = 'bounce'; // อนิเมชันกระโดด
                 }
-                // ลบอนิเมชันเก่าออกก่อนเพิ่มใหม่
                 return `<span style="color: ${color};">${text}</span> <span class="comparison-icon" style="animation: ${animationClass} 0.8s ease-in-out forwards;">${icon}</span>`;
             }
 
