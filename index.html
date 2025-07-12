@@ -31,6 +31,21 @@
         </div>
     </div>
 
+    <div class="notes">
+        <h2>รายละเอียดประสิทธิภาพเพิ่มเติม:</h2>
+        <div class="detailed-results-in-notes">
+            <h3>ค่าเฉลี่ยรายวัน:</h3>
+            <p><strong>SKU เฉลี่ยต่อวัน:</strong> <span id="actualSkuPerDayDisplay">0.00</span> SKU</p>
+            <p><strong>MU เฉลี่ยต่อวัน:</strong> <span id="actualMuPerDayDisplay">0.00</span> MU</p>
+            
+            <hr class="notes-separator">
+
+            <h3>การเปรียบเทียบกับเป้าหมาย (120 SKU / 340 MU):</h3>
+            <p><strong>SKU:</strong> <span id="skuComparison">N/A</span></p>
+            <p><strong>MU:</strong> <span id="muComparison">N/A</span></p>
+        </div>
+    </div>
+
     <div class="links-container">
         <a href="incentive_calculator.html">🔗 ลิงก์ไปยังหน้าคำนวณ Incentive</a>
         <a href="https://example.com/page2" target="_blank">🔗 ลิงก์ไปยังหน้า 2</a>
@@ -47,23 +62,32 @@
             const totalMu = parseFloat(document.getElementById('mu').value || 0);
             const daysWorked = parseFloat(document.getElementById('days').value || 0);
 
+            // กำหนดเป้าหมายเฉลี่ยต่อวันและค่าเทียบเท่า "บิล"
+            const targetSkuPerDay = 120;
+            const targetMuPerDay = 340;
+            const equivalentBillsIfTargetMet = 12;
+
+            // Elements สำหรับแสดงผลลัพธ์ใหม่
+            const actualSkuPerDayDisplay = document.getElementById('actualSkuPerDayDisplay');
+            const actualMuPerDayDisplay = document.getElementById('actualMuPerDayDisplay');
+            const skuComparisonDisplay = document.getElementById('skuComparison');
+            const muComparisonDisplay = document.getElementById('muComparison');
+
             // ตรวจสอบค่าที่ไม่ถูกต้อง
             if (isNaN(totalSku) || isNaN(totalMu) || isNaN(daysWorked) || daysWorked <= 0) {
                 document.getElementById('result').innerHTML = 'คุณจัดได้ <span>0.00</span> บิลต่อวัน';
+                actualSkuPerDayDisplay.textContent = '0.00';
+                actualMuPerDayDisplay.textContent = '0.00';
+                skuComparisonDisplay.textContent = 'N/A';
+                muComparisonDisplay.textContent = 'N/A';
                 return;
             }
-
-            // เป้าหมายเฉลี่ยต่อวันที่คุณกำหนด
-            const targetSkuPerDay = 120;
-            const targetMuPerDay = 340;
-            const equivalentBillsIfTargetMet = 12; // หากทำได้ตามเป้าหมาย 120 SKU และ 340 MU จะเท่ากับ 12 บิล
 
             // 1. คำนวณ SKU/MU เฉลี่ยต่อวันจากค่ารวมที่ป้อน
             const actualSkuPerDay = totalSku / daysWorked;
             const actualMuPerDay = totalMu / daysWorked;
 
             // 2. คำนวณอัตราส่วนประสิทธิภาพเทียบกับเป้าหมาย
-            // (1.0 ถ้าทำได้เท่าเป้าหมาย, <1.0 ถ้าทำได้น้อยกว่า, >1.0 ถ้าทำได้มากกว่า)
             const skuPerformanceRatio = actualSkuPerDay / targetSkuPerDay;
             const muPerformanceRatio = actualMuPerDay / targetMuPerDay;
 
@@ -74,6 +98,26 @@
             const billsPerDay = averagePerformanceRatio * equivalentBillsIfTargetMet;
             
             document.getElementById('result').innerHTML = `คุณจัดได้ <span>${billsPerDay.toFixed(2)}</span> บิลต่อวัน`;
+
+            // --- ส่วนแสดงผลลัพธ์ใหม่ ---
+            actualSkuPerDayDisplay.textContent = actualSkuPerDay.toFixed(2);
+            actualMuPerDayDisplay.textContent = actualMuPerDay.toFixed(2);
+
+            // ฟังก์ชันช่วยในการสร้างข้อความเปรียบเทียบ
+            function getComparisonText(actual, target, unit) {
+                const diff = actual - target;
+                if (diff > 0) {
+                    return `สูงกว่าเป้าหมาย ${diff.toFixed(2)} ${unit}`;
+                } else if (diff < 0) {
+                    return `ต่ำกว่าเป้าหมาย ${Math.abs(diff).toFixed(2)} ${unit}`;
+                } else {
+                    return `ตรงตามเป้าหมาย`;
+                }
+            }
+
+            skuComparisonDisplay.textContent = getComparisonText(actualSkuPerDay, targetSkuPerDay, 'SKU');
+            muComparisonDisplay.textContent = getComparisonText(actualMuPerDay, targetMuPerDay, 'MU');
+            // --- สิ้นสุดส่วนแสดงผลลัพธ์ใหม่ ---
         }
 
         document.addEventListener('DOMContentLoaded', calculateAverage);
