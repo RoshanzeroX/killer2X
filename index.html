@@ -54,23 +54,62 @@
             display: inline-block; /* สำคัญเพื่อให้ animated-number ทำงานได้ */
         }
 
-        /* --- การปรับแก้สำหรับปัญหาแป้นพิมพ์บังผลลัพธ์ --- */
-        body {
-            min-height: 100vh; /* ทำให้ body มีความสูงอย่างน้อยเท่ากับ viewport */
+        /* --- การปรับแก้สำหรับปัญหาแป้นพิมพ์บังผลลัพธ์ (No Scroll) --- */
+        html, body {
+            height: 100%; /* กำหนดความสูง 100% ของ viewport */
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* สำคัญ: ป้องกันการ scroll ของ body */
             display: flex;
             flex-direction: column;
+            justify-content: space-between; /* กระจายเนื้อหา */
         }
 
-        /* ป้องกันไม่ให้ส่วนเหล่านี้หดตัวมากเกินไป แต่ควรเลื่อนได้ */
-        .main-container, .notes, .links-container {
-            flex-shrink: 0;
+        .main-container {
+            flex-grow: 1; /* ส่วนนี้จะขยายเพื่อเติมพื้นที่ */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* จัดกึ่งกลางแนวตั้งสำหรับ input และ result */
+            padding-bottom: 10px; /* เพิ่ม padding ด้านล่างเล็กน้อย */
+        }
+        
+        .input-group {
+            margin-bottom: 8px; /* ลด margin ระหว่าง input groups */
         }
 
-        /* เพิ่มการ padding ด้านล่าง เพื่อให้มีพื้นที่เหลือสำหรับการ scroll เมื่อคีย์บอร์ดขึ้น */
-        body::after {
-            content: '';
-            display: block;
-            height: 150px; /* สามารถปรับค่าได้ตามความเหมาะสม */
+        .result {
+            margin-top: 15px; /* ปรับ margin เหนือ result */
+            font-size: 1.5em; /* ทำให้ผลลัพธ์เด่นขึ้น */
+        }
+
+        .notes {
+            flex-shrink: 0; /* ไม่ให้ส่วนนี้หดตัวเมื่อพื้นที่จำกัด */
+            max-height: 40%; /* จำกัดความสูงของส่วน notes ให้ไม่เกิน 40% ของหน้าจอ */
+            overflow-y: auto; /* สำคัญ: ทำให้ notes มี scrollbar ของตัวเองถ้าเนื้อหาเกิน */
+            padding-bottom: 10px; /* เพิ่ม padding ด้านล่าง */
+        }
+
+        .notes h2, .notes h3 {
+            margin-top: 5px; /* ลด margin ด้านบนของหัวข้อใน notes */
+            margin-bottom: 5px; /* ลด margin ด้านล่างของหัวข้อใน notes */
+        }
+        .notes p {
+            margin-top: 3px; /* ลด margin ของ p ใน notes */
+            margin-bottom: 3px; /* ลด margin ของ p ใน notes */
+        }
+
+        .links-container {
+            flex-shrink: 0; /* ไม่ให้ส่วนนี้หดตัว */
+            padding-top: 5px; /* ลด padding ด้านบน */
+            padding-bottom: 5px; /* ลด padding ด้านล่าง */
+            font-size: 0.9em; /* ลดขนาด font สำหรับลิงก์ */
+        }
+
+        .fullscreen-toggle {
+            position: fixed; /* ทำให้ปุ่มอยู่กับที่ */
+            bottom: 10px; /* ปรับตำแหน่ง */
+            right: 10px; /* ปรับตำแหน่ง */
+            z-index: 1000; /* ให้ปุ่มอยู่เหนือองค์ประกอบอื่น */
         }
     </style>
 </head>
@@ -176,8 +215,8 @@
                 lastBillsPerDay = 0; // รีเซ็ตค่าสุดท้าย
                 actualSkuPerDayDisplay.textContent = '0.00';
                 actualMuPerDayDisplay.textContent = '0.00';
-                skuComparisonDisplay.innerHTML = 'N/A'; // เปลี่ยนเป็น innerHTML
-                muComparisonDisplay.innerHTML = 'N/A'; // เปลี่ยนเป็น innerHTML
+                skuComparisonDisplay.innerHTML = 'N/A';
+                muComparisonDisplay.innerHTML = 'N/A';
                 return;
             }
 
