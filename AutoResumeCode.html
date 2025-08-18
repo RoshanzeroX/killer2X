@@ -1,57 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V.A.R.S. - Video Auto-Resume System</title>
-    <link rel="stylesheet" href="Style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V.A.R.S. - Video Auto-Resume System</title>
+    <link rel="stylesheet" href="VARS.css">
 </head>
 <body>
 
 <div class="main-container">
-    <h1>
-        V.A.R.S.
-        <span>Video Auto-Resume System</span>
-    </h1>
-    <p>Tap the button below to copy the code for your browser extension (like Tampermonkey).</p>
-    <div class="code-box">
-        <pre id="scriptCode">
+    <h1>
+        V.A.R.S.
+        <span>Video Auto-Resume System</span>
+    </h1>
+    <p>Tap the button below to copy the code for your browser extension (like Tampermonkey).</p>
+    <div class="code-box">
+        <pre id="scriptCode">
 // ==UserScript==
-// @name          Ultra Auto Resume Videos for MissAV (all domains)
-// @namespace     http://tampermonkey.net/
-// @version       1.1
-// @description   Automatically resume all videos and bypass the "Confirm" screen on the specified domain.
-// @match         https://lmsrv.siammakro.co.th/
-// @grant         none
+// @name           VARS - Video Auto-Resume System
+// @namespace      http://tampermonkey.net/
+// @version        1.5
+// @description    Automatically clicks the "Click to Identify" and "Confirm" buttons, and resumes videos.
+// @match          https://lmsrv.siammakro.co.th/
+// @grant          none
 // ==/UserScript==
 
 (function () {
     'use strict';
 
-    // Check for the "Confirm" button every second and click it
-    const autoClickConfirm = () => {
-        const confirmButton = Array.from(document.querySelectorAll('button, div')).find(el => 
-            el.textContent.includes('Confirm')
-        );
+    let enabled = true; // Set initial state to ON
 
-        if (confirmButton && confirmButton.offsetParent !== null) {
-            console.log('✅ Found and clicking the Confirm button...');
-            confirmButton.click();
+    // Create a toggle button and append it to the body
+    const toggleBtn = document.createElement('button');
+    toggleBtn.innerText = '🎬 AutoResume: ON';
+    Object.assign(toggleBtn.style, {
+        position: 'fixed',
+        bottom: '10px',
+        right: '10px',
+        zIndex: 9999,
+        padding: '8px 12px',
+        background: '#222',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        fontSize: '14px'
+    });
+
+    // Append the button to the document body once the page is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.appendChild(toggleBtn);
+    });
+    
+    // Set the toggle button's click handler
+    toggleBtn.onclick = () => {
+        enabled = !enabled;
+        toggleBtn.innerText = `🎬 AutoResume: ${enabled ? 'ON' : 'OFF'}`;
+    };
+
+    // New function to handle both "Click to Identify" and "Confirm" buttons
+    const autoClickButtons = () => {
+        if (!enabled) return;
+
+        // Step 1: Find and click the "Click to Identify" button
+        const identifyButton = Array.from(document.querySelectorAll('button, div, a'))
+            .find(el => el.textContent.trim().toLowerCase().includes('click to identify'));
+
+        if (identifyButton && identifyButton.offsetParent !== null) {
+            console.log('✅ Found and clicking "Click to Identify"...');
+            identifyButton.click();
+            // Wait a moment before trying to click "Confirm"
+            setTimeout(() => {
+                // Step 2: After a delay, find and click the "Confirm" button
+                const confirmButton = Array.from(document.querySelectorAll('button, div, a'))
+                    .find(el => el.textContent.trim().startsWith('Confirm'));
+
+                if (confirmButton && confirmButton.offsetParent !== null) {
+                    console.log('✅ Found and clicking the Confirm button...');
+                    confirmButton.click();
+                }
+            }, 500); // 500ms delay to allow the site to process the first click
         }
     };
 
-    setInterval(autoClickConfirm, 1000);
+    setInterval(autoClickButtons, 1000);
 
     // Automatically resume any paused video
     const handledVideos = new WeakSet();
 
     setInterval(() => {
+        if (!enabled) return;
         const videos = document.querySelectorAll('video');
         videos.forEach(video => {
             if (handledVideos.has(video)) return;
             handledVideos.add(video);
 
             setInterval(() => {
+                if (!enabled) return;
                 if (video.paused && video.readyState >= 2) {
                     video.play().catch(e => console.warn('Play error:', e));
                 }
@@ -59,34 +104,43 @@
         });
     }, 1000);
 })();
-        </pre>
-    </div>
-    <button class="copy-btn" onclick="copyCode()">Copy Code</button>
-    <div id="copiedMessage" class="copied-msg">Code copied!</div>
+        </pre>
+    </div>
+    <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+    <div id="copiedMessage" class="copied-msg">Code copied!</div>
 </div>
 
 <script>
-    function copyCode() {
-        const codeElement = document.getElementById('scriptCode');
-        const codeToCopy = codeElement.innerText;
-        
-        navigator.clipboard.writeText(codeToCopy).then(() => {
-            const messageElement = document.getElementById('copiedMessage');
-            messageElement.style.display = 'block';
-            setTimeout(() => {
-                messageElement.style.opacity = '1';
-            }, 10);
-            setTimeout(() => {
-                messageElement.style.opacity = '0';
-            }, 1500);
-            setTimeout(() => {
-                messageElement.style.display = 'none';
-            }, 1800);
-        }).catch(err => {
-            console.error('Failed to copy text: ', err);
-            alert('Failed to copy. Please manually select and copy the code.');
-        });
-    }
+    function copyCode(button) {
+        const codeElement = document.getElementById('scriptCode');
+        const codeToCopy = codeElement.innerText;
+        
+        navigator.clipboard.writeText(codeToCopy).then(() => {
+            // Button animation and styling
+            button.classList.add('success');
+            setTimeout(() => {
+                button.classList.remove('success');
+            }, 1000);
+
+            // Show the success message
+            const messageElement = document.getElementById('copiedMessage');
+            messageElement.style.display = 'block';
+            setTimeout(() => {
+                messageElement.style.opacity = '1';
+            }, 10);
+
+            // Hide the success message
+            setTimeout(() => {
+                messageElement.style.opacity = '0';
+            }, 1500);
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 1800);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+            alert('Failed to copy. Please manually select and copy the code.');
+        });
+    }
 </script>
 
 </body>
