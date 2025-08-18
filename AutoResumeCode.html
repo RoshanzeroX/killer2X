@@ -1,3 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V.A.R.S. - Video Auto-Resume System</title>
+    <link rel="stylesheet" href="VARS.css">
+    <style>
+        .instruction {
+            font-size: 12px;
+            text-align: center;
+        }
+        .success-message {
+            margin-top: 15px;
+            color: #fff;
+            background-color: #28a745;
+            padding: 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        /* สไตล์ใหม่สำหรับปุ่ม "กลับหน้าหลัก" */
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #ff9900; /* สีส้ม */
+            color: #fff; /* สีขาว */
+            text-decoration: none;
+            border-radius: 5px;
+            border: 1px solid #ff9900;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .back-btn:hover {
+            background-color: #cc7a00; /* สีส้มเข้มขึ้นเมื่อ hover */
+            transform: translateY(-2px); /* ยกปุ่มขึ้นเล็กน้อย */
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <h1>
+        V.A.R.S.
+        <span>Video Auto-Resume System</span>
+    </h1>
+    <div class="code-box">
+        <pre id="scriptCode">
 // ==UserScript==
 // @name          VARS - Video Auto-Resume System
 // @namespace     http://tampermonkey.net/
@@ -56,7 +107,7 @@
             setTimeout(() => {
                 // ขั้นตอนที่ 2: หาและคลิกปุ่ม "Confirm"
                 const confirmButton = Array.from(document.querySelectorAll('button, div, a'))
-                    .find(el => el.textContent.trim().startsWith('Confirm'));
+                    .find(el => el.textContent.trim().toLowerCase().includes('confirm')); // แก้ไขตรงนี้
 
                 if (confirmButton && confirmButton.offsetParent !== null) {
                     console.log('✅ Found and clicking the Confirm button...');
@@ -86,4 +137,49 @@
         });
     }, 1000);
 })();
+        </pre>
+    </div>
+    <button class="copy-btn" onclick="copyCode(this)">คัดลอกโค้ด</button>
+    <div id="copiedMessage" class="copied-msg">ภารกิจเสร็จสิ้น! โค้ดถูกคัดลอก</div>
+    <div class="success-message">
+        <p>หากติดตั้งสคริปต์สำเร็จ คุณจะเห็นปุ่ม **'🎬 AutoResume: ON'** ที่มุมขวาล่างของหน้าเว็บ</p>
+    </div>
+    <p class="instruction">วิธีใช้งาน: ติดตั้งส่วนขยาย **Tampermonkey** บน Chrome/Firefox จากนั้นกด **'คัดลอกโค้ด'** ไปวางในส่วนขยาย หรือคัดลอกไปวางใน **Developer Console (F12)** ของเว็บเป้าหมาย</p>
+    <a href="index.html" class="back-btn">กลับหน้าหลัก</a>
+</div>
+
+<script>
+    function copyCode(button) {
+        const codeElement = document.getElementById('scriptCode');
+        const codeToCopy = codeElement.innerText;
         
+        navigator.clipboard.writeText(codeToCopy).then(() => {
+            // Button animation and styling
+            button.classList.add('success');
+            setTimeout(() => {
+                button.classList.remove('success');
+            }, 1000);
+
+            // Show the success message
+            const messageElement = document.getElementById('copiedMessage');
+            messageElement.style.display = 'block';
+            setTimeout(() => {
+                messageElement.style.opacity = '1';
+            }, 10);
+
+            // Hide the success message
+            setTimeout(() => {
+                messageElement.style.opacity = '0';
+            }, 1500);
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 1800);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+            alert('Failed to copy. Please manually select and copy the code.');
+        });
+    }
+</script>
+
+</body>
+</html>
