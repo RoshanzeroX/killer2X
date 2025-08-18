@@ -90,7 +90,7 @@
 // @name          Ultra Auto Resume Videos for MissAV (all domains)
 // @namespace     http://tampermonkey.net/
 // @version       1.1
-// @description   Automatically resume all videos on the specified domain
+// @description   Automatically resume all videos and bypass the "Confirm" screen on the specified domain.
 // @match         https://lmsrv.siammakro.co.th/
 // @grant         none
 // ==/UserScript==
@@ -98,6 +98,21 @@
 (function () {
     'use strict';
 
+    // Check for the "Confirm" button every second and click it
+    const autoClickConfirm = () => {
+        const confirmButton = Array.from(document.querySelectorAll('button, div')).find(el => 
+            el.textContent.includes('Confirm')
+        );
+
+        if (confirmButton && confirmButton.offsetParent !== null) {
+            console.log('✅ Found and clicking the Confirm button...');
+            confirmButton.click();
+        }
+    };
+
+    setInterval(autoClickConfirm, 1000);
+
+    // Automatically resume any paused video
     const handledVideos = new WeakSet();
 
     setInterval(() => {
