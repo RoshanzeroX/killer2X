@@ -1,0 +1,208 @@
+/* นำเข้าฟอนต์จาก Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+
+/* กำหนดตัวแปรสีเพื่อให้แก้ไขได้ง่าย */
+:root {
+    --primary-red: #ff4d4d;
+    --dark-bg: #1a1a1a;
+    --darker-bg: #111;
+    --text-light: #e0e0e0;
+    --text-fade: #a0a0a0;
+    --border-dark: #333;
+    --glow-shadow: 0 0 15px rgba(255, 77, 77, 0.7);
+    --input-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
+    --highlight-green: #00ff99;
+}
+
+/* Global Styles สำหรับหน้านี้โดยเฉพาะ */
+body {
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    color: var(--text-light);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* พื้นหลังหลักของเว็บสำหรับหน้านี้ */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    filter: blur(4px) brightness(0.6);
+    -webkit-filter: blur(4px) brightness(0.6);
+    z-index: -1;
+}
+
+/* Main Container Styles */
+.main-container {
+    background-color: rgba(10, 10, 10, 0.85);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 77, 77, 0.4);
+    box-shadow: 0 0 30px rgba(255, 77, 77, 0.4), 0 15px 50px rgba(0, 0, 0, 0.7);
+    width: 100%;
+    max-width: 450px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    text-align: center;
+}
+
+/* เส้นเรืองแสงรอบ Container (สำหรับแนวโฮโลแกรม) */
+.main-container::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--primary-red), transparent, var(--primary-red));
+    background-size: 200% 200%;
+    z-index: -1;
+    filter: blur(10px);
+    opacity: 0.7;
+    animation: rotateGlow 15s linear infinite;
+    border-radius: 12px;
+}
+
+/* Keyframes สำหรับแอนิเมชันการหมุนและเปล่งแสง */
+@keyframes rotateGlow {
+    0% { background-position: 0% 50%; transform: rotate(0deg); opacity: 0.7; }
+    50% { background-position: 100% 50%; transform: rotate(180deg); opacity: 0.8; }
+    100% { background-position: 0% 50%; transform: rotate(360deg); opacity: 0.7; }
+}
+
+/* หัวข้อ */
+h1 {
+    color: var(--primary-red);
+    margin-bottom: 25px;
+    font-size: 2.2em;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.8);
+    line-height: 1.2;
+    text-align: center;
+}
+
+/* คำอธิบาย */
+h1 span {
+    display: block;
+    font-size: 0.4em;
+    color: var(--text-fade);
+    font-weight: 400;
+    margin-top: 5px;
+    letter-spacing: normal;
+    text-shadow: none;
+    opacity: 0.8;
+}
+
+/* Code box container */
+.code-box {
+    background-color: var(--darker-bg);
+    border: 1px solid var(--border-dark);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: left;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: var(--input-shadow);
+    /* จำกัดความสูงเพื่อให้ Scroll ได้ */
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+/* Code text formatting */
+pre {
+    margin: 0;
+    padding: 0;
+    white-space: pre;
+    word-wrap: normal;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-light);
+}
+
+/* Copy button styling */
+.copy-btn {
+    background-color: var(--primary-red);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    width: 100%;
+    box-shadow: var(--glow-shadow);
+}
+.copy-btn:hover {
+    background-color: #ff3333;
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.9);
+}
+.copy-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--glow-shadow);
+}
+
+/* Message for successful copy */
+.copied-msg {
+    color: var(--highlight-green);
+    font-weight: bold;
+    margin-top: 10px;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* **โค้ดที่เพิ่มใหม่สำหรับฟีเจอร์เท่ๆ** */
+.copy-btn.success {
+    background-color: var(--highlight-green);
+    animation: flash 0.5s ease-in-out;
+}
+
+@keyframes flash {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    body {
+        padding: 15px;
+    }
+    .main-container {
+        padding: 25px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    h1 span {
+        font-size: 0.45em;
+    }
+    .copy-btn {
+        font-size: 1em;
+        padding: 10px;
+    }
+    pre {
+        font-size: 12px;
+    }
+}
