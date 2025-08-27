@@ -88,94 +88,209 @@
     </h1>
     <div class="code-box">
         <pre id="scriptCode">
-// ==UserScript==
-// @name          VARS - Video Auto-Resume System
-// @namespace     http://tampermonkey.net/
-// @version       1.5
-// @description   Automatically clicks the "Click to Identify" and "Confirm" buttons, and resumes videos.
-// @match         https://lmsrv.siammakro.co.th/
-// @grant         none
-// ==/UserScript==
+// A simple object to hold our shared state
+const videoState = {
+    currentSpeed: 1.0,
+    isMuted: false,
+    timeAdvanceFactor: 0
+};
 
-(function () {
-    'use strict';
+// A master switch for the script
+let isScriptEnabled = true;
 
-    let enabled = true;
+// 1. Function to create the control panel
+function createVideoControls() {
+    if (document.getElementById('video-control-panel')) {
+        console.log('Control panel already exists.');
+        return;
+    }
 
-    // สร้างปุ่ม Toggle สำหรับเปิด/ปิดสคริปต์
-    const toggleBtn = document.createElement('button');
-    toggleBtn.innerText = '🎬 AutoResume: ON';
-    Object.assign(toggleBtn.style, {
+    const speedOptions = [1.0, 1.5, 2.0, 3.0, 4.0];
+    const panel = document.createElement('div');
+    panel.id = 'video-control-panel';
+    Object.assign(panel.style, {
         position: 'fixed',
-        bottom: '10px',
+        top: '10px',
         right: '10px',
-        zIndex: 9999,
-        padding: '8px 12px',
-        background: '#222',
-        color: '#fff',
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        fontSize: '14px'
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-        document.body.appendChild(toggleBtn);
-        console.log('VARS script is running and button has been added.');
+        zIndex: 99999,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        padding: '10px',
+        borderRadius: '8px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+        fontFamily: 'Arial, sans-serif',
+        color: '#fff'
     });
     
-    // ตั้งค่าการคลิกปุ่ม Toggle
-    toggleBtn.onclick = () => {
-        enabled = !enabled;
-        toggleBtn.innerText = `🎬 AutoResume: ${enabled ? 'ON' : 'OFF'}`;
+    // Add title
+    const title = document.createElement('div');
+    title.innerText = '🎥 Video Controls';
+    title.style.fontWeight = 'bold';
+    panel.appendChild(title);
+
+    // Add mute button
+    const muteBtn = document.createElement('button');
+    muteBtn.innerText = '🔊 ปิดเสียง';
+    muteBtn.style.background = '#dc3545';
+    Object.assign(muteBtn.style, { padding: '6px 10px', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', color: '#fff' });
+    muteBtn.onclick = () => {
+        videoState.isMuted = !videoState.isMuted;
+        muteBtn.innerText = videoState.isMuted ? '🔇 เปิดเสียง' : '🔊 ปิดเสียง';
+        muteBtn.style.background = videoState.isMuted ? '#28a745' : '#dc3545';
+        applySpeedAndMute();
     };
-
-    // ฟังก์ชันหลักสำหรับคลิกปุ่มอัตโนมัติ
-    const autoClickButtons = () => {
-        if (!enabled) return;
-
-        // ขั้นตอนที่ 1: หาและคลิกปุ่ม "Click to Identify"
-        const identifyButton = Array.from(document.querySelectorAll('button, div, a'))
-            .find(el => el.textContent.trim().toLowerCase().includes('click to identify'));
-
-        if (identifyButton && identifyButton.offsetParent !== null) {
-            console.log('✅ Found and clicking "Click to Identify"...');
-            identifyButton.click();
-
-            // รอสักครู่ก่อนคลิกปุ่ม "Confirm"
-            setTimeout(() => {
-                // ขั้นตอนที่ 2: หาและคลิกปุ่ม "Confirm"
-                const confirmButton = Array.from(document.querySelectorAll('button, div, a'))
-                    .find(el => el.textContent.trim().toLowerCase().includes('confirm'));
-
-                if (confirmButton && confirmButton.offsetParent !== null) {
-                    console.log('✅ Found and clicking the Confirm button...');
-                    confirmButton.click();
-                }
-            }, 500);
+    panel.appendChild(muteBtn);
+    
+    // Add time advance button
+    const timeAdvanceBtn = document.createElement('button');
+    timeAdvanceBtn.innerText = '⏳ เร่งเวลา x5';
+    timeAdvanceBtn.style.background = '#8f00ff';
+    Object.assign(timeAdvanceBtn.style, { padding: '6px 10px', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', color: '#fff' });
+    timeAdvanceBtn.onclick = () => {
+        if (videoState.timeAdvanceFactor === 0) {
+            videoState.timeAdvanceFactor = 5;
+            timeAdvanceBtn.innerText = '⏳ หยุดเร่งเวลา';
+        } else {
+            videoState.timeAdvanceFactor = 0;
+            timeAdvanceBtn.innerText = '⏳ เร่งเวลา x5';
         }
     };
+    panel.appendChild(timeAdvanceBtn);
 
-    setInterval(autoClickButtons, 1000);
+    // Add speed buttons
+    speedOptions.forEach(speed => {
+        const button = document.createElement('button');
+        button.innerText = `${speed}x`;
+        button.style.background = '#007bff';
+        Object.assign(button.style, { padding: '6px 10px', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', color: '#fff' });
+        button.onclick = () => {
+            videoState.currentSpeed = speed;
+            applySpeedAndMute();
+        };
+        panel.appendChild(button);
+    });
 
-    // ฟังก์ชันสำหรับเล่นวิดีโอที่หยุดไว้โดยอัตโนมัติ
-    const handledVideos = new WeakSet();
-    setInterval(() => {
-        if (!enabled) return;
-        const videos = document.querySelectorAll('video');
-        videos.forEach(video => {
-            if (handledVideos.has(video)) return;
-            handledVideos.add(video);
+    document.body.appendChild(panel);
+    console.log('Video control panel created.');
+}
 
-            setInterval(() => {
-                if (!enabled) return;
-                if (video.paused && video.readyState >= 2) {
+// 2. Function to apply speed and mute settings to all videos
+function applySpeedAndMute() {
+    if (!isScriptEnabled) return;
+    const videos = document.querySelectorAll('video');
+    videos.forEach(video => {
+        video.playbackRate = videoState.currentSpeed;
+        video.muted = videoState.isMuted;
+    });
+
+    document.querySelectorAll('iframe').forEach(iframe => {
+        try {
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.querySelectorAll('video').forEach(video => {
+                video.playbackRate = videoState.currentSpeed;
+                video.muted = videoState.isMuted;
+            });
+        } catch (e) { /* Ignore cross-origin errors */ }
+    });
+}
+
+// 3. Function to smoothly advance video time
+function advanceTime() {
+    if (!isScriptEnabled || videoState.timeAdvanceFactor === 0) return;
+    const factor = videoState.timeAdvanceFactor;
+
+    document.querySelectorAll('video').forEach(video => {
+        if (!video.paused && video.duration && video.currentTime < video.duration) {
+            video.currentTime += factor;
+        }
+    });
+
+    document.querySelectorAll('iframe').forEach(iframe => {
+        try {
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.querySelectorAll('video').forEach(video => {
+                if (!video.paused && video.duration && video.currentTime < video.duration) {
+                    video.currentTime += factor;
+                }
+            });
+        } catch (e) { /* Ignore cross-origin errors */ }
+    });
+}
+
+// 4. Function to auto-play videos
+function autoPlay() {
+    if (!isScriptEnabled) return;
+    document.querySelectorAll('video').forEach(video => {
+        if (video.paused && video.readyState >= 2 && !video.muted) {
+            video.play().catch(e => console.warn('Play error:', e));
+        }
+    });
+
+    document.querySelectorAll('iframe').forEach(iframe => {
+        try {
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.querySelectorAll('video').forEach(video => {
+                if (video.paused && video.readyState >= 2 && !video.muted) {
                     video.play().catch(e => console.warn('Play error:', e));
                 }
-            }, 1000);
-        });
-    }, 1000);
-})();
+            });
+        } catch (e) { /* Ignore cross-origin errors */ }
+    });
+}
+
+// Create the Toggle button
+const toggleBtn = document.createElement('button');
+toggleBtn.innerText = '🎬 Script: ON';
+Object.assign(toggleBtn.style, {
+    position: 'fixed',
+    bottom: '10px',
+    right: '10px',
+    zIndex: 99999,
+    padding: '8px 12px',
+    background: '#222',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '14px'
+});
+
+toggleBtn.onclick = () => {
+    isScriptEnabled = !isScriptEnabled;
+    toggleBtn.innerText = `🎬 Script: ${isScriptEnabled ? 'ON' : 'OFF'}`;
+    const panel = document.getElementById('video-control-panel');
+    if (isScriptEnabled) {
+        if (!panel) {
+            createVideoControls();
+        } else {
+            panel.style.display = 'flex';
+        }
+    } else {
+        if (panel) {
+            panel.style.display = 'none';
+        }
+    }
+};
+
+// Initial setup
+document.addEventListener('DOMContentLoaded', () => {
+    document.body.appendChild(toggleBtn);
+});
+
+// Main execution loop
+setInterval(() => {
+    if (isScriptEnabled) {
+        applySpeedAndMute();
+        autoPlay();
+        advanceTime();
+    }
+}, 1000);
+
+// Also run once to set up controls on load
+if (isScriptEnabled) {
+    createVideoControls();
+}
         </pre>
     </div>
     <button class="copy-btn" onclick="copyCode(this)">คัดลอกโค้ด</button>
@@ -196,16 +311,26 @@
     // สร้างตัวแปร audio ไว้นอกฟังก์ชันเพื่อให้ทุกครั้งที่กดปุ่มจะอ้างอิงถึงวัตถุเดิม
     const audio = new Audio('8bit.mp3');
     audio.volume = 0.5; // ตั้งค่าระดับเสียง 50%
+    let isTyping = false; // Add a state variable to prevent race conditions
 
     // ฟังก์ชันสำหรับเอฟเฟกต์การพิมพ์ข้อความ
     function typeWriterEffect(element, text, speed) {
+        // Prevent the function from running if it's already in progress
+        if (isTyping) {
+            return;
+        }
+        
+        isTyping = true; // Set state to indicate typing has started
         let i = 0;
         element.textContent = '';
+        
         function type() {
             if (i < text.length) {
                 element.textContent += text.charAt(i);
                 i++;
                 setTimeout(type, speed);
+            } else {
+                isTyping = false; // Set state to indicate typing is finished
             }
         }
         type();
@@ -239,7 +364,6 @@
         navigator.clipboard.writeText(codeToCopy).then(() => {
             // แสดงข้อความในกล่องสไตล์เกมแทน alert()
             showMessage("ภารกิจเสร็จสิ้น! โค้ดถูกคัดลอก!");
-
         }).catch(err => {
             console.error('Failed to copy text: ', err);
             showMessage("ไม่สามารถคัดลอกได้. โปรดคัดลอกโค้ดด้วยตนเอง");
