@@ -19,13 +19,13 @@
             font-weight: bold;
         }
         
-        /* สไตล์ใหม่สำหรับปุ่ม "กลับหน้าหลัก" */
+        /* สไตล์ปุ่ม "กลับหน้าหลัก" */
         .back-btn {
             display: inline-block;
             margin-top: 20px;
             padding: 10px 15px;
-            background-color: #ff9900; /* สีส้ม */
-            color: #fff; /* สีขาว */
+            background-color: #ff9900;
+            color: #fff;
             text-decoration: none;
             border-radius: 5px;
             border: 1px solid #ff9900;
@@ -34,9 +34,48 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .back-btn:hover {
-            background-color: #cc7a00; /* สีส้มเข้มขึ้นเมื่อ hover */
-            transform: translateY(-2px); /* ยกปุ่มขึ้นเล็กน้อย */
+            background-color: #cc7a00;
+            transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- New styles for Retro-Gaming effects --- */
+        .copy-btn:hover {
+            /* Data URI สำหรับไอคอนเคอร์เซอร์ */
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABHklEQVR4nO2Vy07DMBBFp4cQ8C5N+CqWJ/AKqgXkG6iXyBdIN1A/rAOkV6B0A8k53wYhH1cWlDCSdK+Y5n0L35wG05Ym+kHj0Hn68oO2C8B564H/FwM8vA3e8O09i3jH3b8I7v7eA+5vF07D4gC2P4N3m73BfQ80GgGg5tI7+D8QvQ/gV47/P7w/w4L4G4W+oJ8DkS9Y+D/r/gJ8e1nEfgf9+JgLgA7R4/0fNf4BfwgD4B8B/wA5/P4I/gJ/hL9jBv4b+Q2FfQd+AfgW/E/Ea8Q1qD+B/+cW9hM+o8Y5YQx/k5g2sA/C8E/L7F30L+Q+Kz9Wc9Ngnj+yI/B+5V7gX1gGk1g3+N7A+C+Qv7A/A9B/wA7vN4LwF/m7wFfBv4d+g84J5F703jQ1F1hF8A8K9VfL8O/T4wD3m4T1h/1A8P4C4j9z38e/Q+e4B7X1d/oJz+A2B/jP0/Bqg3tCjR+G6gX7N/gMQPgH/Bf/g7h5H7fVz0/k/B/gO254zLq4L4E+Q/j/j+N8C7c4w/7A/l5L5i+g8wA92z3G3gP/t+wGvA+47d5TfH9T/t6D/6oR8A8B40P0x9P9L+6jCg/0+FfwO21A1tE4J/5/M+1Bf4/g/A/w9R5/B/T633b+B/wI6X/q8C/23t/lVfQfW9GvD2BfN24F/gA203wBfD4f2L/J7jP20/gH7a+fA/L3wXh8AAAAASUVORK5CYII='), auto;
+        }
+        .back-btn:hover {
+            /* Data URI สำหรับไอคอนลูกศร */
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAyklEQVR4nO2USwrCMBSEH7sEPRw82J3f4vY9vIPbK+gV6BUUo3oF78YlVj3mJgQW+SgD+eW94X8GAA7o5r/9+8b606O+NqA3w68E3gQj3gR1/p+C96B7LhGq8k0V08v9rJdYFqEa7+R0YF9H30Y6+i1/J9P7E518E/wB+s4/T4B/Dfh9C08BfgbkO8t97i9l8m39k+B7C/t2H3+FfgM8d5d4/A68F8vXz3N4T8W0T93yN/jK2hKj1+x+sT91b/mP6d8D64w+9O7A/A99/jQ839/T+1/U9gB8b5v9zQJ7D4B+D773gH52sS3gOa/A7j3m+A9+L34Wp5Bf4gO3m/A7y3sA24fN7/sL/X34mXj6j3oQ/A+7L6g3gL/T2L/gWvR8b+Fq7V8r3/i/8Vv8F/A2g8W/w3w38g3/u/wL8C1/T/F2P/t9W/Q34C/vY/A9w25jL/V94n6b/sA75xNf/75l9L/mR/BfhO7oJ+g7+4B/r5eY67gH6F+g32JcAAAAASUVORK5CYII='), auto;
+        }
+
+        .game-dialog-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #333;
+            border: 2px solid #fff;
+            box-shadow: 4px 4px 0 #000;
+            z-index: 1000;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .game-dialog-box p {
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+        }
+        .game-dialog-box button {
+            padding: 8px 16px;
+            background-color: #ff9900;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -107,7 +146,7 @@
             setTimeout(() => {
                 // ขั้นตอนที่ 2: หาและคลิกปุ่ม "Confirm"
                 const confirmButton = Array.from(document.querySelectorAll('button, div, a'))
-                    .find(el => el.textContent.trim().toLowerCase().includes('confirm')); // แก้ไขตรงนี้
+                    .find(el => el.textContent.trim().toLowerCase().includes('confirm'));
 
                 if (confirmButton && confirmButton.offsetParent !== null) {
                     console.log('✅ Found and clicking the Confirm button...');
@@ -140,7 +179,12 @@
         </pre>
     </div>
     <button class="copy-btn" onclick="copyCode(this)">คัดลอกโค้ด</button>
-    <div id="copiedMessage" class="copied-msg">ภารกิจเสร็จสิ้น! โค้ดถูกคัดลอก</div>
+    
+    <div id="gameMessage" class="game-dialog-box">
+        <p id="gameMessageText"></p>
+        <button onclick="hideMessage()">OK</button>
+    </div>
+
     <div class="success-message">
         <p>หากติดตั้งสคริปต์สำเร็จ คุณจะเห็นปุ่ม **'🎬 AutoResume: ON'** ที่มุมขวาล่างของหน้าเว็บ</p>
     </div>
@@ -149,34 +193,56 @@
 </div>
 
 <script>
+    // สร้างตัวแปร audio ไว้นอกฟังก์ชันเพื่อให้ทุกครั้งที่กดปุ่มจะอ้างอิงถึงวัตถุเดิม
+    const audio = new Audio('8bit.mp3');
+    audio.volume = 0.5; // ตั้งค่าระดับเสียง 50%
+
+    // ฟังก์ชันสำหรับเอฟเฟกต์การพิมพ์ข้อความ
+    function typeWriterEffect(element, text, speed) {
+        let i = 0;
+        element.textContent = '';
+        function type() {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                i++;
+                setTimeout(type, speed);
+            }
+        }
+        type();
+    }
+    
+    // ฟังก์ชันแสดงกล่องข้อความ
+    function showMessage(text) {
+        const dialog = document.getElementById('gameMessage');
+        const messageText = document.getElementById('gameMessageText');
+        dialog.style.display = 'block';
+        typeWriterEffect(messageText, text, 30); // เรียกใช้เอฟเฟกต์การพิมพ์
+    }
+    
+    // ฟังก์ชันซ่อนกล่องข้อความ
+    function hideMessage() {
+        document.getElementById('gameMessage').style.display = 'none';
+    }
+
     function copyCode(button) {
+        // Toggle การเล่น/หยุดเพลง
+        if (audio.paused) {
+            audio.play().catch(e => console.error("ไม่สามารถเล่นไฟล์เสียงได้:", e));
+        } else {
+            audio.pause();
+            audio.currentTime = 0; // รีเซ็ตเสียงกลับไปที่จุดเริ่มต้น
+        }
+        
         const codeElement = document.getElementById('scriptCode');
         const codeToCopy = codeElement.innerText;
         
         navigator.clipboard.writeText(codeToCopy).then(() => {
-            // Button animation and styling
-            button.classList.add('success');
-            setTimeout(() => {
-                button.classList.remove('success');
-            }, 1000);
+            // แสดงข้อความในกล่องสไตล์เกมแทน alert()
+            showMessage("ภารกิจเสร็จสิ้น! โค้ดถูกคัดลอก!");
 
-            // Show the success message
-            const messageElement = document.getElementById('copiedMessage');
-            messageElement.style.display = 'block';
-            setTimeout(() => {
-                messageElement.style.opacity = '1';
-            }, 10);
-
-            // Hide the success message
-            setTimeout(() => {
-                messageElement.style.opacity = '0';
-            }, 1500);
-            setTimeout(() => {
-                messageElement.style.display = 'none';
-            }, 1800);
         }).catch(err => {
             console.error('Failed to copy text: ', err);
-            alert('Failed to copy. Please manually select and copy the code.');
+            showMessage("ไม่สามารถคัดลอกได้. โปรดคัดลอกโค้ดด้วยตนเอง");
         });
     }
 </script>
