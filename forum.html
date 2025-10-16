@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เว็บบอร์ด - Makrokillerx</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* สไตล์หลักของหน้า */
+        body {
+            display: block; 
+            padding: 20px;
+        }
+
+        .forum-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--card-background-color);
+            border-radius: 15px;
+            box-shadow: var(--shadow-deep);
+            color: var(--text-light);
+            border: 1px solid var(--border-dark); /* ใช้สีขอบเข้มตามธีมหลัก */
+        }
+
+        .forum-header h1 {
+            color: var(--text-highlight);
+            text-align: center;
+            margin-bottom: 5px;
+            text-shadow: 0 0 5px var(--accent-color);
+        }
+        
+        .forum-header p {
+            text-align: center;
+            color: var(--text-mute);
+            margin-bottom: 25px;
+        }
+
+        /* --- New Post Form Section --- */
+        .new-post-form {
+            background-color: var(--input-background-color);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-dark);
+            box-shadow: var(--shadow-small);
+        }
+
+        .new-post-form h2 {
+            margin-top: 0;
+            border-bottom: 2px solid var(--accent-color-hover);
+            padding-bottom: 5px;
+            color: var(--accent-color);
+            font-size: 1.2em;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-row input[type="text"] {
+            flex-grow: 1;
+        }
+
+        /* 💥 โค้ดที่แก้ไข: ปรับปรุงกรอบให้เป็นสีเข้ม (border-dark) และเพิ่มความชัดเจน */
+        .new-post-form textarea,
+        .new-post-form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            /* เปลี่ยนไปใช้ border สีเข้ม (#333) ตามตัวแปร border-dark */
+            border: 2px solid var(--border-dark); 
+            background-color: var(--background-color); 
+            color: var(--text-light);
+            resize: vertical;
+            box-sizing: border-box;
+            font-family: inherit;
+            /* เพิ่มเงาที่ชัดเจนขึ้น */
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.9);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        /* เพิ่ม Focus effect เมื่อผู้ใช้กำลังกรอกข้อมูล */
+        .new-post-form textarea:focus,
+        .new-post-form input[type="text"]:focus {
+            outline: none;
+            /* เปลี่ยนสีขอบเป็นสีแดงไฮไลท์เมื่อโฟกัส */
+            border-color: var(--primary-red); 
+            /* เงาเรืองแสงสีแดงเมื่อโฟกัส */
+            box-shadow: 0 0 8px rgba(255, 77, 77, 0.7), inset 0 0 5px rgba(0, 0, 0, 0.9);
+        }
+        /* 💥 สิ้นสุดโค้ดที่แก้ไข */
+
+        .new-post-form textarea {
+            min-height: 100px;
+            margin-bottom: 15px;
+        }
+
+        .post-button-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .new-post-form button {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: bold;
+        }
+
+        .new-post-form button:hover {
+            background-color: var(--accent-color-hover);
+            transform: translateY(-2px);
+        }
+
+        /* --- Post List Section --- */
+        .post-list h2 {
+            color: var(--text-highlight);
+            border-bottom: 1px solid var(--border-dark);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .post-list .empty-message {
+             text-align: center; 
+             color: var(--text-mute);
+             padding: 20px;
+             border: 1px dashed var(--border-dark);
+             border-radius: 8px;
+        }
+
+        .post-item {
+            background-color: var(--input-background-color);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--primary-red); /* ใช้สีแดงหลักแทน accent-color */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .post-item:hover {
+            transform: translateY(-3px);
+            border-left-color: var(--highlight-green);
+        }
+
+        .post-item h3 {
+            margin-top: 0;
+            color: var(--text-highlight);
+            font-size: 1.1em;
+            word-wrap: break-word; 
+        }
+
+        .post-item .post-meta {
+            font-size: 0.8em;
+            color: var(--text-fade);
+            margin-bottom: 10px;
+            border-bottom: 1px dashed var(--border-dark);
+            padding-bottom: 5px;
+        }
+        
+        .post-item p {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        /* สไตล์สำหรับปุ่มกลับหน้าหลัก */
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: var(--primary-red);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px;
+            border: 1px solid var(--primary-red);
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .back-link:hover {
+            background-color: var(--primary-red);
+            color: var(--dark-bg);
+        }
+        
+        /* สไตล์สำหรับมือถือ */
+        @media (max-width: 600px) {
+            .forum-container {
+                padding: 10px;
+                border-radius: 0;
+            }
+            .input-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .input-row input[type="text"] {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="forum-container">
+        <div class="forum-header">
+            <h1>💬 เว็บบอร์ด & ถาม-ตอบ</h1>
+            <p>พื้นที่แลกเปลี่ยนข้อมูลและสอบถามเกี่ยวกับการทำงาน</p>
+        </div>
+
+        <div class="new-post-form">
+            <h2><i class="fas fa-edit"></i> สร้างกระทู้ใหม่</h2>
+            
+            <div class="input-row">
+                <input type="text" id="postTitle" placeholder="หัวข้อกระทู้" required>
+                <input type="text" id="postAuthor" placeholder="ชื่อผู้โพสต์ (เช่น Makrokiller)">
+            </div>
+            
+            <textarea id="postContent" placeholder="เนื้อหาข้อความ..." required></textarea>
+            
+            <div class="post-button-container">
+                <button onclick="submitPost()"><i class="fas fa-paper-plane"></i> โพสต์</button>
+            </div>
+        </div>
+
+        <div class="post-list" id="postList">
+            <h2><i class="fas fa-list-alt"></i> กระทู้ล่าสุด</h2>
+            </div>
+        
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> กลับหน้าหลัก D.P.S.
+        </a>
+    </div>
+
+    <script>
+        // ใช้ Local Storage สำหรับเก็บข้อมูลโพสต์ (ข้อมูลจะถูกเก็บในเครื่องของผู้ใช้แต่ละคน)
+        const POSTS_KEY = 'makrokillerx_forum_posts';
+
+        // 1. โหลดและแสดงโพสต์
+        function loadPosts() {
+            const posts = JSON.parse(localStorage.getItem(POSTS_KEY) || '[]');
+            const postList = document.getElementById('postList');
+            postList.innerHTML = '<h2><i class="fas fa-list-alt"></i> กระทู้ล่าสุด</h2>'; // ล้างรายการเดิม
+
+            if (posts.length === 0) {
+                postList.innerHTML += '<p class="empty-message">ยังไม่มีกระทู้. เริ่มต้นโพสต์แรกเลย!</p>';
+                return;
+            }
+
+            // แสดงโพสต์ล่าสุดขึ้นก่อน
+            posts.slice().reverse().forEach(post => { 
+                const postElement = document.createElement('div');
+                postElement.classList.add('post-item');
+                
+                // แปลง Timestamp เป็นวันที่และเวลาที่อ่านง่าย
+                const dateOptions = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                const formattedDate = new Date(post.timestamp).toLocaleString('th-TH', dateOptions);
+                
+                postElement.innerHTML = `
+                    <h3><i class="fas fa-comment-dots"></i> ${post.title}</h3>
+                    <div class="post-meta">
+                        โพสต์โดย <strong>${post.author}</strong> เมื่อ ${formattedDate}
+                    </div>
+                    <p>${post.content.replace(/\n/g, '<br>')}</p>
+                `;
+                postList.appendChild(postElement);
+            });
+        }
+
+        // 2. ส่งโพสต์ใหม่
+        function submitPost() {
+            const title = document.getElementById('postTitle').value.trim();
+            const author = document.getElementById('postAuthor').value.trim() || 'นิรนาม'; // ให้ค่าเริ่มต้นเป็น 'นิรนาม'
+            const content = document.getElementById('postContent').value.trim();
+
+            if (!title || !content) {
+                alert('กรุณากรอกหัวข้อกระทู้และเนื้อหา!');
+                return;
+            }
+
+            const newPost = {
+                title: title,
+                author: author,
+                content: content,
+                timestamp: Date.now()
+            };
+
+            const posts = JSON.parse(localStorage.getItem(POSTS_KEY) || '[]');
+            posts.push(newPost);
+            
+            // จำกัดจำนวนโพสต์สูงสุด 50 โพสต์ (เพื่อไม่ให้ LocalStorage เต็มเกินไป)
+            if (posts.length > 50) {
+                posts.shift(); // ลบโพสต์ที่เก่าที่สุดออก
+            }
+
+            localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+
+            // ล้างฟอร์ม
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postAuthor').value = '';
+            document.getElementById('postContent').value = '';
+
+            // โหลดและแสดงโพสต์ใหม่
+            loadPosts(); 
+
+            // เลื่อนไปด้านบนเพื่อดูโพสต์ใหม่
+            document.querySelector('.post-list').scrollIntoView({ behavior: 'smooth' });
+
+            alert('โพสต์สำเร็จ!');
+        }
+
+        // โหลดโพสต์เมื่อหน้าเว็บโหลดเสร็จ
+        document.addEventListener('DOMContentLoaded', loadPosts);
+    </script>
+</body>
+</html>
